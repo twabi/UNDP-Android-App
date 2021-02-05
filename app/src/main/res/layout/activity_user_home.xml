@@ -27,6 +27,7 @@
         android:fitsSystemWindows="false"
         app:itemIconSize="30dp"
         android:theme="@style/drawerTheme"
+        app:itemShapeFillColor="@color/grey"
         app:itemIconTint="@color/purple_200"
         app:itemTextAppearance="@style/NavDrawerTextStyle"
         app:headerLayout="@layout/nav_header">

@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Waste Mgmt App</string>
-    <string name="already">I already have an account</string>
-    <string name="no_account">I do not have an account</string>
+    <string name="already"><u>I already have an account</u></string>
+    <string name="no_account"><u>I do not have an account</u></string>
 </resources>

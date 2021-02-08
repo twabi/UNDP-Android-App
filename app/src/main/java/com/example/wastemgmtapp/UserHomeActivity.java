@@ -18,8 +18,6 @@ import com.mapbox.mapboxsdk.maps.Style;
 
 public class UserHomeActivity extends AppCompatActivity{
 
-    private Toolbar toolbar;
-    private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle mToggle;
     private MapView mapView;
 
@@ -29,8 +27,8 @@ public class UserHomeActivity extends AppCompatActivity{
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         setContentView(R.layout.activity_user_home);
 
-        toolbar = findViewById(R.id.nav_action);
-        drawerLayout = findViewById(R.id.drawer_layout);
+        Toolbar toolbar = findViewById(R.id.nav_action);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
 
         setSupportActionBar(toolbar);
 

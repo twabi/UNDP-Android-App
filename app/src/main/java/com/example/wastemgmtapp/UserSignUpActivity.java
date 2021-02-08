@@ -9,13 +9,12 @@ import android.widget.TextView;
 
 public class UserSignUpActivity extends AppCompatActivity {
 
-    private TextView alreadyAccount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_sign_up);
 
-        alreadyAccount = findViewById(R.id.already);
+        TextView alreadyAccount = findViewById(R.id.already);
         alreadyAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 public class LogInActivity extends AppCompatActivity {
 
-    TextView noAccountText;
-    Button login;
+    private TextView noAccountText;
+    private Button login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

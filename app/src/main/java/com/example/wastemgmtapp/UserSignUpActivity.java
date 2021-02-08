@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class UserSignUpActivity extends AppCompatActivity {
 
-    TextView alreadyAccount;
+    private TextView alreadyAccount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

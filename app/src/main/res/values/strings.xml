@@ -4,5 +4,6 @@
     <string name="no_account"><u>I do not have an account</u></string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="see_more"><u>See More</u></string>
     <string name="mapbox_access_token">pk.eyJ1IjoidHdhYmkiLCJhIjoiY2tlZnZyMWozMHRqdjJzb3k2YzlxZnloYSJ9.FBL3kyXAQ22kEws-y6XbJQ</string>
 </resources>

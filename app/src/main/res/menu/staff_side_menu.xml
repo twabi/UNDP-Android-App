@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_home"
+        android:icon="@drawable/homeagain"
+        android:title="Home" />
+
+    <item android:id="@+id/nav_trashcans"
+        android:icon="@drawable/trash"
+        android:title="Zone Trash-cans" />
+
+    <item android:id="@+id/nav_requests"
+        android:icon="@drawable/request"
+        android:title="Collection Requests" />
+
+    <item android:id="@+id/nav_settings"
+        android:icon="@drawable/settings"
+        android:title="Record Sorted Waste" />
+
+    <item android:id="@+id/nav_logout"
+        android:icon="@drawable/logout"
+        android:title="Logout" />
+</menu>

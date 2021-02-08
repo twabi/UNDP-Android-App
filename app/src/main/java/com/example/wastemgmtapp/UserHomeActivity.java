@@ -71,7 +71,6 @@ public class UserHomeActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mToggle.onOptionsItemSelected(item)){
             return true;
-
         }
 
         return super.onOptionsItemSelected(item);

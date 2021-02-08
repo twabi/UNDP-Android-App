@@ -21,7 +21,8 @@ import com.mapbox.mapboxsdk.maps.Style;
 public class StaffHomeActivity extends AppCompatActivity {
 
     private ActionBarDrawerToggle mToggle;
-    private MapView mapRequests, mapTrash;
+    private MapView mapRequests;
+    private MapView mapTrash;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +66,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         });
 
         CameraPosition position2 = new CameraPosition.Builder()
-                .target(new LatLng(-15.786111, 35.005833)).zoom(10).tilt(20)
+                .target(new LatLng(-15.3766, 35.3357)).zoom(10).tilt(20)
                 .build();
         mapRequests.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -75,7 +76,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
                         // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-                        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
+                        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position2), 10);
 
                     }
                 });

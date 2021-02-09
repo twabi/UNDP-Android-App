@@ -9,7 +9,7 @@ import android.widget.Spinner;
 
 public class RecordWaste extends AppCompatActivity {
 
-    final String[] wasteTypes = { "Select Trash Type","Plastics", "Bio-degradable", "Recyclables", "Other Waste"};
+    private final String[] wasteTypes = { "Select Trash Type","Plastics", "Bio-degradable", "Recyclables", "Other Waste"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

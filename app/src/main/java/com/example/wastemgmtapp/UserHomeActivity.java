@@ -26,7 +26,7 @@ public class UserHomeActivity extends AppCompatActivity{
 
     private ActionBarDrawerToggle mToggle;
     private MapView mapView;
-    String TAG = UserHomeActivity.class.getSimpleName();
+    private final String TAG = UserHomeActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

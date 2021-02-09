@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-public class RecordWasteActivity extends AppCompatActivity {
+public class RecordWaste extends AppCompatActivity {
 
     String[] wasteTypes = { "Select Trash Type","Plastics", "Bio-degradable", "Recyclables", "Other Waste"};
 
@@ -24,7 +24,7 @@ public class RecordWasteActivity extends AppCompatActivity {
 
         Spinner wasteSpinner = findViewById(R.id.wasteSpinner);
         //add the list to the dropdown item in the dialog view
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(RecordWasteActivity.this, R.layout.spinner_item, wasteTypes);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(RecordWaste.this, R.layout.spinner_item, wasteTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         wasteSpinner.setAdapter(adapter);
     }

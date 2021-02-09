@@ -9,9 +9,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 
+import com.google.android.material.navigation.NavigationView;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
@@ -25,6 +26,7 @@ public class UserHomeActivity extends AppCompatActivity{
 
     private ActionBarDrawerToggle mToggle;
     private MapView mapView;
+    String TAG = UserHomeActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,19 +83,28 @@ public class UserHomeActivity extends AppCompatActivity{
         });
 
         cardReport.setOnClickListener(v -> {
-            //Intent intent = new Intent(UserHomeActivity.this, RequestCollection.class);
-            //startActivity(intent);
+            Intent intent = new Intent(UserHomeActivity.this, ReportDumping.class);
+            startActivity(intent);
         });
 
         cardRecord.setOnClickListener(v -> {
-            Intent intent = new Intent(UserHomeActivity.this, RecordWasteActivity.class);
+            Intent intent = new Intent(UserHomeActivity.this, RecordWaste.class);
             startActivity(intent);
+        });
+
+        NavigationView navView = findViewById(R.id.user_navDrawer); // initiate a Navigation View
+        // implement setNavigationSelectedListener event
+        navView.setNavigationItemSelectedListener(menuItem -> {
+            Log.d(TAG, "onOptionsItemSelected: " + menuItem);
+            // add code here what you need on click of items.
+            return false;
         });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mToggle.onOptionsItemSelected(item)){
+
             return true;
         }
 

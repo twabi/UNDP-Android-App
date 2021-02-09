@@ -6,7 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".LogInActivity">
+    tools:context=".RequestCollection">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/reqToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_200"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        app:title="Waste Management App"
+        app:titleTextColor="#fff"
+        android:minHeight="?attr/actionBarSize"
+        android:maxHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
 
 
     <ScrollView
@@ -19,23 +34,16 @@
             android:orientation="vertical">
 
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="250dp"
-                android:layout_height="200dp"
-                android:layout_margin="5dp"
-                android:layout_gravity="center"
-                android:src="@drawable/circle_cropped"/>
-
             <TextView
                 android:layout_gravity="center"
                 android:id="@+id/txt_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Log In"
+                android:text="Request Trash Collection"
                 android:textColor="@color/purple_700"
                 android:textAlignment="center"
                 android:gravity="center"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:textStyle="bold"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp" />
@@ -45,39 +53,34 @@
                 android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
                 android:orientation="vertical">
 
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:ems="10"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/numberInput"
+                <Spinner android:id="@+id/companySpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:textColor="@color/purple_700"
-                    android:textColorHint="@color/purple_700"
-                    android:background="@drawable/edit_text_border"
-                    android:hint="enter number"
-                    android:inputType="text" />
+                    android:padding="14dp"
+                    android:background="@drawable/spinner_bg"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp" />
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:ems="10"
                     android:layout_marginTop="25dp"
                     android:layout_marginBottom="10dp"
-                    android:id="@+id/passwordInput"
-                    android:padding="16dp"
+                    android:id="@+id/inputAmount"
+                    android:padding="18dp"
                     android:textColor="@color/purple_700"
                     android:textColorHint="@color/purple_700"
+                    android:textSize="16sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border"
-                    android:hint="enter password"
+                    android:hint="Amount of Trash (kgs or any description)"
                     android:inputType="textPassword" />
 
             </LinearLayout>
@@ -108,48 +111,25 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="40dp">
+                android:layout_marginTop="10dp">
 
                 <Button
-                    android:id="@+id/btn_login"
+                    android:id="@+id/btn_send"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/create_button_shape"                        android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:text="Log In"
+                    android:text="Send"
                     android:textColor="#fff"
                     android:textStyle="normal" />
                 <ProgressBar
                     android:id="@+id/loads"
                     android:layout_width="wrap_content"
-                    android:layout_toRightOf="@+id/btn_login"
+                    android:layout_toRightOf="@+id/btn_send"
                     android:layout_centerInParent="true"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:visibility="gone"/>
-
-            </RelativeLayout>
-
-
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
-                android:padding="10dp"
-                android:layout_gravity="bottom|center_horizontal"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="24dp"
-                    android:text="@string/no_account"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:id="@+id/noAccount"
-                    android:textStyle="italic"
-                    android:textColor="@color/purple_700"
-                    android:textSize="18sp" />
 
             </RelativeLayout>
 

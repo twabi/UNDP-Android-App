@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/waste_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WasteMgmtApp">
-        <activity android:name=".StaffHomeActivity"></activity>
+        <activity android:name=".RequestCollection"></activity>
+        <activity android:name=".StaffHomeActivity" />
         <activity
             android:name=".UserHomeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />

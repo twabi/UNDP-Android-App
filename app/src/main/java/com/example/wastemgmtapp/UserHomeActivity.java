@@ -4,9 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
@@ -29,6 +34,10 @@ public class UserHomeActivity extends AppCompatActivity{
 
         Toolbar toolbar = findViewById(R.id.nav_action);
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        CardView cardRequest = findViewById(R.id.cardRequest);
+        CardView cardReview = findViewById(R.id.cardReview);
+        CardView cardReport = findViewById(R.id.cardReport);
+        CardView cardRecord = findViewById(R.id.cardRecord);
 
         setSupportActionBar(toolbar);
 
@@ -59,6 +68,26 @@ public class UserHomeActivity extends AppCompatActivity{
                 });
 
             }
+        });
+
+        cardRequest.setOnClickListener(v -> {
+            Intent intent = new Intent(UserHomeActivity.this, RequestCollection.class);
+            startActivity(intent);
+        });
+
+        cardReview.setOnClickListener(v -> {
+            //Intent intent = new Intent(UserHomeActivity.this, RequestCollection.class);
+            //startActivity(intent);
+        });
+
+        cardReport.setOnClickListener(v -> {
+            //Intent intent = new Intent(UserHomeActivity.this, RequestCollection.class);
+            //startActivity(intent);
+        });
+
+        cardRecord.setOnClickListener(v -> {
+            //Intent intent = new Intent(UserHomeActivity.this, RequestCollection.class);
+            //startActivity(intent);
         });
     }
 

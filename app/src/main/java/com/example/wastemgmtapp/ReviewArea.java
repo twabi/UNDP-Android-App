@@ -9,7 +9,7 @@ import android.widget.Spinner;
 
 public class ReviewArea extends AppCompatActivity {
 
-    String[] zones = { "Select Area Zone","Kanjedza", "Chinyonga", "Blantyre CBD", "Mbayani"};
+    final String[] zones = { "Select Area Zone","Kanjedza", "Chinyonga", "Blantyre CBD", "Mbayani"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

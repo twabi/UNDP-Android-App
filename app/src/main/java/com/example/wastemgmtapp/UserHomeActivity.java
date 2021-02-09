@@ -76,8 +76,8 @@ public class UserHomeActivity extends AppCompatActivity{
         });
 
         cardReview.setOnClickListener(v -> {
-            //Intent intent = new Intent(UserHomeActivity.this, RequestCollection.class);
-            //startActivity(intent);
+            Intent intent = new Intent(UserHomeActivity.this, ReviewArea.class);
+            startActivity(intent);
         });
 
         cardReport.setOnClickListener(v -> {
@@ -86,8 +86,8 @@ public class UserHomeActivity extends AppCompatActivity{
         });
 
         cardRecord.setOnClickListener(v -> {
-            //Intent intent = new Intent(UserHomeActivity.this, RequestCollection.class);
-            //startActivity(intent);
+            Intent intent = new Intent(UserHomeActivity.this, RecordWasteActivity.class);
+            startActivity(intent);
         });
     }
 

@@ -172,7 +172,7 @@
                     android:layout_height="match_parent"
                     app:cardElevation="12dp"
                     app:cardCornerRadius="28dp"
-                    android:background="@color/grey"
+                    app:cardBackgroundColor="@color/grey"
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="2dp"
                     android:layout_alignParentRight="true"
@@ -184,23 +184,25 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/grey"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
+                        android:layout_gravity="center"
                         android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
                         android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
+                            android:layout_marginRight="10dp"
                             android:src="@drawable/paper_plane"/>
 
                         <TextView
                             android:id="@+id/reqText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Request Collection"
+                            android:text="Request Trash Collection"
                             android:textColor="@color/purple_700"
                             android:textSize="15sp"
                             android:textStyle="normal"
@@ -227,6 +229,7 @@
                     android:layout_height="match_parent"
                     app:cardElevation="12dp"
                     app:cardCornerRadius="28dp"
+                    app:cardBackgroundColor="@color/grey"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="2dp"
                     android:layout_alignParentLeft="true"
@@ -238,16 +241,18 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/grey"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
                         android:gravity="center"
+                        android:layout_gravity="center"
                         android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
+                            android:layout_marginRight="10dp"
                             android:src="@drawable/closewindow"/>
 
                         <TextView
@@ -292,7 +297,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/grey"
+                    app:cardBackgroundColor="@color/grey"
                     android:layout_alignParentLeft="true"
                     app:cardCornerRadius="28dp"
                     app:cardElevation="12dp"
@@ -302,16 +307,18 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/grey"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
+                        android:layout_gravity="center"
                         android:orientation="horizontal"
-                        android:paddingLeft="10dp">
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp">
 
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
+                            android:layout_marginRight="10dp"
                             android:src="@drawable/star_2" />
 
                         <TextView
@@ -321,7 +328,7 @@
                             android:layout_margin="5dp"
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="5dp"
-                            android:text="Review An Area"
+                            android:text="Review Area"
                             android:textColor="@color/purple_700"
                             android:textSize="15sp"
                             android:textStyle="normal" />
@@ -349,22 +356,25 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="5dp"
                     android:layout_marginTop="5dp"
+                    app:cardBackgroundColor="@color/grey"
                     app:layout_constraintBaseline_toBaselineOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:paddingLeft="10dp"
-                        android:background="@color/grey"
+                        android:paddingRight="10dp"
                         android:gravity="center"
+                        android:layout_gravity="center"
                         android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
+                            android:layout_marginRight="10dp"
                             android:src="@drawable/recycle"/>
 
                         <TextView

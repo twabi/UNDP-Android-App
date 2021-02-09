@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/waste_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WasteMgmtApp">
-        <activity android:name=".RequestCollection"></activity>
+        <activity android:name=".ReviewArea"></activity>
+        <activity android:name=".RecordWasteActivity" />
+        <activity android:name=".RequestCollection" />
         <activity android:name=".StaffHomeActivity" />
         <activity
             android:name=".UserHomeActivity"

@@ -9,23 +9,18 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 public class TrashRecyclerAdapter extends RecyclerView.Adapter<TrashRecyclerAdapter.MyViewHolder> {
 
-    Context context;
-    ArrayList<String> nameList = new ArrayList<>();
-    ArrayList<String> zoneNameList = new ArrayList<>();
-    ArrayList<String> levelList = new ArrayList<>();
+    private final Context context;
+    private ArrayList<String> nameList = new ArrayList<>();
 
     public TrashRecyclerAdapter(Context context, ArrayList<String> nameList, ArrayList<String> zoneNameList, ArrayList<String> levelList) {
         this.context = context;
         this.nameList = nameList;
-        this.zoneNameList = zoneNameList;
-        this.levelList = levelList;
     }
 
     @Override
@@ -55,19 +50,15 @@ public class TrashRecyclerAdapter extends RecyclerView.Adapter<TrashRecyclerAdap
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // init the item view's
-        TextView canName;
-        TextView zoneName;
-        TextView percentage;
-        ProgressBar canLevel;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
             // get the reference of item view's
-            canName = itemView.findViewById(R.id.can_number);
-            zoneName = itemView.findViewById(R.id.zone_name);
-            percentage = itemView.findViewById(R.id.can_level);
-            canLevel = itemView.findViewById(R.id.can_level_bar);
+            TextView canName = itemView.findViewById(R.id.can_number);
+            TextView zoneName = itemView.findViewById(R.id.zone_name);
+            TextView percentage = itemView.findViewById(R.id.can_level);
+            ProgressBar canLevel = itemView.findViewById(R.id.can_level_bar);
 
         }
     }

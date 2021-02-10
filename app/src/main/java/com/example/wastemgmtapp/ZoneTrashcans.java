@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class ZoneTrashcans extends AppCompatActivity {
 
-    ArrayList<String> sample = new ArrayList<>(Arrays.asList("one", "two", "three", "four", "five"));
+    private final ArrayList<String> sample = new ArrayList<>(Arrays.asList("one", "two", "three", "four", "five"));
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

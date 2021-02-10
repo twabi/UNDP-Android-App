@@ -6,30 +6,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 
 public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecyclerAdapter.RequestsViewHolder> {
 
-    Context context;
-    ArrayList<String> nameList = new ArrayList<>();
-    ArrayList<String> timeList = new ArrayList<>();
-    ArrayList<String> locationList = new ArrayList<>();
-    ArrayList<String> amountList = new ArrayList<>();
-    String TAG = RequestsRecyclerAdapter.class.getSimpleName();
+    private final Context context;
+    private ArrayList<String> nameList = new ArrayList<>();
+    private final String TAG = RequestsRecyclerAdapter.class.getSimpleName();
 
     public RequestsRecyclerAdapter(Context context, ArrayList<String> nameList, ArrayList<String> timeList,
                                 ArrayList<String> locationList, ArrayList<String> amountList) {
         this.context = context;
         this.nameList = nameList;
-        this.timeList = timeList;
-        this.locationList = locationList;
-        this.amountList = amountList;
     }
     @Override
     public RequestsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -42,6 +32,7 @@ public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecycl
 
     @Override
     public void onBindViewHolder(RequestsViewHolder holder, int position) {
+
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, RequestDetailsActivity.class);
@@ -58,21 +49,17 @@ public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecycl
     }
 
     public class RequestsViewHolder extends RecyclerView.ViewHolder {
-        // init the item view's
-        TextView requester;
-        TextView location;
-        TextView timeStamp;
-        TextView amount;
 
         public RequestsViewHolder(View itemView) {
             super(itemView);
 
             // get the reference of item view's
 
-            requester = itemView.findViewById(R.id.requester);
-            location = itemView.findViewById(R.id.location_request);
-            timeStamp = itemView.findViewById(R.id.request_time);
-            amount = itemView.findViewById(R.id.trash_amount);
+            // init the item view's
+            TextView requester = itemView.findViewById(R.id.requester);
+            TextView location = itemView.findViewById(R.id.location_request);
+            TextView timeStamp = itemView.findViewById(R.id.request_time);
+            TextView amount = itemView.findViewById(R.id.trash_amount);
 
 
         }

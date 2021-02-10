@@ -27,8 +27,6 @@ public class StaffHomeActivity extends AppCompatActivity {
     private MapView mapRequests;
     private MapView mapTrash;
 
-    private TextView seeMoreTrash;
-    private TextView seeMoreRequests;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +35,8 @@ public class StaffHomeActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.nav_action);
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout2);
-        seeMoreRequests = findViewById(R.id.see_more_requests);
-        seeMoreTrash = findViewById(R.id.see_more_trash);
+        TextView seeMoreRequests = findViewById(R.id.see_more_requests);
+        TextView seeMoreTrash = findViewById(R.id.see_more_trash);
 
         setSupportActionBar(toolbar);
 

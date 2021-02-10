@@ -24,7 +24,7 @@ public class ZoneTrashcans extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         RecyclerView trashRecyclerview = findViewById(R.id.trash_recyclerview);
-        TrashRecyclerAdapter recyclerAdapter = new TrashRecyclerAdapter(ZoneTrashcans.this, sample, sample, sample);
+        TrashRecyclerAdapter recyclerAdapter = new TrashRecyclerAdapter(ZoneTrashcans.this, sample);
 
         trashRecyclerview.setAdapter(recyclerAdapter);
 

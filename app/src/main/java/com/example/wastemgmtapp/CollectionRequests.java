@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class CollectionRequests extends AppCompatActivity {
 
-    ArrayList<String> sample = new ArrayList<>(Arrays.asList("one", "two", "three", "four", "five"));
+    private final ArrayList<String> sample = new ArrayList<>(Arrays.asList("one", "two", "three", "four", "five"));
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +24,7 @@ public class CollectionRequests extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         RecyclerView requestsRecyclerview = findViewById(R.id.requests_recyclerview);
-        RequestsRecyclerAdapter recyclerAdapter = new RequestsRecyclerAdapter(CollectionRequests.this, sample, sample, sample, sample);
+        RequestsRecyclerAdapter recyclerAdapter = new RequestsRecyclerAdapter(CollectionRequests.this, sample);
 
         requestsRecyclerview.setAdapter(recyclerAdapter);
     }

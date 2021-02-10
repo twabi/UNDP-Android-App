@@ -18,7 +18,7 @@ public class TrashRecyclerAdapter extends RecyclerView.Adapter<TrashRecyclerAdap
     private final Context context;
     private ArrayList<String> nameList = new ArrayList<>();
 
-    public TrashRecyclerAdapter(Context context, ArrayList<String> nameList, ArrayList<String> zoneNameList, ArrayList<String> levelList) {
+    public TrashRecyclerAdapter(Context context, ArrayList<String> nameList) {
         this.context = context;
         this.nameList = nameList;
     }
@@ -55,10 +55,10 @@ public class TrashRecyclerAdapter extends RecyclerView.Adapter<TrashRecyclerAdap
             super(itemView);
 
             // get the reference of item view's
-            TextView canName = itemView.findViewById(R.id.can_number);
-            TextView zoneName = itemView.findViewById(R.id.zone_name);
-            TextView percentage = itemView.findViewById(R.id.can_level);
-            ProgressBar canLevel = itemView.findViewById(R.id.can_level_bar);
+            //TextView canName = itemView.findViewById(R.id.can_number);
+            //TextView zoneName = itemView.findViewById(R.id.zone_name);
+            //TextView percentage = itemView.findViewById(R.id.can_level);
+            //ProgressBar canLevel = itemView.findViewById(R.id.can_level_bar);
 
         }
     }

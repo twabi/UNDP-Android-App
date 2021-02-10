@@ -16,8 +16,7 @@ public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecycl
     private ArrayList<String> nameList = new ArrayList<>();
     private final String TAG = RequestsRecyclerAdapter.class.getSimpleName();
 
-    public RequestsRecyclerAdapter(Context context, ArrayList<String> nameList, ArrayList<String> timeList,
-                                ArrayList<String> locationList, ArrayList<String> amountList) {
+    public RequestsRecyclerAdapter(Context context, ArrayList<String> nameList) {
         this.context = context;
         this.nameList = nameList;
     }
@@ -56,10 +55,10 @@ public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecycl
             // get the reference of item view's
 
             // init the item view's
-            TextView requester = itemView.findViewById(R.id.requester);
-            TextView location = itemView.findViewById(R.id.location_request);
-            TextView timeStamp = itemView.findViewById(R.id.request_time);
-            TextView amount = itemView.findViewById(R.id.trash_amount);
+            //TextView requester = itemView.findViewById(R.id.requester);
+            //TextView location = itemView.findViewById(R.id.location_request);
+            //TextView timeStamp = itemView.findViewById(R.id.request_time);
+            //TextView amount = itemView.findViewById(R.id.trash_amount);
 
 
         }

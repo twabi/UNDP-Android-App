@@ -1,12 +1,15 @@
 package com.example.wastemgmtapp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecycl
     ArrayList<String> timeList = new ArrayList<>();
     ArrayList<String> locationList = new ArrayList<>();
     ArrayList<String> amountList = new ArrayList<>();
+    String TAG = RequestsRecyclerAdapter.class.getSimpleName();
 
     public RequestsRecyclerAdapter(Context context, ArrayList<String> nameList, ArrayList<String> timeList,
                                 ArrayList<String> locationList, ArrayList<String> amountList) {
@@ -38,6 +42,13 @@ public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecycl
 
     @Override
     public void onBindViewHolder(RequestsViewHolder holder, int position) {
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, RequestDetailsActivity.class);
+            context.startActivity(intent);
+            Log.d(TAG, "onClick: i got clicked" + position);
+        });
+
 
     }
 

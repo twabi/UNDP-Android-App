@@ -5,8 +5,12 @@
         <shape>
             <gradient
                 android:endColor="@color/grey"
-                android:startColor="#1f1"
+                android:startColor="@color/accent"
                 android:useLevel="true" />
+
+            <stroke
+                android:width="2dp"
+                android:color="@color/purple_700"/>
 
         </shape>
     </item>

@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".RequestDetailsActivity"
+    xmlns:mapbox="http://schemas.android.com/apk/res-auto">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/detailsToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_200"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        app:title="Request Details"
+        app:titleTextColor="#fff"
+        android:minHeight="?attr/actionBarSize"
+        android:maxHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/staff_scrollbar"
+        android:layout_below="@+id/detailsToolbar"
+        android:background="#ffffff">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#ffffff">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/trash_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="12dp"
+                app:cardCornerRadius="20dp"
+                android:background="@color/grey"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                app:layout_constraintBaseline_toBaselineOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/grey"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/reqName"
+                        android:text="Request Name"
+                        android:textColor="@color/purple_700"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_margin="5dp"
+                        android:background="@color/black"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <com.mapbox.mapboxsdk.maps.MapView
+                            android:id="@+id/request_map"
+                            android:layout_width="match_parent"
+                            android:layout_height="400dp"
+                            mapbox:mapbox_cameraTargetLat="-32.557013"
+                            mapbox:mapbox_cameraTargetLng="-56.149056"
+                            mapbox:mapbox_cameraZoom="5.526846"
+                            mapbox:mapbox_renderTextureMode="true" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:id="@+id/map_view"
+                            android:layout_below="@+id/request_map"
+                            android:layout_margin="5dp"
+                            android:background="@color/black"/>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rel_top"
+                            android:layout_below="@id/map_view"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/layout_labels"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="5dp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Details"
+                                    android:textColor="@color/purple_700"
+                                    android:textSize="23sp"
+                                    android:textStyle="normal"
+                                    android:layout_margin="5dp"
+                                    android:layout_marginBottom="5dp" />
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_marginRight="50dp"
+                                    android:layout_height="0.5dp"
+                                    android:background="@color/black"/>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Requestor Name: "
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="17sp"
+                                        android:textStyle="bold"
+                                        android:layout_margin="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="John Doe"
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="17sp"
+                                        android:textStyle="normal"
+                                        android:layout_margin="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Trash Type: "
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="17sp"
+                                        android:textStyle="bold"
+                                        android:layout_margin="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Recyclable Plastics"
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="17sp"
+                                        android:textStyle="normal"
+                                        android:layout_margin="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Trash Amount: "
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="17sp"
+                                        android:textStyle="bold"
+                                        android:layout_margin="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="4 buckets"
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="17sp"
+                                        android:textStyle="normal"
+                                        android:layout_margin="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp" />
+                                </LinearLayout>
+
+                        </LinearLayout>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginRight="15dp"
+                                android:id="@+id/a_view"
+                                android:layout_below="@+id/layout_labels"
+                                android:background="@android:color/darker_gray"/>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="7dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_below="@id/a_view"
+                            android:orientation="horizontal">
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/accept"
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_alignParentLeft="true"
+                                android:background="@drawable/arrow_btn"                        android:layout_centerInParent="true"
+                                android:text="Accept"
+                                android:textSize="10sp"
+                                android:textColor="#fff"
+                                android:layout_marginRight="2dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_alignParentStart="true" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/delete"
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_alignParentRight="true"
+                                android:background="@drawable/arrow_btn"                        android:layout_centerInParent="true"
+                                android:text="Delete"
+                                android:textSize="10sp"
+                                android:textColor="#fff"
+                                android:layout_marginRight="15dp"
+                                android:layout_marginLeft="2dp"
+                                android:layout_alignParentEnd="true" />
+
+                        </RelativeLayout>
+                        </RelativeLayout>
+                    </RelativeLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

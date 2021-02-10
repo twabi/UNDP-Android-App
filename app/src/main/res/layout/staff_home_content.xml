@@ -124,7 +124,7 @@
                             android:layout_marginRight="2dp"
                             android:layout_marginLeft="2dp"
                             android:max="100"
-                            android:progress="30"
+                            android:progress="90"
                             android:progressDrawable="@drawable/custom_progress" />
 
 

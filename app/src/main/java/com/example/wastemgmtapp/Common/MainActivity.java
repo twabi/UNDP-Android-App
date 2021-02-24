@@ -1,8 +1,10 @@
-package com.example.wastemgmtapp;
+package com.example.wastemgmtapp.Common;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.wastemgmtapp.R;
 
 public class MainActivity extends AppCompatActivity {
 

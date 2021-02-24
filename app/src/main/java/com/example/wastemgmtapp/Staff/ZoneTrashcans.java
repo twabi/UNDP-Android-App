@@ -1,10 +1,13 @@
-package com.example.wastemgmtapp;
+package com.example.wastemgmtapp.Staff;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+
+import com.example.wastemgmtapp.R;
+import com.example.wastemgmtapp.adapters.TrashRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;

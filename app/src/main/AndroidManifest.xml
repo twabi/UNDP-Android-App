@@ -13,20 +13,20 @@
         android:roundIcon="@mipmap/waste_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WasteMgmtApp">
-        <activity android:name=".RequestDetailsActivity"></activity>
-        <activity android:name=".TrashDetailsActivity" />
-        <activity android:name=".CollectionRequests" />
-        <activity android:name=".ZoneTrashcans" />
-        <activity android:name=".ReportDumping" />
-        <activity android:name=".ReviewArea" />
-        <activity android:name=".RecordWaste" />
-        <activity android:name=".RequestCollection" />
-        <activity android:name=".StaffHomeActivity" />
+        <activity android:name=".Staff.RequestDetailsActivity"></activity>
+        <activity android:name=".Staff.TrashDetailsActivity" />
+        <activity android:name=".Staff.CollectionRequests" />
+        <activity android:name=".Staff.ZoneTrashcans" />
+        <activity android:name=".normalUser.ReportDumping" />
+        <activity android:name=".normalUser.ReviewArea" />
+        <activity android:name=".normalUser.RecordWaste" />
+        <activity android:name=".normalUser.RequestCollection" />
+        <activity android:name=".Staff.StaffHomeActivity" />
         <activity
-            android:name=".UserHomeActivity"
+            android:name=".normalUser.UserHomeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
         <activity
-            android:name=".LogInActivity"
+            android:name=".Common.LogInActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,10 +35,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UserSignUpActivity"
+            android:name=".normalUser.UserSignUpActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Common.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
     </application>
 

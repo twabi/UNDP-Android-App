@@ -1,4 +1,4 @@
-package com.example.wastemgmtapp;
+package com.example.wastemgmtapp.Common;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.wastemgmtapp.R;
+import com.example.wastemgmtapp.Staff.StaffHomeActivity;
+import com.example.wastemgmtapp.normalUser.UserHomeActivity;
+import com.example.wastemgmtapp.normalUser.UserSignUpActivity;
 
 public class LogInActivity extends AppCompatActivity {
 

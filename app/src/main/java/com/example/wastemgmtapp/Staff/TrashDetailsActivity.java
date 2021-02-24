@@ -1,4 +1,4 @@
-package com.example.wastemgmtapp;
+package com.example.wastemgmtapp.Staff;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,6 +6,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 
+import com.example.wastemgmtapp.R;
+import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -14,13 +16,14 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
-public class RequestDetailsActivity extends AppCompatActivity {
+public class TrashDetailsActivity extends AppCompatActivity {
 
     private MapView mapView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_request_details);
+        Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
+        setContentView(R.layout.activity_trash_details);
 
         //initialize the toolbar
         Toolbar toolbar = findViewById(R.id.detailsToolbar);
@@ -28,7 +31,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //show the back button on the toolbar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mapView = findViewById(R.id.request_map);
+        mapView = findViewById(R.id.trash_map);
         mapView.onCreate(savedInstanceState);
 
         CameraPosition position = new CameraPosition.Builder()

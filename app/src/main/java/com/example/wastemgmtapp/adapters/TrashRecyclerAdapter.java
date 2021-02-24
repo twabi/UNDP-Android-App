@@ -1,4 +1,4 @@
-package com.example.wastemgmtapp;
+package com.example.wastemgmtapp.adapters;
 
 
 import android.content.Context;
@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.wastemgmtapp.R;
+import com.example.wastemgmtapp.Staff.TrashDetailsActivity;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.example.wastemgmtapp;
+package com.example.wastemgmtapp.normalUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,10 +18,12 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.example.wastemgmtapp.Common.LogInActivity;
+import com.example.wastemgmtapp.CreateUserMutation;
+import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.type.UserInput;
 
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -81,11 +83,13 @@ public class UserSignUpActivity extends AppCompatActivity {
 
                         CreateUserMutation.Data data = response.getData();
                         List<Error> error = response.getErrors();
+                        assert error != null;
                         String errorMessage = error.get(0).getMessage();
 
-                        Log.d(TAG, "onResponse: " + data.createUser + "-" + data.createUser());
+                        assert data != null;
+                        Log.d(TAG, "onResponse: " + data.createUser() + "-" + data.createUser());
 
-                        if(data.createUser == null){
+                        if(data.createUser() == null){
                             Log.e("Apollo", "an Error occurred : " + errorMessage);
                             runOnUiThread(() -> {
                                 // Stuff that updates the UI

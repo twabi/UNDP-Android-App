@@ -1,4 +1,4 @@
-package com.example.wastemgmtapp;
+package com.example.wastemgmtapp.normalUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -7,27 +7,29 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-public class ReviewArea extends AppCompatActivity {
+import com.example.wastemgmtapp.R;
 
-    private final String[] zones = { "Select Area Zone","Kanjedza", "Chinyonga", "Blantyre CBD", "Mbayani"};
+public class RequestCollection extends AppCompatActivity {
+
+    private final String[] companies = { "Select Trash Collection Company","City Council", "Zipatso", "Cleanex", "Mr. Muscle"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_review_area);
+        setContentView(R.layout.activity_request_collection);
 
         //initialize the toolbar
-        Toolbar toolbar = findViewById(R.id.recToolbar);
+        Toolbar toolbar = findViewById(R.id.reqToolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //show the back button on the toolbar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-
-        Spinner areaSpinner = findViewById(R.id.areaSpinner);
+        Spinner companySpinner = findViewById(R.id.companySpinner);
         //add the list to the dropdown item in the dialog view
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(ReviewArea.this, R.layout.spinner_item, zones);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(RequestCollection.this, R.layout.spinner_item, companies);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        areaSpinner.setAdapter(adapter);
+        companySpinner.setAdapter(adapter);
     }
+    
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();

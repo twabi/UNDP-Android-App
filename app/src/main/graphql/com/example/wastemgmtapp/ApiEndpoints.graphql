@@ -1,0 +1,45 @@
+mutation CreateUser($userInput: UserInput!) {
+    createUser(userInput: $userInput) {
+        nationalID
+        fullName
+        latitude
+        longitude
+        phoneNumber
+    }
+}
+
+query LogIn($nationalID: String!, $password: String!) {
+    login(nationalID: $nationalID, password: $password){
+        id
+        token
+    }
+}
+
+query LogInAsStaff($employeeID: String!, $password: String!){
+    loginAsStaff(employeeID: $employeeID, password: $password){
+        id
+        token
+    }
+}
+
+query GetStaff($staffId: ID!){
+    staff(staffId: $staffId){
+        createdAt
+        creator {
+            _id
+            name
+        }
+        employeeID
+        fullName
+        location
+        phoneNumber
+        role
+        zone {
+            _id
+            name
+        }
+    }
+}
+
+
+

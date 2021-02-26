@@ -6,4 +6,6 @@
     <string name="close">Close</string>
     <string name="see_more"><u>See More</u></string>
     <string name="mapbox_access_token">pk.eyJ1IjoidHdhYmkiLCJhIjoiY2tlZnZyMWozMHRqdjJzb3k2YzlxZnloYSJ9.FBL3kyXAQ22kEws-y6XbJQ</string>
+    <string name="log_in_as_staff"><u>Log In as Staff</u></string>
+    <string name="log_in_Staff">Log In (Staff)</string>
 </resources>

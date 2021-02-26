@@ -24,8 +24,8 @@ query Users{
     }
 }
 
-mutation LogInAsStaff($employeeID: String!, $password: String!){
-    loginAsStaff(employeeID: $employeeID, password: $password){
+mutation LogInAsStaff($loginStaffInput : LoginStaffInput!){
+    loginAsStaff(loginStaffInput : $loginStaffInput){
         _id
         token
         tokenExpiration

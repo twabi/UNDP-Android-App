@@ -9,9 +9,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.example.wastemgmtapp.Common.LogInActivity;
 import com.example.wastemgmtapp.R;
 import com.google.android.material.navigation.NavigationView;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -97,6 +99,10 @@ public class UserHomeActivity extends AppCompatActivity{
         // implement setNavigationSelectedListener event
         navView.setNavigationItemSelectedListener(menuItem -> {
             Log.d(TAG, "onOptionsItemSelected: " + menuItem);
+            if(TextUtils.equals(menuItem.toString(), "Logout")){
+                Intent intent = new Intent(UserHomeActivity.this, LogInActivity.class);
+                startActivity(intent);
+            }
             // add code here what you need on click of items.
             return false;
         });

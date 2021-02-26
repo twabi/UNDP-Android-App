@@ -93,14 +93,34 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/errorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Error...Poor Network Connection"
+                    android:text=""
                     android:textColor="#f0000f"
                     android:padding="5dp"
                     android:textSize="12sp"/>
             </LinearLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:padding="10dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:text="@string/log_in_as_staff"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:id="@+id/loginStaff"
+                    android:textStyle="italic"
+                    android:textColor="@color/purple_700"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
 
 
             <RelativeLayout
@@ -108,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="40dp">
+                android:layout_marginTop="10dp">
 
                 <Button
                     android:id="@+id/btn_login"
@@ -135,7 +155,7 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginBottom="20dp"
                 android:padding="10dp"
                 android:layout_gravity="bottom|center_horizontal"

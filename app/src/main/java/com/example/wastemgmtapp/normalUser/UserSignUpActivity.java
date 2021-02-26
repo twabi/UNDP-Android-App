@@ -125,7 +125,7 @@ public class UserSignUpActivity extends AppCompatActivity {
     }
 
     public Boolean validate(){
-        Boolean valid = true;
+        boolean valid = true;
         String password1 = inputPassword.getText().toString();
         String password2 = inputPasswordRepeat.getText().toString();
         String name = inputName.getText().toString();
@@ -136,6 +136,12 @@ public class UserSignUpActivity extends AppCompatActivity {
             inputPassword.setError("Required.");
             valid = false;
         }
+
+        if(password1.length() < 8){
+            inputPassword.setError("password should have 8 characters.");
+            valid = false;
+        }
+
         if(TextUtils.isEmpty(name)){
             inputName.setError("Required.");
             valid = false;

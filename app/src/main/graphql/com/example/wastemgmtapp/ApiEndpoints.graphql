@@ -8,17 +8,27 @@ mutation CreateUser($userInput: UserInput!) {
     }
 }
 
-query LogIn($nationalID: String!, $password: String!) {
-    login(nationalID: $nationalID, password: $password){
-        id
+mutation LogIn($loginInput : LoginInput!) {
+    login(loginInput: $loginInput){
+        _id
         token
+        tokenExpiration
     }
 }
 
-query LogInAsStaff($employeeID: String!, $password: String!){
+query Users{
+    users{
+        _id
+        nationalID
+        fullName
+    }
+}
+
+mutation LogInAsStaff($employeeID: String!, $password: String!){
     loginAsStaff(employeeID: $employeeID, password: $password){
-        id
+        _id
         token
+        tokenExpiration
     }
 }
 

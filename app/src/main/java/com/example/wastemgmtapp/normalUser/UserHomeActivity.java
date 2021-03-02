@@ -40,6 +40,8 @@ import com.mapbox.mapboxsdk.maps.Style;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -53,7 +55,9 @@ public class UserHomeActivity extends AppCompatActivity{
     String fullName;
     double userLat, userLong;
     ApolloClient apolloClient;
-    TextView textUserName;
+    TextView textUserName, locationName, ratingText;
+    int maxRating;
+    String maxLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +74,8 @@ public class UserHomeActivity extends AppCompatActivity{
 
         Button rate = findViewById(R.id.btn_rate);
         Button share = findViewById(R.id.btn_share);
-        TextView locationName = findViewById(R.id.locationName);
-        TextView ratingText = findViewById(R.id.averageRating);
+        locationName = findViewById(R.id.locationName);
+        ratingText = findViewById(R.id.averageRating);
 
 
         NavigationView navView = findViewById(R.id.user_navDrawer); // initiate a Navigation View
@@ -105,6 +109,7 @@ public class UserHomeActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         apolloClient.query(new UserQuery(userID)).enqueue(usersCallBack());
+        apolloClient.query(new ZonesQuery()).enqueue(zonesQuery());
 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -112,51 +117,60 @@ public class UserHomeActivity extends AppCompatActivity{
         CameraPosition position = new CameraPosition.Builder()
                 .target(new LatLng(-15.786111, 35.005833)).zoom(10).tilt(20)
                 .build();
-        mapView.getMapAsync(new OnMapReadyCallback() {
+        mapView.getMapAsync(mapboxMap -> mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-                        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
-
-                    }
-                });
+            public void onStyleLoaded(@NonNull Style style) {
+                // Map is set up and the style has loaded. Now you can add data or make other map adjustments
+                mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
 
             }
-        });
+        }));
 
         cardRequest.setOnClickListener(v -> {
             Intent intent = new Intent(UserHomeActivity.this, RequestCollection.class);
+            intent.putExtra("id", userID);
+            intent.putExtra("lat", userLat);
+            intent.putExtra("long", userLong);
             startActivity(intent);
         });
 
         cardReview.setOnClickListener(v -> {
             Intent intent = new Intent(UserHomeActivity.this, ReviewArea.class);
+            intent.putExtra("id", userID);
+            intent.putExtra("lat", userLat);
+            intent.putExtra("long", userLong);
             startActivity(intent);
         });
 
         cardReport.setOnClickListener(v -> {
             Intent intent = new Intent(UserHomeActivity.this, ReportDumping.class);
+            intent.putExtra("id", userID);
+            intent.putExtra("lat", userLat);
+            intent.putExtra("long", userLong);
             startActivity(intent);
         });
 
         cardRecord.setOnClickListener(v -> {
             Intent intent = new Intent(UserHomeActivity.this, RecordWaste.class);
+            intent.putExtra("id", userID);
+            intent.putExtra("lat", userLat);
+            intent.putExtra("long", userLong);
             startActivity(intent);
         });
 
         rate.setOnClickListener( view -> {
             Intent intent = new Intent(UserHomeActivity.this, ReviewArea.class);
+            intent.putExtra("id", userID);
+            intent.putExtra("lat", userLat);
+            intent.putExtra("long", userLong);
             startActivity(intent);
         });
 
         share.setOnClickListener( view -> {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "This is the cleanest zone in the city!");
+            sendIntent.putExtra(Intent.EXTRA_TEXT,
+                    maxLocation + " is the cleanest zone in the city with a Rating of " + maxRating+"!");
             sendIntent.setType("text/plain");
 
             Intent shareIntent = Intent.createChooser(sendIntent, "Share News");
@@ -168,18 +182,24 @@ public class UserHomeActivity extends AppCompatActivity{
             Log.d(TAG, "onOptionsItemSelected: " + menuItem);
             if(TextUtils.equals(menuItem.toString(), "Logout")){
                 Intent intent = new Intent(UserHomeActivity.this, LogInActivity.class);
-                //startActivity(intent);
+                startActivity(intent);
             } else if((TextUtils.equals(menuItem.toString(), "Request Collection"))){
                 Intent intent = new Intent(UserHomeActivity.this, RequestCollection.class);
+                intent.putExtra("id", userID);
+                intent.putExtra("lat", userLat);
+                intent.putExtra("long", userLong);
                 startActivity(intent);
             }else if((TextUtils.equals(menuItem.toString(), "Report Illegal Waste"))){
                 Intent intent = new Intent(UserHomeActivity.this, ReportDumping.class);
+                intent.putExtra("id", userID);intent.putExtra("lat", userLat);intent.putExtra("long", userLong);
                 startActivity(intent);
             }else if((TextUtils.equals(menuItem.toString(), "Review Area"))){
                 Intent intent = new Intent(UserHomeActivity.this, ReviewArea.class);
+                intent.putExtra("id", userID);intent.putExtra("lat", userLat);intent.putExtra("long", userLong);
                 startActivity(intent);
             }else if((TextUtils.equals(menuItem.toString(), "Record Sorted Waste"))){
                 Intent intent = new Intent(UserHomeActivity.this, RecordWaste.class);
+                intent.putExtra("id", userID);intent.putExtra("lat", userLat);intent.putExtra("long", userLong);
                 startActivity(intent);
             }
             // add code here what you need on click of items.
@@ -261,10 +281,22 @@ public class UserHomeActivity extends AppCompatActivity{
                             // Stuff that updates the UI
                             //Toast.makeText(UserHomeActivity.this,
                             //"User fetched!", Toast.LENGTH_LONG).show();
-                            Log.d(TAG, "user fetched" + data.zones());
-                            //userLat = data.user().latitude();
-                            //userLong = data.user().longitude();
-                            //textUserName.setText(data.user().fullName());
+                            Log.d(TAG, "zones fetched" + data.zones());
+                            ArrayList<Integer> ratings = new ArrayList<>();
+                            ArrayList<String> locations = new ArrayList<>();
+                            for(int i =0; i < data.zones().size(); i++){
+                                ratings.add(data.zones().get(i).averageRating());
+                                locations.add(data.zones().get(i).location());
+                            }
+
+                            int maxVal = Collections.max(ratings);
+                            int maxIdx = ratings.indexOf(maxVal);
+                            ratingText.setText("Rating : " + maxVal);
+                            String locale = locations.get(maxIdx);
+                            locationName.setText(locale);
+
+                            maxLocation = locations.get(maxIdx);
+                            maxRating = Collections.max(ratings);
 
                         });
                     }
@@ -279,7 +311,6 @@ public class UserHomeActivity extends AppCompatActivity{
 
                     });
                 }
-
             }
 
             @Override

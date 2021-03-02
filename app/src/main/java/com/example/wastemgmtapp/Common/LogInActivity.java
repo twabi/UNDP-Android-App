@@ -47,6 +47,8 @@ public class LogInActivity extends AppCompatActivity {
 
     TextView loginAsStaffText, loginText, errorText;
     LinearLayout errorTextLayout;
+    // Session Manager Class
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,9 @@ public class LogInActivity extends AppCompatActivity {
         loginText = findViewById(R.id.txt_user);
         errorTextLayout = findViewById(R.id.errorB);
         errorText = findViewById(R.id.errorText);
+
+        session = new SessionManager(LogInActivity.this);
+        //session.checkLogin();
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
@@ -131,6 +136,7 @@ public class LogInActivity extends AppCompatActivity {
                     Log.d(TAG, "onResponse: " + data.loginAsStaff());
                     String token = data.loginAsStaff().token();
                     String userID = data.loginAsStaff()._id();
+                    String otherID = numberInput.getText().toString();
                     int expiration = data.loginAsStaff().tokenExpiration();
 
                     if(data.loginAsStaff() == null){
@@ -150,6 +156,7 @@ public class LogInActivity extends AppCompatActivity {
                                     "Login successful!", Toast.LENGTH_LONG).show();
                             loginStatus = false;
                             loginText.setText("Log In");
+                            session.createLoginSession(userID, otherID, "Staff");
 
                             Intent intent = new Intent(LogInActivity.this, StaffHomeActivity.class);
                             intent.putExtra("tokenExpiration", expiration);
@@ -228,6 +235,8 @@ public class LogInActivity extends AppCompatActivity {
                             loading.setVisibility(View.GONE);
                             Toast.makeText(LogInActivity.this,
                                     "Login successful!", Toast.LENGTH_LONG).show();
+
+                            session.createLoginSession(userID, userNumber, "User");
 
                             Intent intent = new Intent(LogInActivity.this, UserHomeActivity.class);
                             intent.putExtra("token", token);

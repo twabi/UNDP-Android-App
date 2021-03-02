@@ -24,6 +24,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.example.wastemgmtapp.Common.LogInActivity;
+import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.LogInAsStaffMutation;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.UserQuery;
@@ -42,6 +43,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -58,6 +60,7 @@ public class UserHomeActivity extends AppCompatActivity{
     TextView textUserName, locationName, ratingText;
     int maxRating;
     String maxLocation;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,7 @@ public class UserHomeActivity extends AppCompatActivity{
         locationName = findViewById(R.id.locationName);
         ratingText = findViewById(R.id.averageRating);
 
+        session = new SessionManager(getApplicationContext());
 
         NavigationView navView = findViewById(R.id.user_navDrawer); // initiate a Navigation View
 
@@ -95,9 +99,10 @@ public class UserHomeActivity extends AppCompatActivity{
                 .build();
 
         Intent intent1 = getIntent();
-        String token = intent1.getStringExtra("token"); //get the productID from the intent
-        String userID = intent1.getStringExtra("id");
-        int expiration = intent1.getIntExtra("tokenExpiration", -1);
+        HashMap<String, String> user = session.getUserDetails();
+        //String token = intent1.getStringExtra("token"); //get the productID from the intent
+        String userID = user.get(SessionManager.KEY_USERID);
+        //int expiration = intent1.getIntExtra("tokenExpiration", -1);
 
         setSupportActionBar(toolbar);
 

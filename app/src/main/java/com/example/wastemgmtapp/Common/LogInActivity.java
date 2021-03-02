@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -22,33 +21,19 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
-import com.example.wastemgmtapp.GetStaffQuery;
 import com.example.wastemgmtapp.LogInAsStaffMutation;
 import com.example.wastemgmtapp.LogInMutation;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.Staff.StaffHomeActivity;
-import com.example.wastemgmtapp.UsersQuery;
 import com.example.wastemgmtapp.normalUser.UserHomeActivity;
 import com.example.wastemgmtapp.normalUser.UserSignUpActivity;
 import com.example.wastemgmtapp.type.LoginInput;
 import com.example.wastemgmtapp.type.LoginStaffInput;
-import com.google.gson.JsonObject;
-
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
-import okhttp3.Request;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -146,6 +131,7 @@ public class LogInActivity extends AppCompatActivity {
                     Log.d(TAG, "onResponse: " + data.loginAsStaff());
                     String token = data.loginAsStaff().token();
                     String userID = data.loginAsStaff()._id();
+                    int expiration = data.loginAsStaff().tokenExpiration();
 
                     if(data.loginAsStaff() == null){
                         Log.e("Apollo", "an Error occurred : " );
@@ -166,6 +152,7 @@ public class LogInActivity extends AppCompatActivity {
                             loginText.setText("Log In");
 
                             Intent intent = new Intent(LogInActivity.this, StaffHomeActivity.class);
+                            intent.putExtra("tokenExpiration", expiration);
                             intent.putExtra("token", token);
                             intent.putExtra("id", userID);
                             startActivity(intent);
@@ -225,6 +212,7 @@ public class LogInActivity extends AppCompatActivity {
                     Log.d(TAG, "onResponse: " + data.login());
                     String token = data.login().token();
                     String userID = data.login()._id();
+                    int expiration = data.login().tokenExpiration();
 
                     if(data.login() == null){
                         Log.e("Apollo", "an Error occurred : " );
@@ -244,6 +232,7 @@ public class LogInActivity extends AppCompatActivity {
                             Intent intent = new Intent(LogInActivity.this, UserHomeActivity.class);
                             intent.putExtra("token", token);
                             intent.putExtra("id", userID);
+                            intent.putExtra("tokenExpiraton", expiration);
                             startActivity(intent);
                         });
                     }

@@ -24,6 +24,53 @@ query Users{
     }
 }
 
+query WasteInstitutions{
+    wasteInstitutions{
+        _id
+        name
+        location
+    }
+}
+
+query User($userID : ID!){
+    user(userId: $userID){
+        nationalID
+        fullName
+        phoneNumber
+        latitude
+        longitude
+    }
+}
+
+query Zone($zoneId : ID!){
+    zone(zoneId: $zoneId){
+        _id
+        name
+        averageRating
+    }
+}
+
+query Zones{
+    zones{
+        _id
+        name
+        averageRating
+        location
+    }
+}
+
+mutation CreateTrashCollection($trashCollectionInput : TrashCollectionInput){
+    createTrashCollection(trashCollectionInput: $trashCollectionInput){
+        _id
+    }
+}
+
+mutation CreateSortedWaste($sortedWasteInput : SortedWasteInput){
+    createSortedWaste(sortedWasteInput: $sortedWasteInput){
+        _id
+    }
+}
+
 mutation LogInAsStaff($loginStaffInput : LoginStaffInput!){
     loginAsStaff(loginStaffInput : $loginStaffInput){
         _id

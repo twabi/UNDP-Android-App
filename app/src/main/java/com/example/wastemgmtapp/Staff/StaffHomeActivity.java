@@ -8,10 +8,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.apollographql.apollo.ApolloClient;
+import com.example.wastemgmtapp.Common.LogInActivity;
 import com.example.wastemgmtapp.R;
+import com.example.wastemgmtapp.normalUser.UserHomeActivity;
+import com.google.android.material.navigation.NavigationView;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
@@ -21,11 +27,16 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+
 public class StaffHomeActivity extends AppCompatActivity {
 
     private ActionBarDrawerToggle mToggle;
     private MapView mapRequests;
     private MapView mapTrash;
+    ApolloClient apolloClient;
+    String TAG = StaffHomeActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +48,15 @@ public class StaffHomeActivity extends AppCompatActivity {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout2);
         TextView seeMoreRequests = findViewById(R.id.see_more_requests);
         TextView seeMoreTrash = findViewById(R.id.see_more_trash);
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build();
+        apolloClient = ApolloClient.builder().okHttpClient(httpClient)
+                .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
+                .build();
 
         setSupportActionBar(toolbar);
 
@@ -98,6 +118,18 @@ public class StaffHomeActivity extends AppCompatActivity {
         seeMoreRequests.setOnClickListener(v -> {
             Intent intent = new Intent(StaffHomeActivity.this, CollectionRequests.class);
             startActivity(intent);
+        });
+
+        NavigationView navView = findViewById(R.id.staff_navDrawer); // initiate a Navigation View
+        // implement setNavigationSelectedListener event
+        navView.setNavigationItemSelectedListener(menuItem -> {
+            Log.d(TAG, "onOptionsItemSelected: " + menuItem);
+            if(TextUtils.equals(menuItem.toString(), "Logout")){
+                Intent intent = new Intent(StaffHomeActivity.this, LogInActivity.class);
+                startActivity(intent);
+            }
+            // add code here what you need on click of items.
+            return false;
         });
 
     }

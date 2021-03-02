@@ -22,21 +22,20 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.interceptor.ApolloInterceptor;
+import com.example.wastemgmtapp.Common.GPSTracker;
 import com.example.wastemgmtapp.Common.LogInActivity;
 import com.example.wastemgmtapp.Common.SessionManager;
-import com.example.wastemgmtapp.LogInAsStaffMutation;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.UserQuery;
 import com.example.wastemgmtapp.ZonesQuery;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.navigation.NavigationView;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
 import org.jetbrains.annotations.NotNull;
@@ -61,6 +60,7 @@ public class UserHomeActivity extends AppCompatActivity{
     int maxRating;
     String maxLocation;
     SessionManager session;
+    FusedLocationProviderClient mFusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +98,6 @@ public class UserHomeActivity extends AppCompatActivity{
                 .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
                 .build();
 
-        Intent intent1 = getIntent();
         HashMap<String, String> user = session.getUserDetails();
         //String token = intent1.getStringExtra("token"); //get the productID from the intent
         String userID = user.get(SessionManager.KEY_USERID);
@@ -107,6 +106,7 @@ public class UserHomeActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
 
         mToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         drawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
@@ -115,6 +115,22 @@ public class UserHomeActivity extends AppCompatActivity{
 
         apolloClient.query(new UserQuery(userID)).enqueue(usersCallBack());
         apolloClient.query(new ZonesQuery()).enqueue(zonesQuery());
+
+        //myLocationManager = new MyLocationManager(UserHomeActivity.this, UserHomeActivity.this, mFusedLocationClient);
+        //myLocationManager.getLastLocation();
+        //Log.d(TAG, "Latitude: " + myLocationManager.getLat() +"-Longitude: "+ myLocationManager.getLongitude());
+
+        GPSTracker gpsTracker = new GPSTracker(UserHomeActivity.this, UserHomeActivity.this);
+        userLat = gpsTracker.getLatitude();
+        userLong = gpsTracker.getLongitude();
+
+        if(userLong == 0.0 && userLat == 0.0 ){
+            Toast.makeText(UserHomeActivity.this,
+                    "Could not obtain location! Enable the gps location or network on your phone and try again!", Toast.LENGTH_LONG).show();
+        }
+        //gpsTracker.getLatitude();
+        Log.d(TAG, "Latitude: " + gpsTracker.getLatitude() +"-Longitude: "+ gpsTracker.getLongitude());
+
 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -349,8 +365,8 @@ public class UserHomeActivity extends AppCompatActivity{
                             //Toast.makeText(UserHomeActivity.this,
                             //"User fetched!", Toast.LENGTH_LONG).show();
                             Log.d(TAG, "user fetched" + data.user());
-                            userLat = data.user().latitude();
-                            userLong = data.user().longitude();
+                            //userLat = data.user().latitude();
+                            //userLong = data.user().longitude();
                             textUserName.setText(data.user().fullName());
 
                         });
@@ -376,5 +392,7 @@ public class UserHomeActivity extends AppCompatActivity{
                         "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         };
+
+
     }
 }

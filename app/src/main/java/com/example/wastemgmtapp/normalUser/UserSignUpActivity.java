@@ -28,6 +28,7 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.example.wastemgmtapp.Common.GPSTracker;
 import com.example.wastemgmtapp.Common.LogInActivity;
 import com.example.wastemgmtapp.CreateUserMutation;
 import com.example.wastemgmtapp.R;
@@ -54,13 +55,13 @@ public class UserSignUpActivity extends AppCompatActivity {
             .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
             .build();
     String TAG = UserSignUpActivity.class.getSimpleName();
-    FusedLocationProviderClient mFusedLocationClient;
+    double userLat, userLong;
 
     // Initializing other items
     // from layout file
-    double lat = Double.parseDouble(null);
-    double longitude = Double.parseDouble(null);
-    int PERMISSION_ID = 44;
+    //double lat = Double.parseDouble(null);
+    //double longitude = Double.parseDouble(null);
+    //int PERMISSION_ID = 44;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +77,18 @@ public class UserSignUpActivity extends AppCompatActivity {
         buttonCreateUser = findViewById(R.id.btn_sign);
         loading = findViewById(R.id.loads);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        GPSTracker gpsTracker = new GPSTracker(UserSignUpActivity.this, UserSignUpActivity.this);
+        userLat = gpsTracker.getLatitude();
+        userLong = gpsTracker.getLongitude();
+
+        if(userLong == 0.0 && userLat == 0.0 ){
+            Toast.makeText(UserSignUpActivity.this,
+                    "Could not obtain location! Enable the gps location or network on your phone and try again!", Toast.LENGTH_LONG).show();
+        }
 
         // method to get the location
-        getLastLocation();
+        //getLastLocation();
+
 
         TextView alreadyAccount = findViewById(R.id.already);
         alreadyAccount.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +113,7 @@ public class UserSignUpActivity extends AppCompatActivity {
                 String id = inputID.getText().toString();
 
                 UserInput userInput = UserInput.builder()
-                        .fullName(name).nationalID(id).latitude(lat).longitude(longitude)
+                        .fullName(name).nationalID(id).latitude(userLat).longitude(userLong)
                         .phoneNumber(phone).password(password1).confirmPassword(password2).build();
                 apolloClient.mutate(new CreateUserMutation(userInput)).enqueue(new ApolloCall.Callback<CreateUserMutation.Data>() {
                     @Override
@@ -204,8 +213,10 @@ public class UserSignUpActivity extends AppCompatActivity {
             valid = false;
         }
 
-        if(lat == Double.parseDouble(null)  || longitude ==  Double.parseDouble(null)){
-            Toast.makeText(UserSignUpActivity.this, "Location details empty! Enable location and try again!", Toast.LENGTH_LONG)
+        if((userLat == Double.parseDouble(null)  || userLong ==  Double.parseDouble(null) ||
+                (userLat == 0.0  || userLong ==  0.0))){
+            Toast.makeText(UserSignUpActivity.this,
+                    "Location details empty! Enable location and network and try again!", Toast.LENGTH_LONG)
                     .show();
             valid = false;
         }
@@ -213,115 +224,6 @@ public class UserSignUpActivity extends AppCompatActivity {
         return valid;
     }
 
-    @SuppressLint("MissingPermission")
-    private void getLastLocation() {
-        // check if permissions are given
-        if (checkPermissions()) {
 
-            // check if location is enabled
-            if (isLocationEnabled()) {
 
-                // getting last
-                // location from
-                // FusedLocationClient
-                // object
-                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        Location location = task.getResult();
-                        if (location == null) {
-                            requestNewLocationData();
-                        } else {
-                            //latitudeTextView.setText(location.getLatitude() + "");
-                            //longitTextView.setText(location.getLongitude() + "");
-                            lat = location.getLatitude();
-                            longitude = location.getLongitude();
-                        }
-                    }
-                });
-            } else {
-                Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-        } else {
-            // if permissions aren't available,
-            // request for permissions
-            requestPermissions();
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private void requestNewLocationData() {
-
-        // Initializing LocationRequest
-        // object with appropriate methods
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(5);
-        mLocationRequest.setFastestInterval(0);
-        mLocationRequest.setNumUpdates(1);
-
-        // setting LocationRequest
-        // on FusedLocationClient
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-    }
-
-    private LocationCallback mLocationCallback = new LocationCallback() {
-
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location mLastLocation = locationResult.getLastLocation();
-            //latitudeTextView.setText("Latitude: " + mLastLocation.getLatitude() + "");
-            //longitTextView.setText("Longitude: " + mLastLocation.getLongitude() + "");
-            lat = mLastLocation.getLatitude();
-            longitude = mLastLocation.getLongitude();
-        }
-    };
-
-    // method to check for permissions
-    private boolean checkPermissions() {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-
-        // If we want background location
-        // on Android 10.0 and higher,
-        // use:
-        // ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
-    }
-
-    // method to request for permissions
-    private void requestPermissions() {
-        ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
-    }
-
-    // method to check
-    // if location is enabled
-    private boolean isLocationEnabled() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    // If everything is alright then
-    @Override
-    public void
-    onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == PERMISSION_ID) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation();
-            }
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (checkPermissions()) {
-            getLastLocation();
-        }
-    }
 }

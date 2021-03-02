@@ -53,7 +53,6 @@ public class UserHomeActivity extends AppCompatActivity{
     private ActionBarDrawerToggle mToggle;
     private MapView mapView;
     private final String TAG = UserHomeActivity.class.getSimpleName();
-    String fullName;
     double userLat, userLong;
     ApolloClient apolloClient;
     TextView textUserName, locationName, ratingText;
@@ -99,9 +98,7 @@ public class UserHomeActivity extends AppCompatActivity{
                 .build();
 
         HashMap<String, String> user = session.getUserDetails();
-        //String token = intent1.getStringExtra("token"); //get the productID from the intent
         String userID = user.get(SessionManager.KEY_USERID);
-        //int expiration = intent1.getIntExtra("tokenExpiration", -1);
 
         setSupportActionBar(toolbar);
 
@@ -116,10 +113,6 @@ public class UserHomeActivity extends AppCompatActivity{
         apolloClient.query(new UserQuery(userID)).enqueue(usersCallBack());
         apolloClient.query(new ZonesQuery()).enqueue(zonesQuery());
 
-        //myLocationManager = new MyLocationManager(UserHomeActivity.this, UserHomeActivity.this, mFusedLocationClient);
-        //myLocationManager.getLastLocation();
-        //Log.d(TAG, "Latitude: " + myLocationManager.getLat() +"-Longitude: "+ myLocationManager.getLongitude());
-
         GPSTracker gpsTracker = new GPSTracker(UserHomeActivity.this, UserHomeActivity.this);
         userLat = gpsTracker.getLatitude();
         userLong = gpsTracker.getLongitude();
@@ -128,7 +121,6 @@ public class UserHomeActivity extends AppCompatActivity{
             Toast.makeText(UserHomeActivity.this,
                     "Could not obtain location! Enable the gps location or network on your phone and try again!", Toast.LENGTH_LONG).show();
         }
-        //gpsTracker.getLatitude();
         Log.d(TAG, "Latitude: " + gpsTracker.getLatitude() +"-Longitude: "+ gpsTracker.getLongitude());
 
 

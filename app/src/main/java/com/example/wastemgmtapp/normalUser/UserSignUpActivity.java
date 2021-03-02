@@ -1,19 +1,9 @@
 package com.example.wastemgmtapp.normalUser;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Looper;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -33,13 +23,6 @@ import com.example.wastemgmtapp.Common.LogInActivity;
 import com.example.wastemgmtapp.CreateUserMutation;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.type.UserInput;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import org.jetbrains.annotations.NotNull;
 

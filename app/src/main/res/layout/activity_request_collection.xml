@@ -31,6 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
 
@@ -47,6 +48,13 @@
                 android:textStyle="bold"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp" />
+
+            <ProgressBar
+                android:id="@+id/loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
 
 
             <LinearLayout
@@ -81,7 +89,22 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border"
                     android:hint="Amount of Trash (kgs or any description)"
-                    android:inputType="textPassword" />
+                    android:inputType="text" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:ems="10"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/input_loc"
+                    android:padding="18dp"
+                    android:textColor="@color/purple_700"
+                    android:textColorHint="@color/purple_700"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:hint="Enter your location of collection"
+                    android:inputType="text" />
 
             </LinearLayout>
 
@@ -114,7 +137,7 @@
                 android:layout_marginTop="10dp">
 
                 <Button
-                    android:id="@+id/btn_send"
+                    android:id="@+id/btn_request"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/create_button_shape"                        android:layout_centerInParent="true"

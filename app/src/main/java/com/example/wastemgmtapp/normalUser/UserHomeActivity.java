@@ -294,22 +294,28 @@ public class UserHomeActivity extends AppCompatActivity{
                             // Stuff that updates the UI
                             //Toast.makeText(UserHomeActivity.this,
                             //"User fetched!", Toast.LENGTH_LONG).show();
-                            Log.d(TAG, "zones fetched" + data.zones());
-                            ArrayList<Integer> ratings = new ArrayList<>();
-                            ArrayList<String> locations = new ArrayList<>();
-                            for(int i =0; i < data.zones().size(); i++){
-                                ratings.add(data.zones().get(i).averageRating());
-                                locations.add(data.zones().get(i).location());
+                            try{
+                                Log.d(TAG, "zones fetched" + data.zones());
+                                ArrayList<Integer> ratings = new ArrayList<>();
+                                ArrayList<String> locations = new ArrayList<>();
+                                for(int i =0; i < data.zones().size(); i++){
+                                    ratings.add(data.zones().get(i).averageRating());
+                                    locations.add(data.zones().get(i).location());
+                                }
+
+                                int maxVal = Collections.max(ratings);
+                                int maxIdx = ratings.indexOf(maxVal);
+                                ratingText.setText("Rating : " + maxVal);
+                                String locale = locations.get(maxIdx);
+                                locationName.setText(locale);
+
+                                maxLocation = locations.get(maxIdx);
+                                maxRating = Collections.max(ratings);
+                            } catch (Exception e){
+                                e.printStackTrace();
+                                Toast.makeText(UserHomeActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                             }
 
-                            int maxVal = Collections.max(ratings);
-                            int maxIdx = ratings.indexOf(maxVal);
-                            ratingText.setText("Rating : " + maxVal);
-                            String locale = locations.get(maxIdx);
-                            locationName.setText(locale);
-
-                            maxLocation = locations.get(maxIdx);
-                            maxRating = Collections.max(ratings);
 
                         });
                     }

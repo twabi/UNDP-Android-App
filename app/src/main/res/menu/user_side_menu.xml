@@ -4,21 +4,21 @@
 
     <item android:id="@+id/requestCol"
         android:icon="@drawable/request"
-        android:title="Request Collection" />
+        android:title="@string/my_requests" />
 
     <item android:id="@+id/reportIllegal"
         android:icon="@drawable/report"
-        android:title="Report Illegal Waste" />
+        android:title="@string/report_illegal_waste" />
 
     <item android:id="@+id/review"
         android:icon="@drawable/review"
-        android:title="Review Area" />
+        android:title="@string/review_area" />
 
     <item android:id="@+id/recordWaste"
         android:icon="@drawable/record"
-        android:title="Record Sorted Waste" />
+        android:title="@string/record_sorted_waste" />
 
     <item android:id="@+id/nav_logout"
         android:icon="@drawable/logout"
-        android:title="Logout" />
+        android:title="@string/logout" />
 </menu>

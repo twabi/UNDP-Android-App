@@ -197,11 +197,11 @@ public class UserHomeActivity extends AppCompatActivity{
             if(TextUtils.equals(menuItem.toString(), "Logout")){
                 Intent intent = new Intent(UserHomeActivity.this, LogInActivity.class);
                 startActivity(intent);
-            } else if((TextUtils.equals(menuItem.toString(), "Request Collection"))){
-                Intent intent = new Intent(UserHomeActivity.this, RequestCollection.class);
-                intent.putExtra("id", userID);
-                intent.putExtra("lat", userLat);
-                intent.putExtra("long", userLong);
+            } else if((TextUtils.equals(menuItem.toString(), "My Requests"))){
+                Intent intent = new Intent(UserHomeActivity.this, MyRequests.class);
+                //intent.putExtra("id", userID);
+                //intent.putExtra("lat", userLat);
+                //intent.putExtra("long", userLong);
                 startActivity(intent);
             }else if((TextUtils.equals(menuItem.toString(), "Report Illegal Waste"))){
                 Intent intent = new Intent(UserHomeActivity.this, ReportDumping.class);

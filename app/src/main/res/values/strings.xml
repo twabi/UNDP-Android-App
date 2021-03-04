@@ -8,4 +8,14 @@
     <string name="mapbox_access_token">pk.eyJ1IjoidHdhYmkiLCJhIjoiY2tlZnZyMWozMHRqdjJzb3k2YzlxZnloYSJ9.FBL3kyXAQ22kEws-y6XbJQ</string>
     <string name="log_in_as_staff"><u>Log In as Staff</u></string>
     <string name="log_in_Staff">Log In (Staff)</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="my_requests">My Requests</string>
+    <string name="report_illegal_waste">Report Illegal Waste</string>
+    <string name="review_area">Review Area</string>
+    <string name="record_sorted_waste">Record Sorted Waste</string>
+    <string name="logout">Logout</string>
+    <string name="zone_trash_cans">Zone Trash-cans</string>
+    <string name="collection_requests">Collection Requests</string>
+    <string name="settings">Settings</string>
 </resources>

@@ -56,10 +56,11 @@ public class UserHomeActivity extends AppCompatActivity{
     double userLat, userLong;
     ApolloClient apolloClient;
     TextView textUserName, locationName, ratingText;
-    int maxRating;
+    Double maxRating;
     String maxLocation;
     SessionManager session;
     FusedLocationProviderClient mFusedLocationClient;
+    double zoneLat,zoneLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +129,7 @@ public class UserHomeActivity extends AppCompatActivity{
         mapView.onCreate(savedInstanceState);
 
         CameraPosition position = new CameraPosition.Builder()
-                .target(new LatLng(-15.786111, 35.005833)).zoom(10).tilt(20)
+                .target(new LatLng(zoneLat, zoneLong)).zoom(15).tilt(20)
                 .build();
         mapView.getMapAsync(mapboxMap -> mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
@@ -296,14 +297,18 @@ public class UserHomeActivity extends AppCompatActivity{
                             //"User fetched!", Toast.LENGTH_LONG).show();
                             try{
                                 Log.d(TAG, "zones fetched" + data.zones());
-                                ArrayList<Integer> ratings = new ArrayList<>();
+                                ArrayList<Double> ratings = new ArrayList<>();
                                 ArrayList<String> locations = new ArrayList<>();
+                                ArrayList<Double> lat = new ArrayList<>();
+                                ArrayList<Double> longitudes = new ArrayList<>();
                                 for(int i =0; i < data.zones().size(); i++){
                                     ratings.add(data.zones().get(i).averageRating());
                                     locations.add(data.zones().get(i).location());
+                                    longitudes.add(data.zones().get(i).longitude());
+                                    lat.add(data.zones().get(i).latitude());
                                 }
 
-                                int maxVal = Collections.max(ratings);
+                                Double maxVal = Collections.max(ratings);
                                 int maxIdx = ratings.indexOf(maxVal);
                                 ratingText.setText("Rating : " + maxVal);
                                 String locale = locations.get(maxIdx);
@@ -311,6 +316,8 @@ public class UserHomeActivity extends AppCompatActivity{
 
                                 maxLocation = locations.get(maxIdx);
                                 maxRating = Collections.max(ratings);
+                                zoneLat = lat.get(maxIdx);
+                                zoneLong = longitudes.get(maxIdx);
                             } catch (Exception e){
                                 e.printStackTrace();
                                 Toast.makeText(UserHomeActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();

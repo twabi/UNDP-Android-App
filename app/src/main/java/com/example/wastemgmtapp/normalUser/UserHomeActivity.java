@@ -299,8 +299,8 @@ public class UserHomeActivity extends AppCompatActivity{
                                 Log.d(TAG, "zones fetched" + data.zones());
                                 ArrayList<Double> ratings = new ArrayList<>();
                                 ArrayList<String> locations = new ArrayList<>();
-                                ArrayList<Double> lat = new ArrayList<>();
-                                ArrayList<Double> longitudes = new ArrayList<>();
+                                ArrayList<String> lat = new ArrayList<>();
+                                ArrayList<String> longitudes = new ArrayList<>();
                                 for(int i =0; i < data.zones().size(); i++){
                                     ratings.add(data.zones().get(i).averageRating());
                                     locations.add(data.zones().get(i).location());
@@ -316,8 +316,10 @@ public class UserHomeActivity extends AppCompatActivity{
 
                                 maxLocation = locations.get(maxIdx);
                                 maxRating = Collections.max(ratings);
-                                zoneLat = lat.get(maxIdx);
-                                zoneLong = longitudes.get(maxIdx);
+                                zoneLat = Double.parseDouble(lat.get(maxIdx));
+                                zoneLong = Double.parseDouble(longitudes.get(maxIdx));
+
+                                Log.d(TAG, "onResponse: " + zoneLat + "-" + zoneLong);
                             } catch (Exception e){
                                 e.printStackTrace();
                                 Toast.makeText(UserHomeActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();

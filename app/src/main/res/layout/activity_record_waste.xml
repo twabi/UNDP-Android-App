@@ -47,6 +47,13 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp" />
 
+            <ProgressBar
+                android:id="@+id/comLoads"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
 
             <LinearLayout
                 android:padding="10dp"
@@ -59,7 +66,7 @@
                 android:layout_marginStart="10dp"
                 android:orientation="vertical">
 
-                <Spinner android:id="@+id/wasteSpinner"
+                <Spinner android:id="@+id/companySpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="14dp"
@@ -67,9 +74,33 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp" />
 
+                <Spinner android:id="@+id/wasteSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="14dp"
+                    android:background="@drawable/spinner_bg"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="10dp" />
+
                 <androidx.appcompat.widget.AppCompatEditText
                     android:ems="10"
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/inputOther"
+                    android:padding="18dp"
+                    android:textColor="@color/purple_700"
+                    android:textColorHint="@color/purple_700"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:hint="enter other type of waste"
+                    android:inputType="text" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:ems="10"
+                    android:layout_marginTop="14dp"
                     android:layout_marginBottom="10dp"
                     android:id="@+id/inputTrashAmount"
                     android:padding="18dp"
@@ -80,7 +111,21 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border"
                     android:hint="Amount of Trash (kgs or any description)"
-                    android:inputType="textPassword" />
+                    android:inputType="text" />
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:ems="10"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/input_loc"
+                    android:padding="18dp"
+                    android:textColor="@color/purple_700"
+                    android:textColorHint="@color/purple_700"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:hint="Enter your location of collection"
+                    android:inputType="text" />
 
             </LinearLayout>
 
@@ -116,15 +161,16 @@
                     android:id="@+id/btn_record"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/create_button_shape"                        android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:text="Record"
                     android:textColor="#fff"
                     android:textStyle="normal" />
                 <ProgressBar
-                    android:id="@+id/loads"
+                    android:id="@+id/recLoads"
                     android:layout_width="wrap_content"
-                    android:layout_toRightOf="@+id/btn_send"
+                    android:layout_toRightOf="@+id/btn_record"
                     android:layout_centerInParent="true"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

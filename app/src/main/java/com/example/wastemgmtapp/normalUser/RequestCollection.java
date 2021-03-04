@@ -40,7 +40,6 @@ import static com.example.wastemgmtapp.type.TrashCollectionInput.builder;
 
 public class RequestCollection extends AppCompatActivity {
 
-    private final String[] companies = { "Select Trash Collection Company","City Council", "Zipatso", "Cleanex", "Mr. Muscle"};
     ArrayList<String> companyNames = new ArrayList<>();
     ArrayList<String> companyIDs = new ArrayList<>();
     String TAG = RequestCollection.class.getSimpleName();
@@ -87,7 +86,6 @@ public class RequestCollection extends AppCompatActivity {
                 .build();
 
         apolloClient.query(new WasteInstitutionsQuery()).enqueue(wasteCallBack());
-
 
         //add the list to the dropdown item in the dialog view
         ArrayAdapter<String> adapter = new ArrayAdapter<>(RequestCollection.this, R.layout.spinner_item, companyNames);

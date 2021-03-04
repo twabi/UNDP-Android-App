@@ -140,6 +140,7 @@
                     android:id="@+id/btn_request"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/create_button_shape"                        android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:text="Send"
@@ -148,7 +149,7 @@
                 <ProgressBar
                     android:id="@+id/loads"
                     android:layout_width="wrap_content"
-                    android:layout_toRightOf="@+id/btn_send"
+                    android:layout_toRightOf="@+id/btn_request"
                     android:layout_centerInParent="true"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

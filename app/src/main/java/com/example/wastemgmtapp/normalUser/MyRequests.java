@@ -9,41 +9,53 @@ import com.example.wastemgmtapp.adapters.PageAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 
-public class MyRequests extends AppCompatActivity {
-
+public class MyRequests extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+    ViewPager simpleViewPager;
+    Parcelable stateMan;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_requests);
-        ViewPager simpleViewPager;
+
         TabLayout tabLayout;
 
         simpleViewPager = (ViewPager) findViewById(R.id.simpleViewPager);
-        tabLayout = (TabLayout) findViewById(R.id.simpleTabLayout);
-        tabLayout.setupWithViewPager(simpleViewPager);
-
-        simpleViewPager.addOnPageChangeListener(
-                new TabLayout.TabLayoutOnPageChangeListener(tabLayout)
-        );
+        simpleViewPager.setOffscreenPageLimit(5);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //show the back button on the toolbar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        final TabLayout.Tab firstTab = tabLayout.newTab();
-        firstTab.setText("Trash Collections");
-        tabLayout.addTab(firstTab); // add  the tab at in the TabLayout
+        tabLayout = (TabLayout) findViewById(R.id.simpleTabLayout);
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        //Adding the tabs using addTab() method
+        tabLayout.addTab(tabLayout.newTab().setText("Trash Collection"));
+        tabLayout.addTab(tabLayout.newTab().setText("Sorted Waste"));
 
-        final TabLayout.Tab secondTab = tabLayout.newTab();
-        secondTab.setText("Sorted Wastes");
-        tabLayout.addTab(secondTab); // add  the tab  in the TabLayout
 
+        //Creating our pager adapter
         PageAdapter adapter = new PageAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                tabLayout.setupWithViewPager(simpleViewPager);
+                tabLayout.getTabAt(0).setText("Trash Collection");
+                tabLayout.getTabAt(1).setText("Sorted Waste");
+            }
+        });
+
+
+        //Adding adapter to pager
         simpleViewPager.setAdapter(adapter);
-        // addOnPageChangeListener event change the tab on slide
-        simpleViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        //Adding onTabSelectedListener to swipe views
+        tabLayout.setOnTabSelectedListener(this);
+
 
     }
 
@@ -51,5 +63,20 @@ public class MyRequests extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        simpleViewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+        stateMan = simpleViewPager.onSaveInstanceState();
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+        simpleViewPager.onRestoreInstanceState(stateMan);
     }
 }

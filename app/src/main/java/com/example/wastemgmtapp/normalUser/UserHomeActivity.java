@@ -395,8 +395,11 @@ public class UserHomeActivity extends AppCompatActivity{
             @Override
             public void onFailure(@NotNull ApolloException e) {
                 Log.e("Apollo", "Error", e);
-                Toast.makeText(UserHomeActivity.this,
-                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(UserHomeActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                });
             }
         };
 

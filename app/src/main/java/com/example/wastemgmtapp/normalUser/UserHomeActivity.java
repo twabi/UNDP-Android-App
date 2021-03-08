@@ -23,7 +23,6 @@ import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.Common.GPSTracker;
-import com.example.wastemgmtapp.Common.LogInActivity;
 import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.UserQuery;
@@ -195,11 +194,12 @@ public class UserHomeActivity extends AppCompatActivity{
         navView.setNavigationItemSelectedListener(menuItem -> {
             Log.d(TAG, "onOptionsItemSelected: " + menuItem);
             if(TextUtils.equals(menuItem.toString(), "Logout")){
-                Intent intent = new Intent(UserHomeActivity.this, LogInActivity.class);
-                startActivity(intent);
+                session.logoutUser();
+                //Intent intent = new Intent(UserHomeActivity.this, LogInActivity.class);
+                //startActivity(intent);
             } else if((TextUtils.equals(menuItem.toString(), "My Requests"))){
                 Intent intent = new Intent(UserHomeActivity.this, MyRequests.class);
-                //intent.putExtra("id", userID);
+                intent.putExtra("id", userID);
                 //intent.putExtra("lat", userLat);
                 //intent.putExtra("long", userLong);
                 startActivity(intent);
@@ -344,8 +344,11 @@ public class UserHomeActivity extends AppCompatActivity{
             @Override
             public void onFailure(@NotNull ApolloException e) {
                 Log.e("Apollo", "Error", e);
-                Toast.makeText(UserHomeActivity.this,
-                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(UserHomeActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+
             }
         };
     }

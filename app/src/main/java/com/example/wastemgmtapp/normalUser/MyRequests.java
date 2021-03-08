@@ -33,8 +33,8 @@ public class MyRequests extends AppCompatActivity implements TabLayout.OnTabSele
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         //Adding the tabs using addTab() method
-        tabLayout.addTab(tabLayout.newTab().setText("Trash Collection"));
-        tabLayout.addTab(tabLayout.newTab().setText("Sorted Waste"));
+        tabLayout.addTab(tabLayout.newTab().setText("Trash Collections"));
+        tabLayout.addTab(tabLayout.newTab().setText("Sorted Wastes"));
 
 
         //Creating our pager adapter

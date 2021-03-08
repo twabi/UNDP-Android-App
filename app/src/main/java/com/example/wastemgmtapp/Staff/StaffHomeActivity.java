@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.apollographql.apollo.ApolloClient;
 import com.example.wastemgmtapp.Common.LogInActivity;
+import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.normalUser.UserHomeActivity;
 import com.google.android.material.navigation.NavigationView;
@@ -36,6 +37,7 @@ public class StaffHomeActivity extends AppCompatActivity {
     private MapView mapRequests;
     private MapView mapTrash;
     ApolloClient apolloClient;
+    SessionManager session;
     String TAG = StaffHomeActivity.class.getSimpleName();
 
     @Override
@@ -48,6 +50,8 @@ public class StaffHomeActivity extends AppCompatActivity {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout2);
         TextView seeMoreRequests = findViewById(R.id.see_more_requests);
         TextView seeMoreTrash = findViewById(R.id.see_more_trash);
+
+        session = new SessionManager(getApplicationContext());
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
@@ -125,6 +129,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         navView.setNavigationItemSelectedListener(menuItem -> {
             Log.d(TAG, "onOptionsItemSelected: " + menuItem);
             if(TextUtils.equals(menuItem.toString(), "Logout")){
+                session.logoutUser();
                 Intent intent = new Intent(StaffHomeActivity.this, LogInActivity.class);
                 startActivity(intent);
             }

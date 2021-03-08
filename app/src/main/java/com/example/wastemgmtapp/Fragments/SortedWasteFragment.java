@@ -4,19 +4,47 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
+import com.example.wastemgmtapp.GetCollectionRequestsQuery;
+import com.example.wastemgmtapp.GetSortedWasteRequestsQuery;
 import com.example.wastemgmtapp.R;
+import com.example.wastemgmtapp.adapters.RequestsAdapter;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 public class SortedWasteFragment extends Fragment {
 
 
-    public SortedWasteFragment() {
-        // Required empty public constructor
-    }
+    String TAG  = CollectionFragment.class.getSimpleName();
+    ArrayList<String> headerList = new ArrayList<>();
+    ArrayList<String> statusList = new ArrayList<>();
+    ArrayList<String> subTextList = new ArrayList<>();
+    ListView requestsView;
+    ProgressBar fetchLoading;
+    LinearLayout noItems, retryNetwork;
+    View view;
+    ApolloClient apolloClient;
 
+    public SortedWasteFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,6 +55,92 @@ public class SortedWasteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sorted_waste, container, false);
+        view =  inflater.inflate(R.layout.fragment_sorted_waste, container, false);
+
+        requestsView = view.findViewById(R.id.list_View);
+        fetchLoading = view.findViewById(R.id.fetchLoading);
+        noItems = view.findViewById(R.id.norequests);
+        retryNetwork = view.findViewById(R.id.retryNetwork);
+        fetchLoading.setVisibility(View.VISIBLE);
+
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build();
+        apolloClient = ApolloClient.builder().okHttpClient(httpClient)
+                .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
+                .build();
+
+        apolloClient.query(new GetSortedWasteRequestsQuery()).enqueue(requestCallback());
+
+        RequestsAdapter adapter = new RequestsAdapter(getActivity(), headerList, subTextList, statusList);
+        requestsView.setAdapter(adapter);
+
+        return view;
+    }
+
+    public ApolloCall.Callback<GetSortedWasteRequestsQuery.Data> requestCallback(){
+        return new ApolloCall.Callback<GetSortedWasteRequestsQuery.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<GetSortedWasteRequestsQuery.Data> response) {
+                GetSortedWasteRequestsQuery.Data data = response.getData();
+
+                if(response.getErrors() == null){
+
+                    if(data.sortedWastes() == null){
+                        Log.e("Apollo", "an Error occurred : " );
+                        getActivity().runOnUiThread(() -> {
+                            // Stuff that updates the UI
+                            Toast.makeText(getActivity(),
+                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
+                            //errorText.setText();
+                            retryNetwork.setVisibility(View.VISIBLE);
+                            fetchLoading.setVisibility(View.GONE);
+                        });
+                    }else{
+                        getActivity().runOnUiThread(() -> {
+                            Log.d(TAG, "requests fetched" + data.sortedWastes());
+                            fetchLoading.setVisibility(View.GONE);
+                            if(data.sortedWastes().size() == 0) {
+                                noItems.setVisibility(View.VISIBLE);
+                            } else {
+                                for(int i = 0; i < data.sortedWastes().size(); i++){
+                                    headerList.add(data.sortedWastes().get(i).amount());
+                                    statusList.add(data.sortedWastes().get(i).location());
+                                    subTextList.add(data.sortedWastes().get(i)._id());
+                                }
+                            }
+
+                        });
+                    }
+
+                } else{
+                    List<Error> error = response.getErrors();
+                    String errorMessage = error.get(0).getMessage();
+                    Log.e("Apollo", "an Error occurred : " + errorMessage );
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(),
+                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                        retryNetwork.setVisibility(View.VISIBLE);
+                        fetchLoading.setVisibility(View.GONE);
+                    });
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getActivity(),
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    retryNetwork.setVisibility(View.VISIBLE);
+                    fetchLoading.setVisibility(View.GONE);
+                });
+
+            }
+        };
     }
 }

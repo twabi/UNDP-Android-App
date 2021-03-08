@@ -21,6 +21,12 @@ query Users{
         _id
         nationalID
         fullName
+        sortedwasteNofications {
+            _id
+        }
+        trashCollectionNofications {
+            _id
+        }
     }
 }
 
@@ -96,6 +102,58 @@ query GetStaff($staffId: ID!){
         zone {
             _id
             name
+        }
+    }
+}
+
+query GetCollectionRequests{
+    trashCollections {
+        _id
+        amount
+        location
+        institution {
+            name
+            _id
+        }
+        creator{
+            _id
+        }
+    }
+
+}
+
+query GetSortedWasteRequests{
+    sortedWastes {
+        _id
+        amount
+        location
+        institution {
+            name
+            _id
+        }
+        creator{
+            _id
+        }
+    }
+
+}
+
+query GetSortedWasteNotifs{
+    sortedWasteNotications{
+        _id
+        status
+        creator{
+            _id
+        }
+    }
+}
+
+query GetCollectionNotifs{
+    trashCollectionNotications{
+        _id
+        status
+        creator{
+            _id
         }
     }
 }

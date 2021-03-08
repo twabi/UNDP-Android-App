@@ -2,11 +2,13 @@ package com.example.wastemgmtapp.normalUser;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -84,8 +86,8 @@ public class UserHomeActivity extends AppCompatActivity{
         NavigationView navView = findViewById(R.id.user_navDrawer); // initiate a Navigation View
 
         View headerView = navView.getHeaderView(0);
-        TextView text_support = (TextView) headerView.findViewById(R.id.text_support);
-        textUserName = (TextView) headerView.findViewById(R.id.userName);
+        TextView text_support = headerView.findViewById(R.id.text_support);
+        textUserName = headerView.findViewById(R.id.userName);
         text_support.setText("");
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -194,7 +196,23 @@ public class UserHomeActivity extends AppCompatActivity{
         navView.setNavigationItemSelectedListener(menuItem -> {
             Log.d(TAG, "onOptionsItemSelected: " + menuItem);
             if(TextUtils.equals(menuItem.toString(), "Logout")){
-                session.logoutUser();
+                AlertDialog.Builder builder = new AlertDialog.Builder(UserHomeActivity.this);
+                builder.setTitle("Log Out").setMessage("Are you sure you want to log out?");
+
+                builder.setPositiveButton("Log Out", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        session.logoutUser();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        dialog.cancel();
+                    }
+                });
+                builder.show(); //show the alert dialog
+
                 //Intent intent = new Intent(UserHomeActivity.this, LogInActivity.class);
                 //startActivity(intent);
             } else if((TextUtils.equals(menuItem.toString(), "My Requests"))){

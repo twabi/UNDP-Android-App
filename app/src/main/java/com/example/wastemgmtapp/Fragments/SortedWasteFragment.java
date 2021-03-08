@@ -61,7 +61,10 @@ public class SortedWasteFragment extends Fragment {
         fetchLoading = view.findViewById(R.id.fetchLoading);
         noItems = view.findViewById(R.id.norequests);
         retryNetwork = view.findViewById(R.id.retryNetwork);
+
         fetchLoading.setVisibility(View.VISIBLE);
+        retryNetwork.setVisibility(View.GONE);
+        noItems.setVisibility(View.GONE);
 
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -98,6 +101,7 @@ public class SortedWasteFragment extends Fragment {
                             //errorText.setText();
                             retryNetwork.setVisibility(View.VISIBLE);
                             fetchLoading.setVisibility(View.GONE);
+                            noItems.setVisibility(View.GONE);
                         });
                     }else{
                         getActivity().runOnUiThread(() -> {
@@ -105,6 +109,7 @@ public class SortedWasteFragment extends Fragment {
                             fetchLoading.setVisibility(View.GONE);
                             if(data.sortedWastes().size() == 0) {
                                 noItems.setVisibility(View.VISIBLE);
+                                retryNetwork.setVisibility(View.GONE);
                             } else {
                                 for(int i = 0; i < data.sortedWastes().size(); i++){
                                     headerList.add(data.sortedWastes().get(i).amount());
@@ -125,6 +130,7 @@ public class SortedWasteFragment extends Fragment {
                                 "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
                         retryNetwork.setVisibility(View.VISIBLE);
                         fetchLoading.setVisibility(View.GONE);
+                        noItems.setVisibility(View.GONE);
                     });
                 }
 
@@ -138,6 +144,7 @@ public class SortedWasteFragment extends Fragment {
                             "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
                     retryNetwork.setVisibility(View.VISIBLE);
                     fetchLoading.setVisibility(View.GONE);
+                    noItems.setVisibility(View.GONE);
                 });
 
             }

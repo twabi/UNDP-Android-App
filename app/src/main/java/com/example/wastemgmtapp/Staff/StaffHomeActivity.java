@@ -205,7 +205,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                 if(response.getErrors() == null){
 
                     if(data.staff() == null){
-                        Log.e("Apollo", "an Error occurred : " );
+                        Log.e(TAG, "an Error occurred : " );
                         runOnUiThread(() -> {
                             // Stuff that updates the UI
                             Toast.makeText(StaffHomeActivity.this,
@@ -216,7 +216,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Log.d(TAG, "staff fetched" + data.staff());
                             textUserName.setText(data.staff().fullName());
-                            text_support.setText(data.staff().zone().name());
+                            text_support.setText("Zone: " + data.staff().zone().name());
 
                         });
                     }
@@ -224,7 +224,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                 } else{
                     List<Error> error = response.getErrors();
                     String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
+                    Log.e(TAG, "an Error occurred : " + errorMessage );
                     runOnUiThread(() -> {
                         Toast.makeText(StaffHomeActivity.this,
                                 "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
@@ -236,7 +236,7 @@ public class StaffHomeActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NotNull ApolloException e) {
-                Log.e("Apollo", "Error", e);
+                Log.e(TAG, "Error", e);
                 runOnUiThread(() -> {
                     Toast.makeText(StaffHomeActivity.this,
                             "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();

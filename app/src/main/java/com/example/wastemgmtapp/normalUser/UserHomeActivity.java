@@ -317,7 +317,7 @@ public class UserHomeActivity extends AppCompatActivity{
                                 Log.d(TAG, "zones fetched" + data.zones());
                                 ArrayList<Double> ratings = new ArrayList<>();
                                 ArrayList<String> locations = new ArrayList<>();
-                                ArrayList<String> lat = new ArrayList<>();
+                                ArrayList<Double> lat = new ArrayList<>();
                                 ArrayList<String> longitudes = new ArrayList<>();
                                 for(int i =0; i < data.zones().size(); i++){
                                     ratings.add(data.zones().get(i).averageRating());
@@ -334,7 +334,7 @@ public class UserHomeActivity extends AppCompatActivity{
 
                                 maxLocation = locations.get(maxIdx);
                                 maxRating = Collections.max(ratings);
-                                zoneLat = Double.parseDouble(lat.get(maxIdx));
+                                zoneLat = Double.parseDouble(String.valueOf(lat.get(maxIdx)));
                                 zoneLong = Double.parseDouble(longitudes.get(maxIdx));
 
                                 Log.d(TAG, "onResponse: " + zoneLat + "-" + zoneLong);

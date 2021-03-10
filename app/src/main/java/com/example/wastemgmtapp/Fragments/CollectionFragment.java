@@ -19,6 +19,7 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.GetCollectionRequestsQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.WasteInstitutionsQuery;
@@ -28,6 +29,7 @@ import com.example.wastemgmtapp.normalUser.RequestCollection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -44,6 +46,8 @@ public class CollectionFragment extends Fragment {
     LinearLayout noItems, retryNetwork;
     View view;
     ApolloClient apolloClient;
+    String userID;
+    SessionManager session;
 
     public CollectionFragment() {
     }
@@ -64,6 +68,10 @@ public class CollectionFragment extends Fragment {
         retryNetwork = view.findViewById(R.id.retryNetwork);
         fetchLoading.setVisibility(View.VISIBLE);
 
+        session = new SessionManager(getActivity().getApplicationContext());
+
+        HashMap<String, String> user = session.getUserDetails();
+        userID = user.get(SessionManager.KEY_USERID);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
@@ -76,8 +84,7 @@ public class CollectionFragment extends Fragment {
 
         apolloClient.query(new GetCollectionRequestsQuery()).enqueue(requestCallback());
 
-        RequestsAdapter adapter = new RequestsAdapter(getActivity(), headerList, subTextList, statusList);
-        requestsView.setAdapter(adapter);
+
 
         return view;
 
@@ -102,17 +109,24 @@ public class CollectionFragment extends Fragment {
                             fetchLoading.setVisibility(View.GONE);
                         });
                     }else{
+                        Log.d(TAG, "requests fetched" + data.trashCollections().get(0).amount());
                         getActivity().runOnUiThread(() -> {
-                            Log.d(TAG, "requests fetched" + data.trashCollections());
+
                             fetchLoading.setVisibility(View.GONE);
                             if(data.trashCollections().size() == 0) {
                                 noItems.setVisibility(View.VISIBLE);
                             } else {
+                                Log.d(TAG, "onResponse: " + data.trashCollections());
                                 for(int i = 0; i < data.trashCollections().size(); i++){
-                                    headerList.add(data.trashCollections().get(i).amount());
-                                    statusList.add(data.trashCollections().get(i).location());
-                                    subTextList.add(data.trashCollections().get(i)._id());
+                                    if(userID.equals(data.trashCollections().get(i).creator()._id())){
+                                        headerList.add(data.trashCollections().get(i).amount());
+                                        statusList.add(data.trashCollections().get(i).location());
+                                        subTextList.add(data.trashCollections().get(i).institution().name());
+                                    }
                                 }
+
+                                RequestsAdapter adapter = new RequestsAdapter(getActivity(), headerList, subTextList, statusList);
+                                requestsView.setAdapter(adapter);
                             }
 
                         });

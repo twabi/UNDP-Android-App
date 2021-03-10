@@ -88,7 +88,7 @@ public class UserHomeActivity extends AppCompatActivity{
         View headerView = navView.getHeaderView(0);
         TextView text_support = headerView.findViewById(R.id.text_support);
         textUserName = headerView.findViewById(R.id.userName);
-        text_support.setText("");
+        text_support.setText("User");
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC);

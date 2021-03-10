@@ -216,7 +216,12 @@ public class StaffHomeActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Log.d(TAG, "staff fetched" + data.staff());
                             textUserName.setText(data.staff().fullName());
-                            text_support.setText("Zone: " + data.staff().zone().name());
+                            if(data.staff().zone() != null){
+                                text_support.setText("Zone: " + data.staff().zone().name());
+                            } else{
+                                text_support.setText("Zone: null");
+                            }
+
 
                         });
                     }

@@ -50,7 +50,7 @@ public class RecordWaste extends AppCompatActivity {
     Spinner companySpinner, wasteSpinner;
     String TAG = RecordWaste.class.getSimpleName();
     ProgressBar fetchLoading, sendLoading;
-    EditText inputTrashAmount, inputOther, inputLocation;
+    EditText inputTrashAmount, inputOther, inputLocation, inputPrice;
     boolean other = false;
     Button recordWaste;
 
@@ -65,6 +65,7 @@ public class RecordWaste extends AppCompatActivity {
         inputTrashAmount = findViewById(R.id.inputTrashAmount);
         inputLocation = findViewById(R.id.input_loc);
         inputOther = findViewById(R.id.inputOther);
+        inputPrice = findViewById(R.id.inputPrice);
         recordWaste = findViewById(R.id.btn_record);
         sendLoading = findViewById(R.id.recLoads);
 
@@ -149,9 +150,11 @@ public class RecordWaste extends AppCompatActivity {
 
                 String amount = inputTrashAmount.getText().toString();
                 String location = inputLocation.getText().toString();
+                double price = Double.parseDouble(inputPrice.getText().toString()) ;
 
                 SortedWasteInput wasteInput = SortedWasteInput.builder()
                         .amount(amount).institution(selectedID)
+                        .price(price)
                         .location(location).typeOfWaste(selectedWasteType)
                         .latitude(latitude).longitude(longitude).creator(userID)
                         .build();
@@ -283,8 +286,14 @@ public class RecordWaste extends AppCompatActivity {
         String amount = inputTrashAmount.getText().toString();
         String location = inputLocation.getText().toString();
         String otherWaste = inputOther.getText().toString();
+        String price = inputPrice.getText().toString();
 
         if(TextUtils.isEmpty(amount)){
+            inputTrashAmount.setError("Required!");
+            valid = false;
+        }
+
+        if(TextUtils.isEmpty(price)){
             inputTrashAmount.setError("Required!");
             valid = false;
         }

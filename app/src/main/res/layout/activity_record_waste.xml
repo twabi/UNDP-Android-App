@@ -112,6 +112,21 @@
                     android:background="@drawable/edit_text_border"
                     android:hint="Amount of Trash (kgs or any description)"
                     android:inputType="text" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:ems="10"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/inputPrice"
+                    android:padding="18dp"
+                    android:textColor="@color/purple_700"
+                    android:textColorHint="@color/purple_700"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:hint="Enter selling amount"
+                    android:inputType="number" />
                 <androidx.appcompat.widget.AppCompatEditText
                     android:ems="10"
                     android:layout_marginTop="14dp"

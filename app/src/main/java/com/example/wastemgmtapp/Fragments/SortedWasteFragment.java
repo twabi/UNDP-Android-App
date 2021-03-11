@@ -18,14 +18,17 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.GetCollectionRequestsQuery;
 import com.example.wastemgmtapp.GetSortedWasteRequestsQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.adapters.RequestsAdapter;
+import com.example.wastemgmtapp.adapters.SortedWasteAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -33,16 +36,18 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class SortedWasteFragment extends Fragment {
 
-
     String TAG  = CollectionFragment.class.getSimpleName();
     ArrayList<String> headerList = new ArrayList<>();
     ArrayList<String> statusList = new ArrayList<>();
     ArrayList<String> subTextList = new ArrayList<>();
+    ArrayList<String> priceList =  new ArrayList<>();
     ListView requestsView;
     ProgressBar fetchLoading;
     LinearLayout noItems, retryNetwork;
     View view;
     ApolloClient apolloClient;
+    String userID;
+    SessionManager session;
 
     public SortedWasteFragment() { }
 
@@ -66,6 +71,11 @@ public class SortedWasteFragment extends Fragment {
         retryNetwork.setVisibility(View.GONE);
         noItems.setVisibility(View.GONE);
 
+        session = new SessionManager(getActivity().getApplicationContext());
+
+        HashMap<String, String> user = session.getUserDetails();
+        userID = user.get(SessionManager.KEY_USERID);
+
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
@@ -78,8 +88,6 @@ public class SortedWasteFragment extends Fragment {
 
         apolloClient.query(new GetSortedWasteRequestsQuery()).enqueue(requestCallback());
 
-        RequestsAdapter adapter = new RequestsAdapter(getActivity(), headerList, subTextList, statusList);
-        requestsView.setAdapter(adapter);
 
         return view;
     }
@@ -104,21 +112,32 @@ public class SortedWasteFragment extends Fragment {
                             noItems.setVisibility(View.GONE);
                         });
                     }else{
-                        getActivity().runOnUiThread(() -> {
-                            Log.d(TAG, "requests fetched" + data.sortedWastes());
-                            fetchLoading.setVisibility(View.GONE);
-                            if(data.sortedWastes().size() == 0) {
-                                noItems.setVisibility(View.VISIBLE);
-                                retryNetwork.setVisibility(View.GONE);
-                            } else {
-                                for(int i = 0; i < data.sortedWastes().size(); i++){
-                                    headerList.add(data.sortedWastes().get(i).amount());
-                                    statusList.add(data.sortedWastes().get(i).location());
-                                    subTextList.add(data.sortedWastes().get(i)._id());
-                                }
-                            }
+                        try {
+                            getActivity().runOnUiThread(() -> {
+                                Log.d(TAG, "requests fetched" + data.sortedWastes());
+                                fetchLoading.setVisibility(View.GONE);
+                                if(data.sortedWastes().size() == 0) {
+                                    noItems.setVisibility(View.VISIBLE);
+                                    retryNetwork.setVisibility(View.GONE);
+                                } else {
+                                    for(int i = 0; i < data.sortedWastes().size(); i++){
+                                        if(userID.equals(data.sortedWastes().get(i).creator()._id())){
+                                            headerList.add(data.sortedWastes().get(i).amount());
+                                            priceList.add(data.sortedWastes().get(i).price().toString());
+                                            statusList.add(data.sortedWastes().get(i).institution().name());
+                                            subTextList.add(data.sortedWastes().get(i).location());
+                                        }
+                                    }
+                                    SortedWasteAdapter adapter = new SortedWasteAdapter(getActivity(), headerList, priceList, statusList, subTextList);
+                                    requestsView.setAdapter(adapter);
 
-                        });
+                                }
+
+                            });
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
                     }
 
                 } else{

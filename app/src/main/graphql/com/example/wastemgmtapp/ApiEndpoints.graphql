@@ -132,8 +132,10 @@ query GetSortedWasteRequests{
             name
             _id
         }
+        price
         creator{
             _id
+            fullName
         }
     }
 

@@ -18,15 +18,17 @@ public class SortedWasteAdapter extends BaseAdapter {
 
     Context context;
     String TAG = RequestsAdapter.class.getSimpleName();
-    ArrayList settingList = new ArrayList();
+    ArrayList headerList = new ArrayList();
     ArrayList descriptionList = new ArrayList();
     ArrayList statusList = new ArrayList<>();
+    ArrayList priceList;
     LayoutInflater inflter;
 
-    public SortedWasteAdapter(Context applicationContext, ArrayList headerList,
+    public SortedWasteAdapter(Context applicationContext, ArrayList headerList, ArrayList priceList,
                            ArrayList descriptionList, ArrayList statusList) {
         this.context = applicationContext;
-        this.settingList = headerList;
+        this.headerList = headerList;
+        this.priceList = priceList;
         this.descriptionList = descriptionList;
         this.statusList = statusList;
 
@@ -35,7 +37,7 @@ public class SortedWasteAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return settingList.size();
+        return headerList.size();
     }
 
     @Override
@@ -57,11 +59,12 @@ public class SortedWasteAdapter extends BaseAdapter {
         TextView settingHead = view.findViewById(R.id.settingHead);
         TextView subText = view.findViewById(R.id.subText);
         TextView statusText = view.findViewById(R.id.statusText);
+        TextView otherText = view.findViewById(R.id.otherText);
 
-        settingHead.setText(settingList.get(position).toString());
-        subText.setText(descriptionList.get(position).toString());
-        statusText.setText(statusList.get(position).toString());
-
+        settingHead.setText("Trash Amount: " + headerList.get(position).toString());
+        subText.setText("institution : " + descriptionList.get(position).toString());
+        statusText.setText("location : " + statusList.get(position).toString());
+        otherText.setText("Price: K" + priceList.get(position).toString());
 
         listItem.setOnClickListener(view1 -> {
             if(position == 0) {

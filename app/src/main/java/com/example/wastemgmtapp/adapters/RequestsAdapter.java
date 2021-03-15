@@ -58,9 +58,9 @@ public class RequestsAdapter extends BaseAdapter {
         TextView subText = view.findViewById(R.id.subText);
         TextView statusText = view.findViewById(R.id.statusText);
 
-        settingHead.setText("Amount: " + settingList.get(position).toString());
-        subText.setText("Institution: " + descriptionList.get(position).toString());
-        statusText.setText("location: " + statusList.get(position).toString());
+        settingHead.setText("Amount:  " + settingList.get(position).toString());
+        subText.setText("Institution:  " + descriptionList.get(position).toString());
+        statusText.setText("location:  " + statusList.get(position).toString());
 
 
         listItem.setOnClickListener(view1 -> {

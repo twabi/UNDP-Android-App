@@ -21,6 +21,184 @@
             android:layout_height="wrap_content"
             app:cardElevation="12dp"
             app:cardCornerRadius="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/grey"
+            app:layout_constraintBaseline_toBaselineOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/linear1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="vertical">
+                        <TextView
+                            android:gravity="center_horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Pending Requests"
+                            android:textSize="17sp"
+                            android:textColor="@color/purple_700"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:id="@+id/vieww2"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginRight="30dp"
+                            android:background="@color/grey"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/firstRel"
+                        android:layout_below="@id/linear1"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:showDividers="middle"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:divider="@drawable/backs"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_gravity="left"
+                            android:id="@+id/trash_collect"
+                            tools:ignore="UseCompoundDrawables"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginLeft="2dp">
+
+                            <androidx.cardview.widget.CardView
+                                app:cardBackgroundColor="@color/teal_200"
+                                app:cardElevation="7dp"
+                                android:layout_marginTop="4dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                app:cardCornerRadius="20dp">
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerHorizontal="true"
+                                        android:layout_gravity="center"
+                                        android:textAlignment="center"
+                                        android:id="@+id/collText"
+                                        android:text="Trash-Collection"
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold" />
+                                    <TextView
+                                        android:layout_width="30dp"
+                                        android:layout_height="30dp"
+                                        android:text="0"
+                                        android:textStyle="bold"
+                                        android:id="@+id/collNumber"
+                                        android:textColor="#fff"
+                                        android:layout_marginLeft="7dp"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:background="@drawable/initials_bg"
+                                        android:textSize="17sp" />
+
+                                </LinearLayout>
+
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_gravity="left"
+                            android:id="@+id/sorted_waste"
+                            tools:ignore="UseCompoundDrawables"
+                            android:layout_marginRight="2dp"
+                            android:layout_marginLeft="5dp">
+
+                            <androidx.cardview.widget.CardView
+                                app:cardBackgroundColor="@color/teal_200"
+                                app:cardElevation="7dp"
+                                android:layout_marginTop="4dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                app:cardCornerRadius="20dp">
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerHorizontal="true"
+                                        android:layout_gravity="center"
+                                        android:textAlignment="center"
+                                        android:id="@+id/sortedText"
+                                        android:text="Sorted-Wastes"
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold" />
+                                    <TextView
+                                        android:layout_width="30dp"
+                                        android:layout_height="30dp"
+                                        android:text="0"
+                                        android:textStyle="bold"
+                                        android:id="@+id/sortNumber"
+                                        android:textColor="#fff"
+                                        android:layout_marginLeft="7dp"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:background="@drawable/initials_bg"
+                                        android:textSize="17sp" />
+
+                                </LinearLayout>
+
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="12dp"
+            app:cardCornerRadius="20dp"
+            android:layout_marginBottom="20dp"
             android:background="@color/grey"
             app:layout_constraintBaseline_toBaselineOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -30,372 +208,249 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/grey"
+                android:layout_marginBottom="10dp"
                 android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cleanest Zone in Your Area"
-                    android:textColor="@color/purple_700"
-                    android:textSize="15sp"
-                    android:textStyle="normal"
-                    android:layout_margin="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp" />
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:id="@+id/vieww2"
-                    android:layout_margin="5dp"
-                    android:background="@color/black"/>
-
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="100dp"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp">
 
-                    <com.mapbox.mapboxsdk.maps.MapView
-                        android:id="@+id/mapView"
-                        android:layout_width="match_parent"
-                        android:layout_height="250dp"
-                        mapbox:mapbox_cameraZoom="15.526846"
-                        mapbox:mapbox_renderTextureMode="true"
-                        />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:id="@+id/vieww"
-                        android:layout_margin="5dp"
-                        android:layout_below="@id/mapView"
-                        android:background="@color/black"/>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/vieww"
-                        android:id="@+id/layout_labels"
-                        android:layout_margin="10dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/locationName"
-                            android:text=""
-                            android:textColor="@color/purple_700"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:layout_margin="5dp"
-                            android:layout_marginBottom="5dp" />
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardRequest"
+                        android:layout_width="160dp"
+                        android:layout_height="match_parent"
+                        app:cardElevation="12dp"
+                        app:cardCornerRadius="28dp"
+                        app:cardBackgroundColor="@color/grey"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="2dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        app:layout_constraintBaseline_toBaselineOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
                             android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/paper_plane"/>
+
                             <TextView
-                                android:layout_width="match_parent"
+                                android:id="@+id/reqText"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/averageRating"
-                                android:text=""
+                                android:text="Request Trash Collection"
                                 android:textColor="@color/purple_700"
-                                android:textSize="19sp"
-                                android:textStyle="italic"
+                                android:textSize="15sp"
+                                android:textStyle="normal"
                                 android:layout_margin="5dp"
                                 android:layout_marginTop="5dp"
                                 android:layout_marginBottom="5dp" />
-                            <ImageView
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:src="@drawable/star_2"/>
                         </LinearLayout>
 
 
-                    </LinearLayout>
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="7dp"
-                        android:layout_below="@id/layout_labels"
-                        android:orientation="horizontal">
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btn_rate"
+
+                    </androidx.cardview.widget.CardView>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_centerInParent="true"
+                        android:background="@color/grey" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardReport"
+                        android:layout_width="160dp"
+                        android:layout_height="match_parent"
+                        app:cardElevation="12dp"
+                        app:cardCornerRadius="28dp"
+                        app:cardBackgroundColor="@color/grey"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        app:layout_constraintBaseline_toBaselineOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/create_button_shape"                        android:layout_centerInParent="true"
-                            android:text="Rate"
-                            android:layout_alignParentStart="true"
-                            android:textColor="#fff"
-                            android:textStyle="normal"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginStart="10dp"
-                            android:layout_alignParentLeft="true" />
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal">
 
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btn_share"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:background="@drawable/create_button_shape"                        android:layout_centerInParent="true"
-                            android:text="Share"
-                            android:textColor="#fff"
-                            android:layout_marginRight="10dp"
-                            android:textStyle="normal"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="10dp" />
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/closewindow"/>
 
-                    </RelativeLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Report illegal Dumping"
+                                android:textColor="@color/purple_700"
+                                android:textSize="15sp"
+                                android:textStyle="normal"
+                                android:layout_margin="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp" />
+                        </LinearLayout>
+
+
+
+                    </androidx.cardview.widget.CardView>
 
                 </RelativeLayout>
-            </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/grey"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardReview"
+                        android:layout_width="160dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="5dp"
+                        app:cardBackgroundColor="@color/grey"
+                        android:layout_alignParentLeft="true"
+                        app:cardCornerRadius="28dp"
+                        app:cardElevation="12dp"
+                        app:layout_constraintBaseline_toBaselineOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/star_2" />
+
+                            <TextView
+                                android:id="@+id/revText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:text="Review Area"
+                                android:textColor="@color/purple_700"
+                                android:textSize="15sp"
+                                android:textStyle="normal" />
+                        </LinearLayout>
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@color/grey" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardRecord"
+                        android:layout_width="160dp"
+                        android:layout_height="match_parent"
+                        app:cardElevation="12dp"
+                        app:cardCornerRadius="28dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        app:cardBackgroundColor="@color/grey"
+                        app:layout_constraintBaseline_toBaselineOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/recycle"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Record Sorted Waste"
+                                android:textColor="@color/purple_700"
+                                android:textSize="15sp"
+                                android:textStyle="normal"
+                                android:layout_margin="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp" />
+                        </LinearLayout>
+
+
+
+                    </androidx.cardview.widget.CardView>
+
+                </RelativeLayout>
+
+            </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="horizontal"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:gravity="center"
-                android:layout_marginTop="10dp">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardRequest"
-                    android:layout_width="160dp"
-                    android:layout_height="match_parent"
-                    app:cardElevation="12dp"
-                    app:cardCornerRadius="28dp"
-                    app:cardBackgroundColor="@color/grey"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginLeft="2dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    app:layout_constraintBaseline_toBaselineOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/paper_plane"/>
-
-                        <TextView
-                            android:id="@+id/reqText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Request Trash Collection"
-                            android:textColor="@color/purple_700"
-                            android:textSize="15sp"
-                            android:textStyle="normal"
-                            android:layout_margin="5dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp" />
-                    </LinearLayout>
-
-
-
-                </androidx.cardview.widget.CardView>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_centerInParent="true"
-                    android:background="@color/black" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardReport"
-                    android:layout_width="160dp"
-                    android:layout_height="match_parent"
-                    app:cardElevation="12dp"
-                    app:cardCornerRadius="28dp"
-                    app:cardBackgroundColor="@color/grey"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="2dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    app:layout_constraintBaseline_toBaselineOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/closewindow"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Report illegal Dumping"
-                            android:textColor="@color/purple_700"
-                            android:textSize="15sp"
-                            android:textStyle="normal"
-                            android:layout_margin="5dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp" />
-                    </LinearLayout>
-
-
-
-                </androidx.cardview.widget.CardView>
-
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-
-                android:layout_marginTop="10dp"
-                android:background="@color/black"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="horizontal"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:gravity="center"
-                android:layout_marginTop="10dp">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardReview"
-                    android:layout_width="160dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp"
-                    app:cardBackgroundColor="@color/grey"
-                    android:layout_alignParentLeft="true"
-                    app:cardCornerRadius="28dp"
-                    app:cardElevation="12dp"
-                    app:layout_constraintBaseline_toBaselineOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp">
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/star_2" />
-
-                        <TextView
-                            android:id="@+id/revText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:text="Review Area"
-                            android:textColor="@color/purple_700"
-                            android:textSize="15sp"
-                            android:textStyle="normal" />
-                    </LinearLayout>
-
-
-                </androidx.cardview.widget.CardView>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:background="@color/black" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardRecord"
-                    android:layout_width="160dp"
-                    android:layout_height="match_parent"
-                    app:cardElevation="12dp"
-                    app:cardCornerRadius="28dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    app:cardBackgroundColor="@color/grey"
-                    app:layout_constraintBaseline_toBaselineOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/recycle"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Record Sorted Waste"
-                            android:textColor="@color/purple_700"
-                            android:textSize="15sp"
-                            android:textStyle="normal"
-                            android:layout_margin="5dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp" />
-                    </LinearLayout>
-
-
-
-                </androidx.cardview.widget.CardView>
-
-            </RelativeLayout>
-
-        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

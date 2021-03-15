@@ -67,6 +67,21 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="15dp" />
 
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:ems="10"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/inputLocation"
+                    android:padding="18dp"
+                    android:textColor="@color/purple_700"
+                    android:textColorHint="@color/purple_700"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:hint="enter location of incident"
+                    android:inputType="textPassword" />
+
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:ems="10"
@@ -125,7 +140,7 @@
                 <ProgressBar
                     android:id="@+id/loads"
                     android:layout_width="wrap_content"
-                    android:layout_toRightOf="@+id/btn_send"
+                    android:layout_toRightOf="@+id/btn_report"
                     android:layout_centerInParent="true"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

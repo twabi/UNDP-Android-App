@@ -61,10 +61,10 @@ public class SortedWasteAdapter extends BaseAdapter {
         TextView statusText = view.findViewById(R.id.statusText);
         TextView otherText = view.findViewById(R.id.otherText);
 
-        settingHead.setText("Trash Amount: " + headerList.get(position).toString());
-        subText.setText("institution : " + descriptionList.get(position).toString());
-        statusText.setText("location : " + statusList.get(position).toString());
-        otherText.setText("Price: K" + priceList.get(position).toString());
+        settingHead.setText("Trash Amount:  " + headerList.get(position).toString());
+        subText.setText("institution :  " + descriptionList.get(position).toString());
+        statusText.setText("location :  " + statusList.get(position).toString());
+        otherText.setText("Price:  K" + priceList.get(position).toString());
 
         listItem.setOnClickListener(view1 -> {
             if(position == 0) {

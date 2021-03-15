@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,13 +53,14 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class UserHomeActivity extends AppCompatActivity{
 
     private ActionBarDrawerToggle mToggle;
-    private MapView mapView;
     private final String TAG = UserHomeActivity.class.getSimpleName();
     double userLat, userLong;
     ApolloClient apolloClient;
-    TextView textUserName, locationName, ratingText;
     Double maxRating;
     String maxLocation;
+    TextView textUserName;
+    LinearLayout linearCollect, linearSorted;
+    TextView collectNumber, sortedNumber;
     SessionManager session;
     FusedLocationProviderClient mFusedLocationClient;
     double zoneLat,zoneLong;
@@ -75,11 +77,10 @@ public class UserHomeActivity extends AppCompatActivity{
         CardView cardReview = findViewById(R.id.cardReview);
         CardView cardReport = findViewById(R.id.cardReport);
         CardView cardRecord = findViewById(R.id.cardRecord);
-
-        Button rate = findViewById(R.id.btn_rate);
-        Button share = findViewById(R.id.btn_share);
-        locationName = findViewById(R.id.locationName);
-        ratingText = findViewById(R.id.averageRating);
+        linearCollect = findViewById(R.id.trash_collect);
+        linearSorted = findViewById(R.id.sorted_waste);
+        collectNumber = findViewById(R.id.collNumber);
+        sortedNumber = findViewById(R.id.sortNumber);
 
         session = new SessionManager(getApplicationContext());
 
@@ -125,22 +126,6 @@ public class UserHomeActivity extends AppCompatActivity{
         }
         Log.d(TAG, "Latitude: " + gpsTracker.getLatitude() +"-Longitude: "+ gpsTracker.getLongitude());
 
-
-        mapView = findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
-
-        CameraPosition position = new CameraPosition.Builder()
-                .target(new LatLng(zoneLat, zoneLong)).zoom(15).tilt(20)
-                .build();
-        mapView.getMapAsync(mapboxMap -> mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-            @Override
-            public void onStyleLoaded(@NonNull Style style) {
-                // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-                mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
-
-            }
-        }));
-
         cardRequest.setOnClickListener(v -> {
             Intent intent = new Intent(UserHomeActivity.this, RequestCollection.class);
             intent.putExtra("id", userID);
@@ -173,6 +158,7 @@ public class UserHomeActivity extends AppCompatActivity{
             startActivity(intent);
         });
 
+        /*
         rate.setOnClickListener( view -> {
             Intent intent = new Intent(UserHomeActivity.this, ReviewArea.class);
             intent.putExtra("id", userID);
@@ -191,6 +177,8 @@ public class UserHomeActivity extends AppCompatActivity{
             Intent shareIntent = Intent.createChooser(sendIntent, "Share News");
             startActivity(shareIntent);
         });
+
+         */
 
         // implement setNavigationSelectedListener event
         navView.setNavigationItemSelectedListener(menuItem -> {
@@ -250,48 +238,6 @@ public class UserHomeActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mapView.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mapView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mapView.onStop();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-    }
-
     public ApolloCall.Callback<ZonesQuery.Data> zonesQuery(){
         return new ApolloCall.Callback<ZonesQuery.Data>() {
             @Override
@@ -328,9 +274,9 @@ public class UserHomeActivity extends AppCompatActivity{
 
                                 Double maxVal = Collections.max(ratings);
                                 int maxIdx = ratings.indexOf(maxVal);
-                                ratingText.setText("Rating : " + maxVal);
+                                //ratingText.setText("Rating : " + maxVal);
                                 String locale = locations.get(maxIdx);
-                                locationName.setText(locale);
+                                //locationName.setText(locale);
 
                                 maxLocation = locations.get(maxIdx);
                                 maxRating = Collections.max(ratings);

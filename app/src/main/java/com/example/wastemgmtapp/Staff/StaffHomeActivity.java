@@ -235,7 +235,6 @@ public class StaffHomeActivity extends AppCompatActivity {
 
                     });
                 }
-
             }
 
             @Override

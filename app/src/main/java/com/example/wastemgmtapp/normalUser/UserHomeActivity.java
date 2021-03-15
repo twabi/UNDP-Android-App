@@ -59,7 +59,7 @@ public class UserHomeActivity extends AppCompatActivity{
     Double maxRating;
     String maxLocation;
     TextView textUserName;
-    LinearLayout linearCollect, linearSorted;
+    LinearLayout linearCollect, linearSorted, gotoSettings, gotoRequests, gotoInstitutions;
     TextView collectNumber, sortedNumber;
     SessionManager session;
     FusedLocationProviderClient mFusedLocationClient;
@@ -81,6 +81,9 @@ public class UserHomeActivity extends AppCompatActivity{
         linearSorted = findViewById(R.id.sorted_waste);
         collectNumber = findViewById(R.id.collNumber);
         sortedNumber = findViewById(R.id.sortNumber);
+        gotoSettings = findViewById(R.id.gotoSettings);
+        gotoInstitutions = findViewById(R.id.gotoCompanies);
+        gotoRequests = findViewById(R.id.gotoRequests);
 
         session = new SessionManager(getApplicationContext());
 
@@ -158,27 +161,19 @@ public class UserHomeActivity extends AppCompatActivity{
             startActivity(intent);
         });
 
-        /*
-        rate.setOnClickListener( view -> {
-            Intent intent = new Intent(UserHomeActivity.this, ReviewArea.class);
+        gotoRequests.setOnClickListener(view -> {
+            Intent intent = new Intent(UserHomeActivity.this, MyRequests.class);
             intent.putExtra("id", userID);
-            intent.putExtra("lat", userLat);
-            intent.putExtra("long", userLong);
             startActivity(intent);
         });
 
-        share.setOnClickListener( view -> {
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT,
-                    maxLocation + " is the cleanest zone in the city with a Rating of " + maxRating+"!");
-            sendIntent.setType("text/plain");
+        gotoInstitutions.setOnClickListener(view ->{
 
-            Intent shareIntent = Intent.createChooser(sendIntent, "Share News");
-            startActivity(shareIntent);
         });
 
-         */
+        gotoSettings.setOnClickListener(v -> {
+
+        });
 
         // implement setNavigationSelectedListener event
         navView.setNavigationItemSelectedListener(menuItem -> {
@@ -203,11 +198,11 @@ public class UserHomeActivity extends AppCompatActivity{
 
                 //Intent intent = new Intent(UserHomeActivity.this, LogInActivity.class);
                 //startActivity(intent);
-            } else if((TextUtils.equals(menuItem.toString(), "My Requests"))){
-                Intent intent = new Intent(UserHomeActivity.this, MyRequests.class);
+            } else if((TextUtils.equals(menuItem.toString(), "Request Collection"))){
+                Intent intent = new Intent(UserHomeActivity.this, RequestCollection.class);
                 intent.putExtra("id", userID);
-                //intent.putExtra("lat", userLat);
-                //intent.putExtra("long", userLong);
+                intent.putExtra("lat", userLat);
+                intent.putExtra("long", userLong);
                 startActivity(intent);
             }else if((TextUtils.equals(menuItem.toString(), "Report Illegal Waste"))){
                 Intent intent = new Intent(UserHomeActivity.this, ReportDumping.class);

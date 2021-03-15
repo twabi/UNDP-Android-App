@@ -4,7 +4,7 @@
 
     <item android:id="@+id/requestCol"
         android:icon="@drawable/request"
-        android:title="@string/my_requests" />
+        android:title="@string/request_collection" />
 
     <item android:id="@+id/reportIllegal"
         android:icon="@drawable/report"

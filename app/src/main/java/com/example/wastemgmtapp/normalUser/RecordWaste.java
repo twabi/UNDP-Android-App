@@ -75,6 +75,8 @@ public class RecordWaste extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //show the back button on the toolbar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        fetchLoading.setVisibility(View.VISIBLE);
+
         companyNames.add("Select Trash Collection Company");
         Intent intent = getIntent();
         String userID = intent.getStringExtra("id"); //get the productID from the intent

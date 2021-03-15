@@ -47,6 +47,13 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp" />
 
+            <ProgressBar
+                android:id="@+id/comLoads"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
 
             <LinearLayout
                 android:padding="10dp"
@@ -80,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border"
                     android:hint="enter location of incident"
-                    android:inputType="textPassword" />
+                    android:inputType="text" />
 
 
                 <androidx.appcompat.widget.AppCompatEditText
@@ -96,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border"
                     android:hint="enter dumping comment"
-                    android:inputType="textPassword" />
+                    android:inputType="text" />
 
             </LinearLayout>
 

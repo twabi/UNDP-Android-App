@@ -79,6 +79,12 @@ mutation CreateSortedWaste($sortedWasteInput : SortedWasteInput){
     }
 }
 
+mutation CreateIllegalDumping($illegalDumpingInput : IllegalDumpingInput){
+    createIllegalDumping(illegalDumpingInput: $illegalDumpingInput){
+        _id
+    }
+}
+
 mutation LogInAsStaff($loginStaffInput : LoginStaffInput!){
     loginAsStaff(loginStaffInput : $loginStaffInput){
         _id

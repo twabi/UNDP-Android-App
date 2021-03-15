@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/item_list"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    android:padding="2dp"
+    android:background="@drawable/edit_text_border"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:text="SH"
+        android:id="@+id/companyInitials"
+        android:textColor="#fff"
+        android:layout_margin="5dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/initials_bg"
+        android:textSize="40sp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:padding="5dp"
+        android:gravity="center_vertical|start"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="company Name"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/purple_700"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/phoneNumber"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="company phone"
+            android:textStyle="italic"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="1dp"
+            android:textColor="#000"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="company email"
+            android:textStyle="italic"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="1dp"
+            android:textColor="#000"
+            android:textSize="14sp"/>
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="company location"
+            android:textStyle="italic"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="1dp"
+            android:textColor="#000"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

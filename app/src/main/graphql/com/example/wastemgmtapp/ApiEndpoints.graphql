@@ -34,6 +34,8 @@ query WasteInstitutions{
     wasteInstitutions{
         _id
         name
+        email
+        phoneNumber
         location
     }
 }

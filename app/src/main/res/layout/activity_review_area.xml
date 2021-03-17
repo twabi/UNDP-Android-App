@@ -38,7 +38,7 @@
                 android:id="@+id/txt_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Review An area"
+                android:text="Review An Institution"
                 android:textColor="@color/purple_700"
                 android:textAlignment="center"
                 android:gravity="center"
@@ -46,6 +46,13 @@
                 android:textStyle="bold"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp" />
+
+            <ProgressBar
+                android:id="@+id/comLoads"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
 
 
             <LinearLayout
@@ -59,7 +66,7 @@
                 android:layout_marginStart="10dp"
                 android:orientation="vertical">
 
-                <Spinner android:id="@+id/areaSpinner"
+                <Spinner android:id="@+id/comSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="14dp"
@@ -90,7 +97,22 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_text_border"
                     android:hint="enter rating comment"
-                    android:inputType="textPassword" />
+                    android:inputType="text" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:ems="10"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/inputloca"
+                    android:padding="18dp"
+                    android:textColor="@color/purple_700"
+                    android:textColorHint="@color/purple_700"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:hint="enter your location of residence"
+                    android:inputType="text" />
 
             </LinearLayout>
 
@@ -134,7 +156,7 @@
                 <ProgressBar
                     android:id="@+id/loads"
                     android:layout_width="wrap_content"
-                    android:layout_toRightOf="@+id/btn_send"
+                    android:layout_toRightOf="@+id/btn_review"
                     android:layout_centerInParent="true"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

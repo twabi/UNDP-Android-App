@@ -127,6 +127,8 @@ query GetCollectionRequests{
             _id
             fullName
         }
+        createdAt
+        typeOfWaste
     }
 
 }
@@ -145,6 +147,7 @@ query GetSortedWasteRequests{
             _id
             fullName
         }
+        createdAt
     }
 
 }
@@ -156,6 +159,7 @@ query GetSortedWasteNotifs{
         creator{
             _id
         }
+        createdAt
     }
 }
 
@@ -166,6 +170,30 @@ query GetCollectionNotifs{
         creator{
             _id
         }
+        createdAt
+    }
+}
+
+mutation CreateReview($reviewInput : ReviewInput){
+    createReview(reviewInput: $reviewInput){
+        _id
+        creator{
+            _id
+            fullName
+        }
+    }
+}
+
+query getTasks{
+    tasks{
+        _id
+        tasks
+        createdAt
+        staff{
+            _id
+            fullName
+        }
+        completed
     }
 }
 

@@ -123,6 +123,7 @@ public class ReportDumping extends AppCompatActivity {
                 IllegalDumpingInput dumpingInput = IllegalDumpingInput.builder()
                         .creator(userID)
                         .institution(selectedID)
+                        .comment(comment)
                         .latitude(latitude).longitude(longitude)
                         .location(location)
                         .build();

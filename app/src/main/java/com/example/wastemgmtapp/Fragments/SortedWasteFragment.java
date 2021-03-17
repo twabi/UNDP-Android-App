@@ -141,16 +141,24 @@ public class SortedWasteFragment extends Fragment {
                     }
 
                 } else{
-                    List<Error> error = response.getErrors();
-                    String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
-                    getActivity().runOnUiThread(() -> {
-                        Toast.makeText(getActivity(),
-                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                    try{
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
+                        getActivity().runOnUiThread(() -> {
+                            Toast.makeText(getActivity(),
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                            retryNetwork.setVisibility(View.VISIBLE);
+                            fetchLoading.setVisibility(View.GONE);
+                            noItems.setVisibility(View.GONE);
+                        });
+                    } catch (Exception e){
+                        e.printStackTrace();
                         retryNetwork.setVisibility(View.VISIBLE);
                         fetchLoading.setVisibility(View.GONE);
                         noItems.setVisibility(View.GONE);
-                    });
+                    }
+
                 }
 
             }

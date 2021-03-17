@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_marginLeft="25dp"
+    android:layout_marginRight="15dp"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ProgressBar
+        android:id="@+id/loadIt"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Leave a field blank if you do not wish to change it"
+        android:textColor="@color/black"
+        android:padding="5dp"
+        android:layout_marginLeft="10dp"
+        android:textStyle="italic"
+        android:textSize="15sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:ems="10"
+            android:layout_marginTop="10dp"
+            android:id="@+id/new_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:textColor="@color/purple_700"
+            android:textColorHint="@color/purple_700"
+            android:background="@drawable/edit_text_border"
+            android:hint="new username"
+            android:inputType="text" />
+        <androidx.appcompat.widget.AppCompatEditText
+            android:ems="10"
+            android:layout_marginTop="10dp"
+            android:id="@+id/new_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:padding="10dp"
+            android:textColor="@color/purple_700"
+            android:textColorHint="@color/purple_700"
+            android:background="@drawable/edit_text_border"
+            android:hint="new password"
+            android:inputType="text" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,8 +39,9 @@ public class SettingsActivity extends AppCompatActivity {
     CardView shareCard, changeCard, viewCard;
     TextView fullname, location, phoneNumber, createdAt, nationalID;
     ApolloClient apolloClient;
-    ProgressBar loading;
+    ProgressBar loading, loadChange;
     String TAG = SettingsActivity.class.getSimpleName();
+    EditText nameInput, passInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,38 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         changeCard.setOnClickListener(view -> {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+            builder.setTitle("Change User Details"); //set the title for the dialog
+            LayoutInflater inflater = (LayoutInflater) SettingsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            assert inflater != null;
+            //build the dialog and set the view from the layout already created
+            view = inflater.inflate(R.layout.change_user, null);
+            builder.setView(view);
+
+            nameInput = view.findViewById(R.id.new_username);
+            passInput = view.findViewById(R.id.new_password);
+            loadChange = view.findViewById(R.id.loadIt);
+
+            //apolloClient.query(new UserQuery(userID)).enqueue(userCallback());
+
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int which) {
+                    dialogInterface.cancel();
+                }
+            });
+
+            dialog = builder.create();
+            dialog.show();
 
         });
 

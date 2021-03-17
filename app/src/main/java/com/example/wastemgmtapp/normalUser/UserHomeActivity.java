@@ -26,6 +26,7 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.Common.GPSTracker;
 import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.R;
+import com.example.wastemgmtapp.SettingsActivity;
 import com.example.wastemgmtapp.UserQuery;
 import com.example.wastemgmtapp.ZonesQuery;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -166,8 +167,10 @@ public class UserHomeActivity extends AppCompatActivity{
             startActivity(intent);
         });
 
-        gotoSettings.setOnClickListener(v -> {
-
+        gotoSettings.setOnClickListener(view -> {
+            Intent intent = new Intent(UserHomeActivity.this, SettingsActivity.class);
+            intent.putExtra("id", userID);
+            startActivity(intent);
         });
 
         // implement setNavigationSelectedListener event

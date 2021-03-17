@@ -6,7 +6,12 @@
     android:padding="10dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
+    <ProgressBar
+        android:id="@+id/nameLoad"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:visibility="visible"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

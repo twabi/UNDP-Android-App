@@ -26,7 +26,7 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.Common.GPSTracker;
 import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.R;
-import com.example.wastemgmtapp.SettingsActivity;
+import com.example.wastemgmtapp.Common.SettingsActivity;
 import com.example.wastemgmtapp.UserQuery;
 import com.example.wastemgmtapp.ZonesQuery;
 import com.google.android.gms.location.FusedLocationProviderClient;

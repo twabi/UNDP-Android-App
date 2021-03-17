@@ -70,6 +70,14 @@ public class SettingsActivity extends AppCompatActivity {
 
         shareCard.setOnClickListener(view -> {
 
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Waste Mgmt App");
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Waste Mgmt App \n Use this app to keep your city clean! find it on google play!");
+            sendIntent.setType("text/plain");
+
+            Intent shareIntent = Intent.createChooser(sendIntent, null);
+            startActivity(shareIntent);
         });
 
         changeCard.setOnClickListener(view -> {
@@ -96,15 +104,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             apolloClient.query(new UserQuery(userID)).enqueue(userCallback());
 
-            builder.setPositiveButton("Proceed", new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-
-                }
-            });
-            //when the user clicks the cancel button, the dialog should close
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -144,9 +144,11 @@ public class SettingsActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             loading.setVisibility(View.GONE);
                             Log.d(TAG, "user fetched" + data.user());
-                            fullname.setText(data.user().fullName());
-                            nationalID.setText(data.user().nationalID());
-                            //location.setText(data.user());
+                            fullname.setText("User Name:  " + data.user().fullName());
+                            nationalID.setText("National ID:  " + data.user().nationalID());
+                            location.setText("Location:  " + data.user().location());
+                            createdAt.setText("Date Created:  " + data.user().createdAt());
+                            phoneNumber.setText("Phone Number:  " + data.user().phoneNumber());
 
                         });
                     }

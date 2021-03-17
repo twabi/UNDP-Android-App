@@ -45,6 +45,8 @@ query User($userID : ID!){
         nationalID
         fullName
         phoneNumber
+        location
+        createdAt
         latitude
         longitude
     }

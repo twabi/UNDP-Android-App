@@ -21,8 +21,8 @@
             android:layout_height="wrap_content"
             app:cardElevation="12dp"
             app:cardCornerRadius="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:background="@color/grey"
             app:layout_constraintBaseline_toBaselineOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -45,7 +45,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Pending Requests"
-                            android:textSize="17sp"
+                            android:textSize="15sp"
                             android:textColor="@color/purple_700"/>
 
                         <View
@@ -109,8 +109,7 @@
                                         android:id="@+id/collText"
                                         android:text="Trash-Collection"
                                         android:textColor="@color/purple_700"
-                                        android:textSize="15sp"
-                                        android:textStyle="bold" />
+                                        android:textSize="15sp" />
                                     <TextView
                                         android:layout_width="30dp"
                                         android:layout_height="30dp"
@@ -165,8 +164,7 @@
                                         android:id="@+id/sortedText"
                                         android:text="Sorted-Wastes"
                                         android:textColor="@color/purple_700"
-                                        android:textSize="15sp"
-                                        android:textStyle="bold" />
+                                        android:textSize="15sp" />
                                     <TextView
                                         android:layout_width="30dp"
                                         android:layout_height="30dp"
@@ -192,13 +190,185 @@
                 </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="12dp"
+            app:cardCornerRadius="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="0dp"
+            android:background="@color/grey"
+            app:layout_constraintBaseline_toBaselineOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/linear22"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Completed Requests"
+                        android:textSize="15sp"
+                        android:textColor="@color/purple_700"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:id="@+id/vieww22"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:background="@color/grey"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/firstRel1"
+                    android:layout_below="@id/linear22"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:showDividers="middle"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:divider="@drawable/backs"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_marginTop="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_gravity="left"
+                        android:id="@+id/trash_collect1"
+                        tools:ignore="UseCompoundDrawables"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="2dp">
+
+                        <androidx.cardview.widget.CardView
+                            app:cardBackgroundColor="@color/teal_200"
+                            app:cardElevation="7dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            app:cardCornerRadius="20dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_gravity="center"
+                                    android:textAlignment="center"
+                                    android:text="Trash-Collection"
+                                    android:textColor="@color/purple_700"
+                                    android:textSize="15sp" />
+                                <TextView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:text="0"
+                                    android:textStyle="bold"
+                                    android:id="@+id/collNumber1"
+                                    android:textColor="#fff"
+                                    android:layout_marginLeft="7dp"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:background="@drawable/initials_bg"
+                                    android:textSize="17sp" />
+
+                            </LinearLayout>
+
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_marginTop="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_gravity="left"
+                        tools:ignore="UseCompoundDrawables"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginLeft="5dp">
+
+                        <androidx.cardview.widget.CardView
+                            app:cardBackgroundColor="@color/teal_200"
+                            app:cardElevation="7dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            app:cardCornerRadius="20dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_gravity="center"
+                                    android:textAlignment="center"
+                                    android:text="Sorted-Wastes"
+                                    android:textColor="@color/purple_700"
+                                    android:textSize="15sp" />
+                                <TextView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:text="0"
+                                    android:textStyle="bold"
+                                    android:id="@+id/sortNumber1"
+                                    android:textColor="#fff"
+                                    android:layout_marginLeft="7dp"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:background="@drawable/initials_bg"
+                                    android:textSize="17sp" />
+
+                            </LinearLayout>
+
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="28dp"
             app:cardElevation="10dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="10dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -215,7 +385,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Quick Links"
-                        android:textSize="17sp"
+                        android:textSize="15sp"
                         android:textColor="@color/purple_700"/>
                     <View
                         android:layout_width="match_parent"

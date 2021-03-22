@@ -45,7 +45,7 @@ public class LogInActivity extends AppCompatActivity {
             = MediaType.get("application/json; charset=utf-8");
     String TAG = LogInActivity.class.getSimpleName();
 
-    TextView loginAsStaffText, loginText, errorText;
+    TextView loginAsStaffText, loginText, errorText, loginAsUserText;
     LinearLayout errorTextLayout;
     // Session Manager Class
     SessionManager session;
@@ -64,6 +64,7 @@ public class LogInActivity extends AppCompatActivity {
         loginText = findViewById(R.id.txt_user);
         errorTextLayout = findViewById(R.id.errorB);
         errorText = findViewById(R.id.errorText);
+        loginAsUserText = findViewById(R.id.loginUser);
 
         session = new SessionManager(LogInActivity.this);
         //session.checkLogin();
@@ -85,6 +86,29 @@ public class LogInActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             loginStatus = true;
                             loginText.setText(R.string.log_in_Staff);
+                            loginAsStaffText.setVisibility(View.GONE);
+                            loginAsUserText.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                            dialog.cancel();
+                        }
+                    });
+            builder.show();
+        });
+
+        loginAsUserText.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(LogInActivity.this);
+            builder.setTitle("Login As a User");
+            builder.setMessage("Are you sure?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            loginStatus = false;
+                            loginText.setText("Log In");
+                            loginAsStaffText.setVisibility(View.VISIBLE);
+                            loginAsUserText.setVisibility(View.GONE);
                         }
                     })
                     .setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {

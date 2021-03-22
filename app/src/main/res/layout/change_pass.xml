@@ -17,7 +17,7 @@
         android:id="@+id/id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter the preferred new username below"
+        android:text="Enter your old and then the new password"
         android:textColor="@color/black"
         android:padding="5dp"
         android:layout_marginLeft="10dp"
@@ -35,7 +35,7 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:ems="10"
             android:layout_marginTop="10dp"
-            android:id="@+id/new_username"
+            android:id="@+id/old_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
@@ -43,8 +43,21 @@
             android:textColor="@color/purple_700"
             android:textColorHint="@color/purple_700"
             android:background="@drawable/edit_text_border"
-            android:hint="new username"
-            android:inputType="text" />
+            android:hint="old password"
+            android:inputType="textPassword" />
+        <androidx.appcompat.widget.AppCompatEditText
+            android:ems="10"
+            android:layout_marginTop="10dp"
+            android:id="@+id/new_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:padding="10dp"
+            android:textColor="@color/purple_700"
+            android:textColorHint="@color/purple_700"
+            android:background="@drawable/edit_text_border"
+            android:hint="new password"
+            android:inputType="textPassword" />
 
     </LinearLayout>
 

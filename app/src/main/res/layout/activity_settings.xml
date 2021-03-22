@@ -72,10 +72,62 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+    <androidx.cardview.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/changeName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardElevation="18dp"
+        android:layout_gravity="start"
+        android:layout_margin="10dp"
+        card_view:cardCornerRadius="12dp"
+        card_view:contentPadding="5dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="2dp"
+            android:padding="5dp"
+            android:gravity="start"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/edit"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:linksClickable="true"
+                    android:text="Change Username"
+                    android:textStyle="bold"
+                    android:textColor="@color/purple_700"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:linksClickable="true"
+                    android:layout_marginTop="4dp"
+                    android:text="Change your username throughout the app"
+                    android:layout_marginBottom="5dp"
+                    android:textColor="#000"
+                    android:textStyle="italic"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
 
     <androidx.cardview.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/change"
+        android:id="@+id/changePass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardElevation="18dp"

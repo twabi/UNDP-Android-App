@@ -186,10 +186,49 @@ mutation CreateReview($reviewInput : ReviewInput){
     }
 }
 
+mutation UpdateUserName($updateUserInput: UpdateUserInput){
+    updateUser(updateUserInput: $updateUserInput){
+        _id
+        fullName
+    }
+}
+
+mutation UpdatePassword($changePasswordInput: ChangePasswordInput){
+    changeUserPassword(changePasswordInput: $changePasswordInput){
+        _id
+    }
+}
+
+mutation UpdateStaffName($updateStaff : UpdateStaffInput){
+    updateStaff(updateStaffInput: $updateStaff){
+        _id
+        fullName
+    }
+}
+
+mutation UpdateStaffPassword($updatePassword: ChangePasswordInput){
+    changeStaffPassword(changePasswordInput: $updatePassword){
+        _id
+    }
+}
+
 query getTasks{
     tasks{
         _id
-        tasks
+        trashcollection{
+            _id
+            creator{
+                _id
+            }
+        }
+
+        sortedWaste{
+            _id
+            creator{
+                _id
+            }
+        }
+        body
         createdAt
         staff{
             _id

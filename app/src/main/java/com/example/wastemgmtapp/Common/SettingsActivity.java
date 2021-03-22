@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,13 +21,22 @@ import android.widget.Toast;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.example.wastemgmtapp.CreateIllegalDumpingMutation;
 import com.example.wastemgmtapp.R;
+import com.example.wastemgmtapp.UpdatePasswordMutation;
+import com.example.wastemgmtapp.UpdateStaffPasswordMutation;
+import com.example.wastemgmtapp.UpdateUserNameMutation;
 import com.example.wastemgmtapp.UserQuery;
+import com.example.wastemgmtapp.normalUser.ReportDumping;
+import com.example.wastemgmtapp.type.ChangePasswordInput;
+import com.example.wastemgmtapp.type.UpdateUserInput;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -35,13 +45,16 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class SettingsActivity extends AppCompatActivity {
 
     Toolbar toolbar;
-    AlertDialog dialog;
-    CardView shareCard, changeCard, viewCard;
+    AlertDialog dialog, passDialog;
+    CardView shareCard, changePassCard, changeNameCard, viewCard;
     TextView fullname, location, phoneNumber, createdAt, nationalID;
     ApolloClient apolloClient;
     ProgressBar loading, loadChange;
     String TAG = SettingsActivity.class.getSimpleName();
-    EditText nameInput, passInput;
+    EditText nameInput, passInput, oldPassInput;
+    String userID;
+    SessionManager session;
+    boolean isStaff = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +65,25 @@ public class SettingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        session = new SessionManager(getApplicationContext());
 
         shareCard = findViewById(R.id.share);
-        changeCard = findViewById(R.id.change);
+        changeNameCard = findViewById(R.id.changeName);
+        changePassCard = findViewById(R.id.changePass);
         viewCard = findViewById(R.id.viewMe);
 
         Intent intent = getIntent();
-        String userID = intent.getStringExtra("id");
+        userID = intent.getStringExtra("id");
+
+        HashMap<String, String> user = session.getUserDetails();
+        String status = user.get(SessionManager.KEY_STATUS);
+        if(!TextUtils.isEmpty(status)){
+            isStaff = !status.equals("User");
+        }
+
+        if(isStaff){
+            changePassCard.setVisibility(View.GONE);
+        }
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
@@ -82,10 +107,10 @@ public class SettingsActivity extends AppCompatActivity {
             startActivity(shareIntent);
         });
 
-        changeCard.setOnClickListener(view -> {
+        changeNameCard.setOnClickListener(view -> {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
-            builder.setTitle("Change User Details"); //set the title for the dialog
+            builder.setTitle("Change User Name"); //set the title for the dialog
             LayoutInflater inflater = (LayoutInflater) SettingsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             assert inflater != null;
@@ -94,15 +119,27 @@ public class SettingsActivity extends AppCompatActivity {
             builder.setView(view);
 
             nameInput = view.findViewById(R.id.new_username);
-            passInput = view.findViewById(R.id.new_password);
             loadChange = view.findViewById(R.id.loadIt);
-
-            //apolloClient.query(new UserQuery(userID)).enqueue(userCallback());
 
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
+                    String name = nameInput.getText().toString();
+                    if(TextUtils.isEmpty(name)){
+                        nameInput.setError("Required.");
+                        Toast.makeText(SettingsActivity.this, "Fields cannot be left empty!!",
+                                Toast.LENGTH_SHORT).show();
+                    } else{
+                        loadChange.setVisibility(View.VISIBLE);
 
+                        UpdateUserInput userInput = UpdateUserInput.builder()
+                                .name(name)
+                                ._id(userID)
+                                .build();
+                        Input<UpdateUserInput> input = new Input<>(userInput, true);
+                        apolloClient.mutate(new UpdateUserNameMutation(input)).enqueue(changeNameCallback());
+
+                    }
                 }
             });
 
@@ -117,6 +154,69 @@ public class SettingsActivity extends AppCompatActivity {
             dialog.show();
 
         });
+
+        changePassCard.setOnClickListener(view -> {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+            builder.setTitle("Change User Password"); //set the title for the dialog
+            LayoutInflater inflater = (LayoutInflater) SettingsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            assert inflater != null;
+            //build the dialog and set the view from the layout already created
+            view = inflater.inflate(R.layout.change_pass, null);
+            builder.setView(view);
+
+            passInput = view.findViewById(R.id.new_password);
+            oldPassInput = view.findViewById(R.id.old_pass);
+            loadChange = view.findViewById(R.id.loadIt);
+
+
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    String oldPassword = oldPassInput.getText().toString();
+                    String newPassword = passInput.getText().toString();
+                    if(TextUtils.isEmpty(oldPassword) || TextUtils.isEmpty(newPassword)){
+                        Toast.makeText(SettingsActivity.this, "Fields cannot be left empty!!",
+                                Toast.LENGTH_SHORT).show();
+                    } else{
+                        loadChange.setVisibility(View.VISIBLE);
+                        if(!isStaff){
+
+                            ChangePasswordInput passwordInput = ChangePasswordInput.builder()
+                                    ._id(userID)
+                                    .currentPassword(oldPassword)
+                                    .newPassword(newPassword)
+                                    .build();
+                            Input<ChangePasswordInput> input = new Input<>(passwordInput, true);
+                            apolloClient.mutate(new UpdatePasswordMutation(input)).enqueue(changePassCallback());
+
+                        }else{
+                            ChangePasswordInput passwordInput = ChangePasswordInput.builder()
+                                    ._id(userID)
+                                    .currentPassword(oldPassword)
+                                    .newPassword(newPassword)
+                                    .build();
+                            Input<ChangePasswordInput> input = new Input<>(passwordInput, true);
+                            apolloClient.mutate(new UpdateStaffPasswordMutation(input)).enqueue(changeStaffPass());
+                        }
+                    }
+
+                }
+            });
+
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int which) {
+                    dialogInterface.cancel();
+                }
+            });
+
+            passDialog = builder.create();
+            passDialog.show();
+
+        });
+
 
         viewCard.setOnClickListener(view -> {
 
@@ -206,6 +306,141 @@ public class SettingsActivity extends AppCompatActivity {
                 Toast.makeText(SettingsActivity.this,
                         "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
                 loading.setVisibility(View.GONE);
+            }
+        };
+    }
+
+    public ApolloCall.Callback<UpdatePasswordMutation.Data> changePassCallback(){
+        return new ApolloCall.Callback<UpdatePasswordMutation.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<UpdatePasswordMutation.Data> response) {
+                UpdatePasswordMutation.Data data = response.getData();
+
+                if(response.getErrors() == null){
+
+                    if(data.changeUserPassword() == null){
+                        Log.e("Apollo", "an Error occurred : " );
+                        runOnUiThread(() -> {
+                            // Stuff that updates the UI
+                            Toast.makeText(SettingsActivity.this,
+                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
+                            //errorText.setText();
+                        });
+                    }else{
+                        runOnUiThread(() -> {
+                            Log.d(TAG, "onResponse: " + data.changeUserPassword()._id());
+                            passDialog.dismiss();
+                            Toast.makeText(SettingsActivity.this,
+                                    "password changed successfully", Toast.LENGTH_LONG).show();
+                        });
+                    }
+
+                } else{
+                    List<Error> error = response.getErrors();
+                    String errorMessage = error.get(0).getMessage();
+                    Log.e("Apollo", "an Error occurred : " + errorMessage );
+                    runOnUiThread(() -> {
+                        Toast.makeText(SettingsActivity.this,
+                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+                Toast.makeText(SettingsActivity.this,
+                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        };
+    }
+
+    public ApolloCall.Callback<UpdateUserNameMutation.Data> changeNameCallback(){
+        return new ApolloCall.Callback<UpdateUserNameMutation.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<UpdateUserNameMutation.Data> response) {
+                UpdateUserNameMutation.Data data = response.getData();
+
+                if(response.getErrors() == null){
+
+                    if(data.updateUser() == null){
+                        Log.e("Apollo", "an Error occurred : " );
+                        runOnUiThread(() -> {
+                            // Stuff that updates the UI
+                            Toast.makeText(SettingsActivity.this,
+                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
+                            //errorText.setText();
+                        });
+                    }else{
+                        runOnUiThread(() -> {
+                            Log.d(TAG, "onResponse: " + data.updateUser()._id());
+                            dialog.dismiss();
+                            Toast.makeText(SettingsActivity.this,
+                                    "Username changed successfully", Toast.LENGTH_LONG).show();
+                        });
+                    }
+
+                } else{
+                    List<Error> error = response.getErrors();
+                    String errorMessage = error.get(0).getMessage();
+                    Log.e("Apollo", "an Error occurred : " + errorMessage );
+                    runOnUiThread(() -> {
+                        Toast.makeText(SettingsActivity.this,
+                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+                Toast.makeText(SettingsActivity.this,
+                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        };
+    }
+
+    public ApolloCall.Callback<UpdateStaffPasswordMutation.Data> changeStaffPass(){
+        return new ApolloCall.Callback<UpdateStaffPasswordMutation.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<UpdateStaffPasswordMutation.Data> response) {
+                UpdateStaffPasswordMutation.Data data = response.getData();
+
+                if(response.getErrors() == null){
+
+                    if(data.changeStaffPassword() == null){
+                        Log.e("Apollo", "an Error occurred : " );
+                        runOnUiThread(() -> {
+                            // Stuff that updates the UI
+                            Toast.makeText(SettingsActivity.this,
+                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
+                            //errorText.setText();
+                        });
+                    }else{
+                        runOnUiThread(() -> {
+                            Log.d(TAG, "onResponse: " + data.changeStaffPassword()._id());
+                            passDialog.dismiss();
+                            Toast.makeText(SettingsActivity.this,
+                                    "password changed successfully", Toast.LENGTH_LONG).show();
+                        });
+                    }
+
+                } else{
+                    List<Error> error = response.getErrors();
+                    String errorMessage = error.get(0).getMessage();
+                    Log.e("Apollo", "an Error occurred : " + errorMessage );
+                    runOnUiThread(() -> {
+                        Toast.makeText(SettingsActivity.this,
+                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+                Toast.makeText(SettingsActivity.this,
+                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         };
     }

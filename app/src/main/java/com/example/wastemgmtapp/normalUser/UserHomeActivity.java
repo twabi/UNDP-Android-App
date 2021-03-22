@@ -25,6 +25,8 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.Common.GPSTracker;
 import com.example.wastemgmtapp.Common.SessionManager;
+import com.example.wastemgmtapp.GetCollectionNotifsQuery;
+import com.example.wastemgmtapp.GetSortedWasteNotifsQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.Common.SettingsActivity;
 import com.example.wastemgmtapp.UserQuery;
@@ -57,7 +59,9 @@ public class UserHomeActivity extends AppCompatActivity{
     TextView collectNumber, sortedNumber;
     SessionManager session;
     FusedLocationProviderClient mFusedLocationClient;
+    TextView sortNumber1, collNumber1;
     double zoneLat,zoneLong;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,8 @@ public class UserHomeActivity extends AppCompatActivity{
         gotoSettings = findViewById(R.id.gotoSettings);
         gotoInstitutions = findViewById(R.id.gotoCompanies);
         gotoRequests = findViewById(R.id.gotoRequests);
+        sortNumber1 = findViewById(R.id.sortNumber1);
+        collNumber1 = findViewById(R.id.collNumber1);
 
         session = new SessionManager(getApplicationContext());
 
@@ -98,7 +104,7 @@ public class UserHomeActivity extends AppCompatActivity{
                 .build();
 
         HashMap<String, String> user = session.getUserDetails();
-        String userID = user.get(SessionManager.KEY_USERID);
+        userID = user.get(SessionManager.KEY_USERID);
 
         setSupportActionBar(toolbar);
 
@@ -111,7 +117,9 @@ public class UserHomeActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         apolloClient.query(new UserQuery(userID)).enqueue(usersCallBack());
-        apolloClient.query(new ZonesQuery()).enqueue(zonesQuery());
+        //apolloClient.query(new ZonesQuery()).enqueue(zonesQuery());
+        apolloClient.query(new GetCollectionNotifsQuery()).enqueue(collectCallback());
+        apolloClient.query(new GetSortedWasteNotifsQuery()).enqueue(sortedCallback());
 
         GPSTracker gpsTracker = new GPSTracker(UserHomeActivity.this, UserHomeActivity.this);
         userLat = gpsTracker.getLatitude();
@@ -365,4 +373,135 @@ public class UserHomeActivity extends AppCompatActivity{
 
 
     }
+
+
+    public ApolloCall.Callback<GetSortedWasteNotifsQuery.Data> sortedCallback(){
+        return new ApolloCall.Callback<GetSortedWasteNotifsQuery.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<GetSortedWasteNotifsQuery.Data> response) {
+                GetSortedWasteNotifsQuery.Data data = response.getData();
+
+                if(response.getErrors() == null){
+
+                    if(data.sortedWasteNotications() == null){
+                        Log.e("Apollo", "an Error occurred : " );
+                        runOnUiThread(() -> {
+                            // Stuff that updates the UI
+                            Toast.makeText(UserHomeActivity.this,
+                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
+                        });
+                    }else{
+                        runOnUiThread(() -> {
+                            Log.d(TAG, "notifs fetched" + data.sortedWasteNotications());
+                            Log.d(TAG, "notifs fetched" + data.sortedWasteNotications());
+                            ArrayList complete = new ArrayList<>();
+                            ArrayList incomplete = new ArrayList<>();
+
+                            for(int i =0; i < data.sortedWasteNotications().size(); i++){
+                                if(data.sortedWasteNotications().get(i).status().equals("accepted") &&
+                                userID.equals(data.sortedWasteNotications().get(i).creator()._id())){
+                                    complete.add(data.sortedWasteNotications().get(i));
+                                } else {
+                                    incomplete.add(data.sortedWasteNotications().get(i));
+                                }
+                            }
+                            int completeSize = complete.size();
+                            int pendingSize = incomplete.size();
+                            Log.d(TAG, "onResponse: " + completeSize +"-"+ pendingSize);
+                            sortedNumber.setText(String.valueOf(completeSize));
+                            sortNumber1.setText(String.valueOf(pendingSize));
+
+                        });
+                    }
+
+                } else{
+                    List<Error> error = response.getErrors();
+                    String errorMessage = error.get(0).getMessage();
+                    Log.e("Apollo", "an Error occurred : " + errorMessage );
+                    runOnUiThread(() -> {
+                        Toast.makeText(UserHomeActivity.this,
+                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                    });
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(UserHomeActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                });
+            }
+        };
+    }
+
+    public ApolloCall.Callback<GetCollectionNotifsQuery.Data> collectCallback(){
+        return new ApolloCall.Callback<GetCollectionNotifsQuery.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<GetCollectionNotifsQuery.Data> response) {
+                GetCollectionNotifsQuery.Data data = response.getData();
+
+                if(response.getErrors() == null){
+
+                    if(data.trashCollectionNotications() == null){
+                        Log.e("Apollo", "an Error occurred : " );
+                        runOnUiThread(() -> {
+                            // Stuff that updates the UI
+                            Toast.makeText(UserHomeActivity.this,
+                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
+                        });
+                    }else{
+                        runOnUiThread(() -> {
+                            Log.d(TAG, "notifs fetched" + data.trashCollectionNotications());
+                            ArrayList complete = new ArrayList<>();
+                            ArrayList incomplete = new ArrayList<>();
+
+                            for(int i =0; i < data.trashCollectionNotications().size(); i++){
+                                if(data.trashCollectionNotications().get(i).status().equals("accepted")&&
+                                        userID.equals(data.trashCollectionNotications().get(i).creator()._id())){
+                                    complete.add(data.trashCollectionNotications().get(i));
+                                } else {
+                                    incomplete.add(data.trashCollectionNotications().get(i));
+                                }
+                            }
+                            int completeSize = complete.size();
+                            int pendingSize = incomplete.size();
+                            Log.d(TAG, "onResponse: " + completeSize +"-"+ pendingSize);
+                            collectNumber.setText(String.valueOf(completeSize));
+                            collNumber1.setText(String.valueOf(pendingSize));
+
+                        });
+                    }
+
+                } else{
+                    List<Error> error = response.getErrors();
+                    String errorMessage = error.get(0).getMessage();
+                    Log.e("Apollo", "an Error occurred : " + errorMessage );
+                    runOnUiThread(() -> {
+                        Toast.makeText(UserHomeActivity.this,
+                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                    });
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(UserHomeActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                });
+            }
+        };
+
+
+    }
+
 }

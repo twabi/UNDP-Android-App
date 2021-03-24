@@ -8,14 +8,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,7 @@ import com.example.wastemgmtapp.GetTasksQuery;
 import com.example.wastemgmtapp.GetZoneTrashcansQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.Common.SettingsActivity;
+import com.example.wastemgmtapp.UserQuery;
 import com.google.android.material.navigation.NavigationView;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -61,6 +65,10 @@ public class StaffHomeActivity extends AppCompatActivity {
     LinearLayout zoneTrashcans, assignedTasks;
     String zoneID, userID;
     CardView cardSettings, cardWaste, cardTrashcans, cardTasks;
+    TextView name, location, phoneNumber, createdAt, emailID;
+    ProgressBar loading;
+    AlertDialog dialog;
+    String nameText, locationText, phoneNumberText, createdAtText, emailText;
 
 
     @Override
@@ -188,7 +196,38 @@ public class StaffHomeActivity extends AppCompatActivity {
         });
 
         cardWaste.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(StaffHomeActivity.this);
+            builder.setTitle("Institution Profile"); //set the title for the dialog
+            LayoutInflater inflater = (LayoutInflater) StaffHomeActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+            assert inflater != null;
+            //build the dialog and set the view from the layout already created
+            view = inflater.inflate(R.layout.waste_details, null);
+            builder.setView(view);
+
+            emailID = view.findViewById(R.id.email);
+            name = view.findViewById(R.id.name);
+            location = view.findViewById(R.id.locationText);
+            phoneNumber = view.findViewById(R.id.phone);
+            createdAt = view.findViewById(R.id.createdAt);
+            loading = view.findViewById(R.id.nameLoad);
+
+            //apolloClient.query(new GetStaffQuery(userID)).enqueue(staffCallback());
+            emailID.setText("Email:  " + emailText); name.setText("Name:  " + nameText);
+            location.setText("Location:  " + locationText);
+            createdAt.setText("Date Created:  " + createdAtText);
+            phoneNumber.setText("Phone Number: " + phoneNumberText);
+            loading.setVisibility(View.GONE);
+
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            });
+            dialog = builder.create();
+            dialog.show();
         });
 
     }
@@ -230,6 +269,13 @@ public class StaffHomeActivity extends AppCompatActivity {
                             } else{
                                 text_support.setText("Zone: null");
                             }
+
+                            locationText = data.staff().creator().location();
+                            emailText = data.staff().creator().email();
+                            createdAtText = data.staff().creator().createdAt();
+                            nameText = data.staff().creator().name();
+                            phoneNumberText = data.staff().creator().phoneNumber();
+
                         });
 
                         if(response.getErrors() != null){
@@ -255,8 +301,6 @@ public class StaffHomeActivity extends AppCompatActivity {
                 });
             }
         };
-
-
     }
 
 
@@ -379,8 +423,6 @@ public class StaffHomeActivity extends AppCompatActivity {
                         });
                     }
                 }
-
-
             }
 
             @Override

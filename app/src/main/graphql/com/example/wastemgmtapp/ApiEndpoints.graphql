@@ -98,6 +98,10 @@ query GetStaff($staffId: ID!){
         creator {
             _id
             name
+            email
+            phoneNumber
+            location
+            createdAt
         }
         employeeID
         fullName

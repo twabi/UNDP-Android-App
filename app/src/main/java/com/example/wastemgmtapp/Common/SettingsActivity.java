@@ -244,8 +244,6 @@ public class SettingsActivity extends AppCompatActivity {
                 apolloClient.query(new GetStaffQuery(userID)).enqueue(staffCallback());
             }
 
-
-
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
                 @Override

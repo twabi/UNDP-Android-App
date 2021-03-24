@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.wastemgmtapp.R;
@@ -18,6 +19,7 @@ import com.mapbox.mapboxsdk.maps.Style;
 public class RequestDetailsActivity extends AppCompatActivity {
 
     private MapView mapView;
+    String taskID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +30,9 @@ public class RequestDetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //show the back button on the toolbar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        Intent intent = getIntent();
+        taskID = intent.getStringExtra("key");
 
         mapView = findViewById(R.id.request_map);
         mapView.onCreate(savedInstanceState);

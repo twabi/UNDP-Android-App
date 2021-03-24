@@ -335,7 +335,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                             ArrayList<Object> tasks = new ArrayList<>();
                             if(!TextUtils.isEmpty(userID)){
                                 for(int i=0; i < data.tasks().size(); i++){
-                                    if(userID.equals(data.tasks().get(i).staff()._id())){
+                                    if(userID.equals(data.tasks().get(i).staff()._id()) && (data.tasks().get(i).completed() == false)){
                                         tasks.add(data.tasks().get(i));
                                     }
                                 }

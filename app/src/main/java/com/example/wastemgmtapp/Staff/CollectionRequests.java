@@ -133,40 +133,47 @@ public class CollectionRequests extends AppCompatActivity {
                         noItems.setVisibility(View.GONE);
                         errorLayout.setVisibility(View.GONE);
                         Log.d(TAG, "tasks fetched: " + data.tasks());
-                        ArrayList<Object> tasks = new ArrayList<>();
-                        if(!TextUtils.isEmpty(userID)){
-                            for(int i=0; i < data.tasks().size(); i++){
-                                if((userID.equals(data.tasks().get(i).staff()._id()) && (data.tasks().get(i).completed() == false))){
-                                    tasks.add(data.tasks().get(i));
-                                    keyList.add(data.tasks().get(i)._id());
-                                    statusList.add(data.tasks().get(i).completed());
-                                    createdAtList.add(data.tasks().get(i).createdAt());
 
-                                    Log.d(TAG, "requests: " + data.tasks().get(i).sortedWaste() + "-" + data.tasks().get(i).trashcollection());
+                        try{
+                            ArrayList<Object> tasks = new ArrayList<>();
+                            if(!TextUtils.isEmpty(userID)){
+                                for(int i=0; i < data.tasks().size(); i++){
+                                    if((userID.equals(data.tasks().get(i).staff()._id()) && (data.tasks().get(i).completed() == false))){
+                                        tasks.add(data.tasks().get(i));
+                                        keyList.add(data.tasks().get(i)._id());
+                                        statusList.add(data.tasks().get(i).completed());
+                                        createdAtList.add(data.tasks().get(i).createdAt());
 
-                                    if(data.tasks().get(i).sortedWaste() != null && data.tasks().get(i).trashcollection() == null){
-                                        taskType.add("Sorted Waste Collection");
-                                    } else if(data.tasks().get(i).trashcollection() != null && data.tasks().get(i).sortedWaste() == null){
-                                        taskType.add("Trash Collection");
-                                    } else if(data.tasks().get(i).trashcollection() == null && data.tasks().get(i).sortedWaste() == null){
-                                        Log.d(TAG, "The body: " + data.tasks().get(i).body());
-                                        if(data.tasks().get(i).body().equals("not available")){
-                                            taskType.add("Unknown Task");
-                                        } else {
-                                            taskType.add("Other");
+                                        Log.d(TAG, "requests: " + data.tasks().get(i).sortedWaste() + "-" + data.tasks().get(i).trashcollection());
+
+                                        if(data.tasks().get(i).sortedWaste() != null && data.tasks().get(i).trashcollection() == null){
+                                            taskType.add("Sorted Waste Collection");
+                                        } else if(data.tasks().get(i).trashcollection() != null && data.tasks().get(i).sortedWaste() == null){
+                                            taskType.add("Trash Collection");
+                                        } else if(data.tasks().get(i).trashcollection() == null && data.tasks().get(i).sortedWaste() == null){
+                                            Log.d(TAG, "The body: " + data.tasks().get(i).body());
+                                            if(data.tasks().get(i).body().equals("not available")){
+                                                taskType.add("Unknown Task");
+                                            } else {
+                                                taskType.add("Other");
+                                            }
                                         }
-
                                     }
                                 }
-                            }
 
-                            recyclerAdapter = new RequestsRecyclerAdapter(CollectionRequests.this, keyList, statusList, createdAtList, taskType);
-                            tasksView.setAdapter(recyclerAdapter);
+                                recyclerAdapter = new RequestsRecyclerAdapter(CollectionRequests.this, keyList, statusList, createdAtList, taskType);
+                                tasksView.setAdapter(recyclerAdapter);
 
-                            if(recyclerAdapter.getItemCount() == 0){
-                                noItems.setVisibility(View.VISIBLE);
+                                if(recyclerAdapter.getItemCount() == 0){
+                                    noItems.setVisibility(View.VISIBLE);
+                                }
                             }
+                        }catch (Exception e){
+                            errorLayout.setVisibility(View.VISIBLE);
+                            Toast.makeText(CollectionRequests.this,
+                                    "an Error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
+
                     });
 
                     if(response.getErrors() != null){

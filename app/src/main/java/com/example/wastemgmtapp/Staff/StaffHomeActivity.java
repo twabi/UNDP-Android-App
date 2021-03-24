@@ -325,7 +325,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                             Log.e(TAG, "an Error in tasks query : " + errorMessage );
                             runOnUiThread(() -> {
                                 Toast.makeText(StaffHomeActivity.this,
-                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_SHORT).show();
 
                             });
                         }
@@ -333,15 +333,21 @@ public class StaffHomeActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Log.d(TAG, "tasks fetched: " + data.tasks());
                             ArrayList<Object> tasks = new ArrayList<>();
-                            if(!TextUtils.isEmpty(userID)){
-                                for(int i=0; i < data.tasks().size(); i++){
-                                    if(userID.equals(data.tasks().get(i).staff()._id()) && (data.tasks().get(i).completed() == false)){
-                                        tasks.add(data.tasks().get(i));
+                            try{
+                                if(!TextUtils.isEmpty(userID)){
+                                    for(int i=0; i < data.tasks().size(); i++){
+                                        if(userID.equals(data.tasks().get(i).staff()._id()) && (data.tasks().get(i).completed() == false)){
+                                            tasks.add(data.tasks().get(i));
+                                        }
                                     }
                                 }
+
+                                taskNumber.setText(String.valueOf(tasks.size()));
+                            } catch (Exception e){
+                                Toast.makeText(StaffHomeActivity.this,
+                                        "an Error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
                             }
 
-                            taskNumber.setText(String.valueOf(tasks.size()));
 
                         });
 

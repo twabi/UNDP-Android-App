@@ -142,6 +142,8 @@ public class CollectionRequests extends AppCompatActivity {
                                     statusList.add(data.tasks().get(i).completed());
                                     createdAtList.add(data.tasks().get(i).createdAt());
 
+                                    Log.d(TAG, "requests: " + data.tasks().get(i).sortedWaste() + "-" + data.tasks().get(i).trashcollection());
+
                                     if(data.tasks().get(i).sortedWaste() != null && data.tasks().get(i).trashcollection() == null){
                                         taskType.add("Sorted Waste Collection");
                                     } else if(data.tasks().get(i).trashcollection() != null && data.tasks().get(i).sortedWaste() == null){

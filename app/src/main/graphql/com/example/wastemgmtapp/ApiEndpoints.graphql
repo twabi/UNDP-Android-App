@@ -219,6 +219,43 @@ mutation UpdateStaffPassword($updatePassword: ChangePasswordInput){
     }
 }
 
+query getTask($taskID : ID!){
+    task(taskId: $taskID){
+        _id
+        trashcollection{
+            _id
+            location
+            creator{
+                _id
+                fullName
+            }
+            amount
+            typeOfWaste
+            longitude
+            latitude
+        }
+        sortedWaste{
+            _id
+            creator{
+                _id
+                fullName
+            }
+            location
+            amount
+            typeOfWaste
+            longitude
+            latitude
+        }
+        body
+        createdAt
+        staff{
+            _id
+            fullName
+        }
+        completed
+    }
+}
+
 query getTasks{
     tasks{
         _id

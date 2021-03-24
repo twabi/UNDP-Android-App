@@ -21,12 +21,7 @@ query Users{
         _id
         nationalID
         fullName
-        sortedwasteNofications {
-            _id
-        }
-        trashCollectionNofications {
-            _id
-        }
+        location
     }
 }
 
@@ -158,6 +153,10 @@ query GetSortedWasteNotifs{
     sortedWasteNotications{
         _id
         status
+        institution{
+            _id
+            name
+        }
         creator{
             _id
         }
@@ -169,6 +168,10 @@ query GetCollectionNotifs{
     trashCollectionNotications{
         _id
         status
+        institution{
+            _id
+            name
+        }
         creator{
             _id
         }
@@ -235,6 +238,77 @@ query getTasks{
             fullName
         }
         completed
+    }
+}
+
+subscription TaskAdded{
+    taskAdded{
+        _id
+        trashcollection{
+            _id
+            creator{
+                _id
+            }
+        }
+
+        sortedWaste{
+            _id
+            creator{
+                _id
+            }
+        }
+        body
+        createdAt
+        staff{
+            _id
+            fullName
+        }
+        completed
+
+    }
+}
+
+
+subscription CollectionNotifAdded{
+    noficationtTrashCollectionAdded{
+        _id
+        status
+        institution{
+            _id
+            name
+        }
+        creator{
+            _id
+        }
+        createdAt
+    }
+}
+
+subscription SortedNotifAdded{
+    noficationtSortedWasteAdded{
+        _id
+        status
+        institution{
+            _id
+            name
+        }
+        creator{
+            _id
+        }
+        createdAt
+    }
+}
+
+query GetZoneTrashcans{
+    trashcans{
+        _id
+        longitude
+        latitude
+        status
+        trashcanId
+        zone{
+            _id
+        }
     }
 }
 

@@ -20,6 +20,7 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.Fragments.CollectionFragment;
 import com.example.wastemgmtapp.R;
+import com.example.wastemgmtapp.Staff.StaffHomeActivity;
 import com.example.wastemgmtapp.WasteInstitutionsQuery;
 import com.example.wastemgmtapp.adapters.InstitutionsAdapter;
 
@@ -85,17 +86,29 @@ public class InstitutionsActivity extends AppCompatActivity {
             public void onResponse(@NotNull Response<WasteInstitutionsQuery.Data> response) {
                 WasteInstitutionsQuery.Data data = response.getData();
 
-                if(response.getErrors() == null){
+
 
                     if(data.wasteInstitutions() == null){
-                        Log.e("Apollo", "an Error occurred : " );
-                        runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            Toast.makeText(InstitutionsActivity.this,
-                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
-                            //errorText.setText();
-                            fetchLoading.setVisibility(View.GONE);
-                        });
+
+                        if(response.getErrors() == null){
+                            Log.e("Apollo", "an Error occurred : " );
+                            runOnUiThread(() -> {
+                                // Stuff that updates the UI
+                                Toast.makeText(InstitutionsActivity.this,
+                                        "an Error occurred : " , Toast.LENGTH_LONG).show();
+                                //errorText.setText();
+                                fetchLoading.setVisibility(View.GONE);
+                            });
+                        } else{
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e("Apollo", "an Error occurred : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(InstitutionsActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                                fetchLoading.setVisibility(View.GONE);
+                            });
+                        }
                     }else{
                         runOnUiThread(() -> {
                             Log.d(TAG, "institutions fetched" + data.wasteInstitutions());
@@ -112,18 +125,20 @@ public class InstitutionsActivity extends AppCompatActivity {
                             listView.setAdapter(adapter);
 
                         });
+
+                        if(response.getErrors() != null){
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e(TAG, "an Error in institutions query : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(InstitutionsActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
                     }
 
-                } else{
-                    List<Error> error = response.getErrors();
-                    String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
-                    runOnUiThread(() -> {
-                        Toast.makeText(InstitutionsActivity.this,
-                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-                        fetchLoading.setVisibility(View.GONE);
-                    });
-                }
+
             }
 
             @Override

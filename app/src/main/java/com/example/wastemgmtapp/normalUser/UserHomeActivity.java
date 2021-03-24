@@ -52,15 +52,12 @@ public class UserHomeActivity extends AppCompatActivity{
     private final String TAG = UserHomeActivity.class.getSimpleName();
     double userLat, userLong;
     ApolloClient apolloClient;
-    Double maxRating;
-    String maxLocation;
     TextView textUserName;
     LinearLayout linearCollect, linearSorted, gotoSettings, gotoRequests, gotoInstitutions;
     TextView collectNumber, sortedNumber;
     SessionManager session;
     FusedLocationProviderClient mFusedLocationClient;
     TextView sortNumber1, collNumber1;
-    double zoneLat,zoneLong;
     String userID;
 
     @Override
@@ -239,94 +236,15 @@ public class UserHomeActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    public ApolloCall.Callback<ZonesQuery.Data> zonesQuery(){
-        return new ApolloCall.Callback<ZonesQuery.Data>() {
-            @Override
-            public void onResponse(@NotNull Response<ZonesQuery.Data> response) {
-                ZonesQuery.Data data = response.getData();
-
-                if(response.getErrors() == null){
-
-                    if(data.zones() == null){
-                        Log.e("Apollo", "an Error occurred : " );
-                        runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            Toast.makeText(UserHomeActivity.this,
-                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
-                            //errorText.setText();
-                        });
-                    }else{
-                        runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            //Toast.makeText(UserHomeActivity.this,
-                            //"User fetched!", Toast.LENGTH_LONG).show();
-                            try{
-                                Log.d(TAG, "zones fetched" + data.zones());
-                                ArrayList<Double> ratings = new ArrayList<>();
-                                ArrayList<String> locations = new ArrayList<>();
-                                ArrayList<Double> lat = new ArrayList<>();
-                                ArrayList<String> longitudes = new ArrayList<>();
-                                for(int i =0; i < data.zones().size(); i++){
-                                    ratings.add(data.zones().get(i).averageRating());
-                                    locations.add(data.zones().get(i).location());
-                                    longitudes.add(data.zones().get(i).longitude());
-                                    lat.add(data.zones().get(i).latitude());
-                                }
-
-                                Double maxVal = Collections.max(ratings);
-                                int maxIdx = ratings.indexOf(maxVal);
-                                //ratingText.setText("Rating : " + maxVal);
-                                String locale = locations.get(maxIdx);
-                                //locationName.setText(locale);
-
-                                maxLocation = locations.get(maxIdx);
-                                maxRating = Collections.max(ratings);
-                                zoneLat = Double.parseDouble(String.valueOf(lat.get(maxIdx)));
-                                zoneLong = Double.parseDouble(longitudes.get(maxIdx));
-
-                                Log.d(TAG, "onResponse: " + zoneLat + "-" + zoneLong);
-                            } catch (Exception e){
-                                e.printStackTrace();
-                                Toast.makeText(UserHomeActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-
-
-                        });
-                    }
-
-                } else{
-                    List<Error> error = response.getErrors();
-                    String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
-                    runOnUiThread(() -> {
-                        Toast.makeText(UserHomeActivity.this,
-                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-                Log.e("Apollo", "Error", e);
-                runOnUiThread(() -> {
-                    Toast.makeText(UserHomeActivity.this,
-                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
-
-            }
-        };
-    }
-
     public ApolloCall.Callback<UserQuery.Data> usersCallBack(){
         return new ApolloCall.Callback<UserQuery.Data>() {
             @Override
             public void onResponse(@NotNull Response<UserQuery.Data> response) {
                 UserQuery.Data data = response.getData();
 
-                if(response.getErrors() == null){
+                if(data.user() == null){
 
-                    if(data.user() == null){
+                    if(response.getErrors() == null){
                         Log.e("Apollo", "an Error occurred : " );
                         runOnUiThread(() -> {
                             // Stuff that updates the UI
@@ -334,28 +252,34 @@ public class UserHomeActivity extends AppCompatActivity{
                                     "an Error occurred : " , Toast.LENGTH_LONG).show();
                             //errorText.setText();
                         });
-                    }else{
+
+                    } else{
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
                         runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            //Toast.makeText(UserHomeActivity.this,
-                            //"User fetched!", Toast.LENGTH_LONG).show();
-                            Log.d(TAG, "user fetched" + data.user());
-                            //userLat = data.user().latitude();
-                            //userLong = data.user().longitude();
-                            textUserName.setText(data.user().fullName());
+                            Toast.makeText(UserHomeActivity.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
 
                         });
                     }
-
-                } else{
-                    List<Error> error = response.getErrors();
-                    String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
+                }else{
                     runOnUiThread(() -> {
-                        Toast.makeText(UserHomeActivity.this,
-                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "user fetched" + data.user());
+                        textUserName.setText(data.user().fullName());
 
                     });
+
+                    if(response.getErrors() != null){
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(UserHomeActivity.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
                 }
 
             }
@@ -381,15 +305,26 @@ public class UserHomeActivity extends AppCompatActivity{
             public void onResponse(@NotNull Response<GetSortedWasteNotifsQuery.Data> response) {
                 GetSortedWasteNotifsQuery.Data data = response.getData();
 
-                if(response.getErrors() == null){
+
 
                     if(data.sortedWasteNotications() == null){
-                        Log.e("Apollo", "an Error occurred : " );
-                        runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            Toast.makeText(UserHomeActivity.this,
-                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
-                        });
+                        if(response.getErrors() == null){
+                            Log.e("Apollo", "an Error occurred : " );
+                            runOnUiThread(() -> {
+                                // Stuff that updates the UI
+                                Toast.makeText(UserHomeActivity.this,
+                                        "an Error occurred : " , Toast.LENGTH_LONG).show();
+                            });
+                        } else{
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e("Apollo", "an Error occurred : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(UserHomeActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
                     }else{
                         runOnUiThread(() -> {
                             Log.d(TAG, "notifs fetched" + data.sortedWasteNotications());
@@ -412,18 +347,18 @@ public class UserHomeActivity extends AppCompatActivity{
                             sortNumber1.setText(String.valueOf(pendingSize));
 
                         });
+                        if(response.getErrors() != null){
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e("Apollo", "an Error occurred : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(UserHomeActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
                     }
 
-                } else{
-                    List<Error> error = response.getErrors();
-                    String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
-                    runOnUiThread(() -> {
-                        Toast.makeText(UserHomeActivity.this,
-                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-
-                    });
-                }
 
             }
 
@@ -445,15 +380,27 @@ public class UserHomeActivity extends AppCompatActivity{
             public void onResponse(@NotNull Response<GetCollectionNotifsQuery.Data> response) {
                 GetCollectionNotifsQuery.Data data = response.getData();
 
-                if(response.getErrors() == null){
+
 
                     if(data.trashCollectionNotications() == null){
-                        Log.e("Apollo", "an Error occurred : " );
-                        runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            Toast.makeText(UserHomeActivity.this,
-                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
-                        });
+
+                        if(response.getErrors() == null){
+                            Log.e("Apollo", "an Error occurred : " );
+                            runOnUiThread(() -> {
+                                // Stuff that updates the UI
+                                Toast.makeText(UserHomeActivity.this,
+                                        "an Error occurred : " , Toast.LENGTH_LONG).show();
+                            });
+                        } else{
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e("Apollo", "an Error occurred : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(UserHomeActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
                     }else{
                         runOnUiThread(() -> {
                             Log.d(TAG, "notifs fetched" + data.trashCollectionNotications());
@@ -475,18 +422,20 @@ public class UserHomeActivity extends AppCompatActivity{
                             collNumber1.setText(String.valueOf(pendingSize));
 
                         });
+
+                        if(response.getErrors() != null){
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e("Apollo", "an Error occurred : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(UserHomeActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
                     }
 
-                } else{
-                    List<Error> error = response.getErrors();
-                    String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
-                    runOnUiThread(() -> {
-                        Toast.makeText(UserHomeActivity.this,
-                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
 
-                    });
-                }
 
             }
 

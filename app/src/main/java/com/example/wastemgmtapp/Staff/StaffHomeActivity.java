@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.DialogInterface;
@@ -14,6 +15,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,8 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.Common.GPSTracker;
 import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.GetStaffQuery;
+import com.example.wastemgmtapp.GetTasksQuery;
+import com.example.wastemgmtapp.GetZoneTrashcansQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.Common.SettingsActivity;
 import com.google.android.material.navigation.NavigationView;
@@ -39,6 +43,7 @@ import com.mapbox.mapboxsdk.maps.Style;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,13 +53,15 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class StaffHomeActivity extends AppCompatActivity {
 
     private ActionBarDrawerToggle mToggle;
-    private MapView mapRequests;
-    private MapView mapTrash;
     ApolloClient apolloClient;
     SessionManager session;
     double userLat, userLong;
-    TextView textUserName, text_support;
+    TextView textUserName, text_support, trashNumber, taskNumber;
     String TAG = StaffHomeActivity.class.getSimpleName();
+    LinearLayout zoneTrashcans, assignedTasks;
+    String zoneID, userID;
+    CardView cardSettings, cardWaste, cardTrashcans, cardTasks;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +71,14 @@ public class StaffHomeActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.nav_action);
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout2);
-        TextView seeMoreRequests = findViewById(R.id.see_more_requests);
-        TextView seeMoreTrash = findViewById(R.id.see_more_trash);
+        zoneTrashcans = findViewById(R.id.zone_trash);
+        assignedTasks = findViewById(R.id.assigned_tasks);
+        trashNumber = findViewById(R.id.trashNumber);
+        taskNumber = findViewById(R.id.taskNumber);
+        cardSettings = findViewById(R.id.cardSettings);
+        cardTasks = findViewById(R.id.cardTask);
+        cardWaste = findViewById(R.id.cardWaste);
+        cardTrashcans = findViewById(R.id.cardZone);
 
         NavigationView navView = findViewById(R.id.staff_navDrawer); // initiate a Navigation View
 
@@ -86,7 +99,7 @@ public class StaffHomeActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         HashMap<String, String> user = session.getUserDetails();
-        String userID = user.get(SessionManager.KEY_USERID);
+        userID = user.get(SessionManager.KEY_USERID);
 
         apolloClient.query(new GetStaffQuery(userID)).enqueue(staffCallback());
 
@@ -100,56 +113,19 @@ public class StaffHomeActivity extends AppCompatActivity {
         userLat = gpsTracker.getLatitude();
         userLong = gpsTracker.getLongitude();
 
-        mapRequests = findViewById(R.id.map_requests);
-        mapTrash = findViewById(R.id.map_trash);
 
-        mapRequests.onCreate(savedInstanceState);
-        mapTrash.onCreate(savedInstanceState);
+        apolloClient.query(new GetTasksQuery()).enqueue(taskCallback());
+        apolloClient.query(new GetZoneTrashcansQuery()).enqueue(trashCallback());
 
-        CameraPosition position = new CameraPosition.Builder()
-                .target(new LatLng(-15.786111, 35.005833)).zoom(10).tilt(20)
-                .build();
-        mapTrash.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-                        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
-
-                    }
-                });
-
-            }
-        });
-
-        CameraPosition position2 = new CameraPosition.Builder()
-                .target(new LatLng(-15.3766, 35.3357)).zoom(10).tilt(20)
-                .build();
-        mapRequests.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-                        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position2), 10);
-
-                    }
-                });
-            }
-        });
-
-        seeMoreTrash.setOnClickListener(v -> {
+        zoneTrashcans.setOnClickListener(view ->{
             Intent intent = new Intent(StaffHomeActivity.this, ZoneTrashcans.class);
+            intent.putExtra("id", userID);intent.putExtra("lat", userLat);intent.putExtra("long", userLong);
             startActivity(intent);
         });
 
-        seeMoreRequests.setOnClickListener(v -> {
+        assignedTasks.setOnClickListener(v -> {
             Intent intent = new Intent(StaffHomeActivity.this, CollectionRequests.class);
+            intent.putExtra("id", userID);intent.putExtra("lat", userLat);intent.putExtra("long", userLong);
             startActivity(intent);
         });
 
@@ -174,7 +150,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                     }
                 });
                 builder.show(); //show the alert dialog
-            } else if((TextUtils.equals(menuItem.toString(), "Collection Requests"))){
+            } else if((TextUtils.equals(menuItem.toString(), "Assigned Tasks"))){
                 Intent intent = new Intent(StaffHomeActivity.this, CollectionRequests.class);
                 intent.putExtra("id", userID);intent.putExtra("lat", userLat);intent.putExtra("long", userLong);
                 startActivity(intent);
@@ -193,6 +169,28 @@ public class StaffHomeActivity extends AppCompatActivity {
             return false;
         });
 
+        cardSettings.setOnClickListener(view ->{
+            Intent intent = new Intent(StaffHomeActivity.this, SettingsActivity.class);
+            intent.putExtra("id", userID);
+            startActivity(intent);
+        });
+
+        cardTasks.setOnClickListener(view -> {
+            Intent intent = new Intent(StaffHomeActivity.this, CollectionRequests.class);
+            intent.putExtra("id", userID);intent.putExtra("lat", userLat);intent.putExtra("long", userLong);
+            startActivity(intent);
+        });
+
+        cardTrashcans.setOnClickListener(view -> {
+            Intent intent = new Intent(StaffHomeActivity.this, ZoneTrashcans.class);
+            intent.putExtra("id", userID);intent.putExtra("lat", userLat);intent.putExtra("long", userLong);
+            startActivity(intent);
+        });
+
+        cardWaste.setOnClickListener(view -> {
+
+        });
+
     }
 
     public ApolloCall.Callback<GetStaffQuery.Data> staffCallback(){
@@ -201,40 +199,50 @@ public class StaffHomeActivity extends AppCompatActivity {
             public void onResponse(@NotNull Response<GetStaffQuery.Data> response) {
                 GetStaffQuery.Data data = response.getData();
 
-                if(response.getErrors() == null){
-
                     if(data.staff() == null){
-                        Log.e(TAG, "an Error occurred : " );
-                        runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            Toast.makeText(StaffHomeActivity.this,
-                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
-                            //errorText.setText();
-                        });
+
+                            if(response.getErrors() == null){
+                                Log.e(TAG, "an Error in staff query : " );
+                                runOnUiThread(() -> {
+                                    // Stuff that updates the UI
+                                    Toast.makeText(StaffHomeActivity.this,
+                                            "an Error occurred : " , Toast.LENGTH_LONG).show();
+                                    //errorText.setText();
+                                });
+                            } else{
+                                List<Error> error = response.getErrors();
+                                String errorMessage = error.get(0).getMessage();
+                                Log.e(TAG, "an Error in staff query : " + errorMessage );
+                                runOnUiThread(() -> {
+                                    Toast.makeText(StaffHomeActivity.this,
+                                            "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                                });
+                            }
+
                     }else{
                         runOnUiThread(() -> {
                             Log.d(TAG, "staff fetched" + data.staff());
                             textUserName.setText(data.staff().fullName());
                             if(data.staff().zone() != null){
                                 text_support.setText("Zone: " + data.staff().zone().name());
+                                zoneID = data.staff().zone()._id();
                             } else{
                                 text_support.setText("Zone: null");
                             }
-
-
                         });
+
+                        if(response.getErrors() != null){
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e(TAG, "an Error in staff query : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(StaffHomeActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
                     }
-
-                } else{
-                    List<Error> error = response.getErrors();
-                    String errorMessage = error.get(0).getMessage();
-                    Log.e(TAG, "an Error occurred : " + errorMessage );
-                    runOnUiThread(() -> {
-                        Toast.makeText(StaffHomeActivity.this,
-                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-
-                    });
-                }
             }
 
             @Override
@@ -251,6 +259,142 @@ public class StaffHomeActivity extends AppCompatActivity {
 
     }
 
+
+    public ApolloCall.Callback<GetTasksQuery.Data> taskCallback(){
+        return new ApolloCall.Callback<GetTasksQuery.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<GetTasksQuery.Data> response) {
+                GetTasksQuery.Data data = response.getData();
+
+                    if(data.tasks() == null){
+
+                        if(response.getErrors() == null){
+                            Log.e(TAG, "an unknown Error in tasks query : " );
+                            runOnUiThread(() -> {
+                                Toast.makeText(StaffHomeActivity.this,
+                                        "an unknown Error occurred : " , Toast.LENGTH_LONG).show();
+
+                            });
+                        } else{
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e(TAG, "an Error in tasks query : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(StaffHomeActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
+                    }else{
+                        runOnUiThread(() -> {
+                            Log.d(TAG, "tasks fetched: " + data.tasks());
+                            ArrayList<Object> tasks = new ArrayList<>();
+                            if(!TextUtils.isEmpty(zoneID)){
+                                for(int i=0; i < data.tasks().size(); i++){
+                                    if(userID.equals(data.tasks().get(i).staff()._id())){
+                                        tasks.add(data.tasks().get(i));
+                                    }
+                                }
+                            }
+
+                            taskNumber.setText(String.valueOf(tasks.size()));
+
+                        });
+
+                        if(response.getErrors() != null){
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e(TAG, "an Error in tasks query : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(StaffHomeActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
+                    }
+
+
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e(TAG, "Error", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(StaffHomeActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                });
+            }
+        };
+    }
+
+    public ApolloCall.Callback<GetZoneTrashcansQuery.Data> trashCallback(){
+        return new ApolloCall.Callback<GetZoneTrashcansQuery.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<GetZoneTrashcansQuery.Data> response) {
+                GetZoneTrashcansQuery.Data data = response.getData();
+
+                if(data.trashcans() == null){
+
+                    if(response.getErrors() == null){
+                        Log.e(TAG, "an Error in trashcans query : " );
+                        runOnUiThread(() -> {
+                            Toast.makeText(StaffHomeActivity.this,
+                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
+                        });
+                    } else{
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e(TAG, "an Error in trashcans query : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(StaffHomeActivity.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }else{
+                    runOnUiThread(() -> {
+                        Log.d(TAG, "trashcans fetched: " + data.trashcans());
+                        ArrayList<Object> cans = new ArrayList<>();
+                        if(!TextUtils.isEmpty(zoneID)){
+                            for(int i=0; i < data.trashcans().size(); i++){
+                                if(zoneID.equals(data.trashcans().get(i).zone()._id())){
+                                    cans.add(data.trashcans().get(i));
+                                }
+                            }
+                        }
+
+                        trashNumber.setText(String.valueOf(cans.size()));
+
+                    });
+
+                    if(response.getErrors() != null){
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e(TAG, "an Error in staff query : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(StaffHomeActivity.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e(TAG, "Error", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(StaffHomeActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                });
+            }
+        };
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mToggle.onOptionsItemSelected(item)){
@@ -258,55 +402,6 @@ public class StaffHomeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mapRequests.onStart();
-        mapTrash.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mapTrash.onResume();
-        mapRequests.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mapRequests.onPause();
-        mapTrash.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mapTrash.onStop();
-        mapRequests.onStop();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapTrash.onSaveInstanceState(outState);
-        mapRequests.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapRequests.onLowMemory();
-        mapTrash.onLowMemory();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mapRequests.onDestroy();
-        mapTrash.onDestroy();
     }
 
 }

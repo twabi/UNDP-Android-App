@@ -22,6 +22,7 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.GetCollectionRequestsQuery;
 import com.example.wastemgmtapp.R;
+import com.example.wastemgmtapp.Staff.StaffHomeActivity;
 import com.example.wastemgmtapp.WasteInstitutionsQuery;
 import com.example.wastemgmtapp.adapters.RequestsAdapter;
 import com.example.wastemgmtapp.normalUser.RequestCollection;
@@ -96,18 +97,32 @@ public class CollectionFragment extends Fragment {
             public void onResponse(@NotNull Response<GetCollectionRequestsQuery.Data> response) {
                 GetCollectionRequestsQuery.Data data = response.getData();
 
-                if(response.getErrors() == null){
+
 
                     if(data.trashCollections() == null){
-                        Log.e("Apollo", "an Error occurred : " );
-                        getActivity().runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            Toast.makeText(getActivity(),
-                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
-                            //errorText.setText();
-                            retryNetwork.setVisibility(View.VISIBLE);
-                            fetchLoading.setVisibility(View.GONE);
-                        });
+
+                        if(response.getErrors() == null){
+                            Log.e("Apollo", "an Error occurred : " );
+                            getActivity().runOnUiThread(() -> {
+                                // Stuff that updates the UI
+                                Toast.makeText(getActivity(),
+                                        "an Error occurred : " , Toast.LENGTH_LONG).show();
+                                //errorText.setText();
+                                retryNetwork.setVisibility(View.VISIBLE);
+                                fetchLoading.setVisibility(View.GONE);
+                            });
+                        } else{
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e("Apollo", "an Error occurred : " + errorMessage );
+                            getActivity().runOnUiThread(() -> {
+                                Toast.makeText(getActivity(),
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                                retryNetwork.setVisibility(View.VISIBLE);
+                                fetchLoading.setVisibility(View.GONE);
+                            });
+                        }
+
                     }else{
                         Log.d(TAG, "requests fetched" + data.trashCollections().get(0).amount());
                         getActivity().runOnUiThread(() -> {
@@ -130,19 +145,18 @@ public class CollectionFragment extends Fragment {
                             }
 
                         });
-                    }
 
-                } else{
-                    List<Error> error = response.getErrors();
-                    String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
-                    getActivity().runOnUiThread(() -> {
-                        Toast.makeText(getActivity(),
-                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-                        retryNetwork.setVisibility(View.VISIBLE);
-                        fetchLoading.setVisibility(View.GONE);
-                    });
-                }
+                        if(response.getErrors() != null){
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e(TAG, "an Error in staff query : " + errorMessage );
+                            getActivity().runOnUiThread(() -> {
+                                Toast.makeText(getActivity(),
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
+                    }
 
             }
 

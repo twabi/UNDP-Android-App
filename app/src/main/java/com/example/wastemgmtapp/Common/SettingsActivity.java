@@ -25,12 +25,14 @@ import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.CreateIllegalDumpingMutation;
+import com.example.wastemgmtapp.GetStaffQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.UpdatePasswordMutation;
 import com.example.wastemgmtapp.UpdateStaffPasswordMutation;
 import com.example.wastemgmtapp.UpdateUserNameMutation;
 import com.example.wastemgmtapp.UserQuery;
 import com.example.wastemgmtapp.normalUser.ReportDumping;
+import com.example.wastemgmtapp.normalUser.UserHomeActivity;
 import com.example.wastemgmtapp.type.ChangePasswordInput;
 import com.example.wastemgmtapp.type.UpdateUserInput;
 
@@ -82,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         if(isStaff){
-            changePassCard.setVisibility(View.GONE);
+            changeNameCard.setVisibility(View.GONE);
         }
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -236,7 +238,13 @@ public class SettingsActivity extends AppCompatActivity {
             createdAt = view.findViewById(R.id.createdAt);
             loading = view.findViewById(R.id.nameLoad);
 
-            apolloClient.query(new UserQuery(userID)).enqueue(userCallback());
+            if(!isStaff){
+                apolloClient.query(new UserQuery(userID)).enqueue(userCallback());
+            }else {
+                apolloClient.query(new GetStaffQuery(userID)).enqueue(staffCallback());
+            }
+
+
 
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
@@ -264,16 +272,26 @@ public class SettingsActivity extends AppCompatActivity {
             public void onResponse(@NotNull Response<UserQuery.Data> response) {
                 UserQuery.Data data = response.getData();
 
-                if(response.getErrors() == null){
-
                     if(data.user() == null){
-                        Log.e("Apollo", "an Error occurred : " );
-                        runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            Toast.makeText(SettingsActivity.this,
-                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
-                            loading.setVisibility(View.GONE);
-                        });
+                        if(response.getErrors() == null){
+                            Log.e("Apollo", "an Error occurred : " );
+                            runOnUiThread(() -> {
+                                // Stuff that updates the UI
+                                Toast.makeText(SettingsActivity.this,
+                                        "an Error occurred : " , Toast.LENGTH_LONG).show();
+                                loading.setVisibility(View.GONE);
+                            });
+
+                        } else{
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e("Apollo", "an Error occurred : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(SettingsActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                                loading.setVisibility(View.GONE);
+                            });
+                        }
                     }else{
                         runOnUiThread(() -> {
                             loading.setVisibility(View.GONE);
@@ -285,18 +303,20 @@ public class SettingsActivity extends AppCompatActivity {
                             phoneNumber.setText("Phone Number:  " + data.user().phoneNumber());
 
                         });
+
+                        if(response.getErrors() != null){
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e("Apollo", "an Error occurred : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(SettingsActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
                     }
 
-                } else{
-                    List<Error> error = response.getErrors();
-                    String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
-                    runOnUiThread(() -> {
-                        Toast.makeText(SettingsActivity.this,
-                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-                        loading.setVisibility(View.GONE);
-                    });
-                }
+
 
             }
 
@@ -441,6 +461,68 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.e("Apollo", "Error", e);
                 Toast.makeText(SettingsActivity.this,
                         "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        };
+    }
+
+    public ApolloCall.Callback<GetStaffQuery.Data> staffCallback(){
+        return new ApolloCall.Callback<GetStaffQuery.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<GetStaffQuery.Data> response) {
+                GetStaffQuery.Data data = response.getData();
+
+                if(data.staff() == null){
+                    if(response.getErrors() == null){
+                        Log.e("Apollo", "an Error occurred : " );
+                        runOnUiThread(() -> {
+                            // Stuff that updates the UI
+                            Toast.makeText(SettingsActivity.this,
+                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
+                            loading.setVisibility(View.GONE);
+                        });
+
+                    } else{
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(SettingsActivity.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                            loading.setVisibility(View.GONE);
+                        });
+                    }
+                }else{
+                    runOnUiThread(() -> {
+                        loading.setVisibility(View.GONE);
+                        Log.d(TAG, "staff fetched" + data.staff());
+                        fullname.setText("User Name:  " + data.staff().fullName());
+                        nationalID.setText("ID:  " + data.staff().employeeID());
+                        location.setText("Location:  " + data.staff().location());
+                        createdAt.setText("Date Created:  " + data.staff().createdAt());
+                        phoneNumber.setText("Phone Number:  " + data.staff().phoneNumber());
+
+                    });
+
+                    if(response.getErrors() != null){
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(SettingsActivity.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+                Toast.makeText(SettingsActivity.this,
+                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                loading.setVisibility(View.GONE);
             }
         };
     }

@@ -8,7 +8,7 @@
 
     <item android:id="@+id/nav_requests"
         android:icon="@drawable/request"
-        android:title="@string/collection_requests" />
+        android:title="Assigned Tasks" />
 
     <item android:id="@+id/nav_settings"
         android:icon="@drawable/settings"

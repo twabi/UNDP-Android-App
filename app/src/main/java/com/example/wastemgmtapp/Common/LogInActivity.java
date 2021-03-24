@@ -132,13 +132,26 @@ public class LogInActivity extends AppCompatActivity {
             if(!validateForm()){
                 Toast.makeText(LogInActivity.this,"Fields Cannot be empty!!!", Toast.LENGTH_SHORT).show();
             } else {
+                Log.d(TAG, "login status: " + loginStatus);
                 if(!loginStatus){
+                    Log.d(TAG, "logging user: ");
                     logInUser();
                 }else{
+                    Log.d(TAG, "logging staff: ");
                     logInStaff();
                 }
             }
         });
+
+        if(loginStatus){
+            loginText.setText(R.string.log_in_Staff);
+            loginAsStaffText.setVisibility(View.GONE);
+            loginAsUserText.setVisibility(View.VISIBLE);
+        } else{
+            loginText.setText("Log In");
+            loginAsStaffText.setVisibility(View.VISIBLE);
+            loginAsUserText.setVisibility(View.GONE);
+        }
     }
 
     public void logInStaff(){
@@ -178,8 +191,6 @@ public class LogInActivity extends AppCompatActivity {
                             loading.setVisibility(View.GONE);
                             Toast.makeText(LogInActivity.this,
                                     "Login successful!", Toast.LENGTH_LONG).show();
-                            loginStatus = false;
-                            loginText.setText("Log In");
                             session.createLoginSession(userID, otherID, "Staff");
 
                             Intent intent = new Intent(LogInActivity.this, StaffHomeActivity.class);
@@ -193,9 +204,7 @@ public class LogInActivity extends AppCompatActivity {
                     List<Error> error = response.getErrors();
                     String errorMessage = error.get(0).getMessage();
                     Log.e("Apollo", "an Error occurred : " + errorMessage );
-                    loginStatus = false;
                     runOnUiThread(() -> {
-                        loginText.setText("Log In");
                         // Stuff that updates the UI
                         loading.setVisibility(View.GONE);
                         Toast.makeText(LogInActivity.this,

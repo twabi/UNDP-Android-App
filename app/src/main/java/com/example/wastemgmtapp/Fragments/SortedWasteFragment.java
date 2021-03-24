@@ -98,20 +98,42 @@ public class SortedWasteFragment extends Fragment {
             public void onResponse(@NotNull Response<GetSortedWasteRequestsQuery.Data> response) {
                 GetSortedWasteRequestsQuery.Data data = response.getData();
 
-                if(response.getErrors() == null){
-
                     if(data.sortedWastes() == null){
-                        Log.e("Apollo", "an Error occurred : " );
-                        getActivity().runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            Toast.makeText(getActivity(),
-                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
-                            //errorText.setText();
-                            retryNetwork.setVisibility(View.VISIBLE);
-                            fetchLoading.setVisibility(View.GONE);
-                            noItems.setVisibility(View.GONE);
-                        });
-                    }else{
+
+                        if(response.getErrors() == null){
+                            Log.e("Apollo", "an Error occurred : " );
+                            getActivity().runOnUiThread(() -> {
+                                // Stuff that updates the UI
+                                Toast.makeText(getActivity(),
+                                        "an Error occurred : " , Toast.LENGTH_LONG).show();
+                                //errorText.setText();
+                                retryNetwork.setVisibility(View.VISIBLE);
+                                fetchLoading.setVisibility(View.GONE);
+                                noItems.setVisibility(View.GONE);
+                            });
+
+                        } else{
+                            try{
+                                List<Error> error = response.getErrors();
+                                String errorMessage = error.get(0).getMessage();
+                                Log.e("Apollo", "an Error occurred : " + errorMessage );
+                                getActivity().runOnUiThread(() -> {
+                                    Toast.makeText(getActivity(),
+                                            "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                                    retryNetwork.setVisibility(View.VISIBLE);
+                                    fetchLoading.setVisibility(View.GONE);
+                                    noItems.setVisibility(View.GONE);
+                                });
+                            } catch (Exception e){
+                                e.printStackTrace();
+                                retryNetwork.setVisibility(View.VISIBLE);
+                                fetchLoading.setVisibility(View.GONE);
+                                noItems.setVisibility(View.GONE);
+                            }
+
+                    }
+
+                }else{
                         try {
                             getActivity().runOnUiThread(() -> {
                                 Log.d(TAG, "requests fetched" + data.sortedWastes());
@@ -138,29 +160,17 @@ public class SortedWasteFragment extends Fragment {
                             e.printStackTrace();
                         }
 
+                        if(response.getErrors() != null){
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e(TAG, "an Error in staff query : " + errorMessage );
+                            getActivity().runOnUiThread(() -> {
+                                Toast.makeText(getActivity(),
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
                     }
-
-                } else{
-                    try{
-                        List<Error> error = response.getErrors();
-                        String errorMessage = error.get(0).getMessage();
-                        Log.e("Apollo", "an Error occurred : " + errorMessage );
-                        getActivity().runOnUiThread(() -> {
-                            Toast.makeText(getActivity(),
-                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-                            retryNetwork.setVisibility(View.VISIBLE);
-                            fetchLoading.setVisibility(View.GONE);
-                            noItems.setVisibility(View.GONE);
-                        });
-                    } catch (Exception e){
-                        e.printStackTrace();
-                        retryNetwork.setVisibility(View.VISIBLE);
-                        fetchLoading.setVisibility(View.GONE);
-                        noItems.setVisibility(View.GONE);
-                    }
-
-                }
-
             }
 
             @Override

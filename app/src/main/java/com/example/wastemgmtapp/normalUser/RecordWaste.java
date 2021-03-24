@@ -180,17 +180,27 @@ public class RecordWaste extends AppCompatActivity {
             public void onResponse(@NotNull Response<WasteInstitutionsQuery.Data> response) {
                 WasteInstitutionsQuery.Data data = response.getData();
 
-                if(response.getErrors() == null){
-
                     if(data.wasteInstitutions() == null){
-                        Log.e("Apollo", "an Error occurred : " );
-                        runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            Toast.makeText(RecordWaste.this,
-                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
-                            //errorText.setText();
-                            fetchLoading.setVisibility(View.GONE);
-                        });
+
+                        if(response.getErrors() == null){
+                            Log.e("Apollo", "an Error occurred : " );
+                            runOnUiThread(() -> {
+                                // Stuff that updates the UI
+                                Toast.makeText(RecordWaste.this,
+                                        "an Error occurred : " , Toast.LENGTH_LONG).show();
+                                //errorText.setText();
+                                fetchLoading.setVisibility(View.GONE);
+                            });
+                        } else{
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e("Apollo", "an Error occurred : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(RecordWaste.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                                fetchLoading.setVisibility(View.GONE);
+                            });
+                        }
                     }else{
                         runOnUiThread(() -> {
                             Log.d(TAG, "institutions fetched" + data.wasteInstitutions());
@@ -204,19 +214,18 @@ public class RecordWaste extends AppCompatActivity {
                                 //companyIDs.add(company);
                             }
                         });
+
+                        if(response.getErrors() != null){
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e(TAG, "an Error in institutions query : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(RecordWaste.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
                     }
-
-                } else{
-                    List<Error> error = response.getErrors();
-                    String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
-                    runOnUiThread(() -> {
-                        Toast.makeText(RecordWaste.this,
-                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-                        fetchLoading.setVisibility(View.GONE);
-                    });
-                }
-
             }
 
             @Override

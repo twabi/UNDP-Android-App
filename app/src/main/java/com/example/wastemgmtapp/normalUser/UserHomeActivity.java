@@ -294,10 +294,7 @@ public class UserHomeActivity extends AppCompatActivity{
                 });
             }
         };
-
-
     }
-
 
     public ApolloCall.Callback<GetSortedWasteNotifsQuery.Data> sortedCallback(){
         return new ApolloCall.Callback<GetSortedWasteNotifsQuery.Data>() {

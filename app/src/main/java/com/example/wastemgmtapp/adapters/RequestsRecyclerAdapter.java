@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wastemgmtapp.R;
@@ -16,13 +18,22 @@ import java.util.ArrayList;
 public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecyclerAdapter.RequestsViewHolder> {
 
     private final Context context;
-    private ArrayList<String> nameList = new ArrayList<>();
+    ArrayList<String> keyList = new ArrayList<>();
+    ArrayList<Boolean> statusList = new ArrayList<>();
+    ArrayList<String> createdAtList = new ArrayList<>();
+    ArrayList<String> taskType = new ArrayList<>();
+
+    public RequestsRecyclerAdapter(Context context, ArrayList<String> keyList,
+                                   ArrayList<Boolean> statusList, ArrayList<String> createdAtList, ArrayList<String> taskType) {
+        this.context = context;
+        this.keyList = keyList;
+        this.statusList = statusList;
+        this.createdAtList = createdAtList;
+        this.taskType = taskType;
+    }
+
     private final String TAG = RequestsRecyclerAdapter.class.getSimpleName();
 
-    public RequestsRecyclerAdapter(Context context, ArrayList<String> nameList) {
-        this.context = context;
-        this.nameList = nameList;
-    }
     @Override
     public RequestsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // inflate the item Layout
@@ -35,33 +46,47 @@ public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecycl
     @Override
     public void onBindViewHolder(RequestsViewHolder holder, int position) {
 
+        holder.completed.setText("Completed:  " + statusList.get(position));
+        holder.date.setText("Date Added:  " + createdAtList.get(position));
+        holder.taskID.setText("Task ID:  " + keyList.get(position));
+        holder.type.setText("Task Type:  " + taskType.get(position));
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, RequestDetailsActivity.class);
+            intent.putExtra("key", keyList.get(position));
             context.startActivity(intent);
             Log.d(TAG, "onClick: i got clicked" + position);
         });
-
-
     }
 
     @Override
     public int getItemCount() {
-        return nameList.size();
+        return keyList.size();
+    }
+
+    public void clear(){
+        taskType.clear();
+        statusList.clear();
+        createdAtList.clear();
+        keyList.clear();
     }
 
     public class RequestsViewHolder extends RecyclerView.ViewHolder {
 
+        TextView type;
+        TextView completed;
+        TextView taskID;
+        TextView date;
         public RequestsViewHolder(View itemView) {
             super(itemView);
 
             // get the reference of item view's
 
             // init the item view's
-            //TextView requester = itemView.findViewById(R.id.requester);
-            //TextView location = itemView.findViewById(R.id.location_request);
-            //TextView timeStamp = itemView.findViewById(R.id.request_time);
-            //TextView amount = itemView.findViewById(R.id.trash_amount);
+             type = itemView.findViewById(R.id.type);
+             completed = itemView.findViewById(R.id.completed);
+             taskID = itemView.findViewById(R.id.task_id);
+             date = itemView.findViewById(R.id.createTime);
 
 
         }

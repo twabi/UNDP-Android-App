@@ -312,7 +312,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="My Waste Institution"
+                                android:text="My Institution"
                                 android:textColor="@color/purple_700"
                                 android:layout_gravity="center"
                                 android:textAlignment="center"
@@ -431,15 +431,15 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Assigned Task"
-                                android:textColor="@color/purple_700"
                                 android:layout_gravity="center"
-                                android:textAlignment="center"
-                                android:textSize="15sp"
-                                android:textStyle="normal"
                                 android:layout_margin="5dp"
                                 android:layout_marginTop="5dp"
-                                android:layout_marginBottom="5dp" />
+                                android:layout_marginBottom="5dp"
+                                android:text="Assigned Tasks"
+                                android:textAlignment="center"
+                                android:textColor="@color/purple_700"
+                                android:textSize="15sp"
+                                android:textStyle="normal" />
                         </LinearLayout>
 
 

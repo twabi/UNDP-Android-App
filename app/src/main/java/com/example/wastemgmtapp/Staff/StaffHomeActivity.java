@@ -333,7 +333,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Log.d(TAG, "tasks fetched: " + data.tasks());
                             ArrayList<Object> tasks = new ArrayList<>();
-                            if(!TextUtils.isEmpty(zoneID)){
+                            if(!TextUtils.isEmpty(userID)){
                                 for(int i=0; i < data.tasks().size(); i++){
                                     if(userID.equals(data.tasks().get(i).staff()._id())){
                                         tasks.add(data.tasks().get(i));

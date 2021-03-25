@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +58,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
     ApolloClient apolloClient;
     CameraPosition position;
     Button accept, delete;
+    ProgressBar taskLoads;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +73,8 @@ public class RequestDetailsActivity extends AppCompatActivity {
         mapView = findViewById(R.id.request_map);
         accept = findViewById(R.id.accept);
         delete = findViewById(R.id.delete);
+        taskLoads = findViewById(R.id.taskLoads);
+        taskLoads.setVisibility(View.VISIBLE);
 
         //initialize the toolbar
         Toolbar toolbar = findViewById(R.id.detailsToolbar);
@@ -80,6 +84,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         taskID = intent.getStringExtra("key");
+        Log.d(TAG, "key: " + taskID);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
@@ -94,32 +99,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
         apolloClient.query(new GetTaskQuery(taskID)).enqueue(taskCallback());
 
-
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-                        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
-
-                    }
-                });
-
-            }
-        });
-
-
-        /*
-        if(((latitude != 0.0) || (longitude != 0.0)) || ((latitude != null) ||( longitude != null))){
-
-        } else {
-            Toast.makeText(RequestDetailsActivity.this, "Longitude and latitude null", Toast.LENGTH_SHORT).show();
-        }*/
-
         accept.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(RequestDetailsActivity.this);
             builder.setTitle("Accept Task");
@@ -243,6 +223,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
                     if(response.getErrors() == null){
                         Log.e(TAG, "an unknown Error in task query : " );
                         runOnUiThread(() -> {
+                            taskLoads.setVisibility(View.GONE);
                             errorText.setVisibility(View.VISIBLE);
                             Toast.makeText(RequestDetailsActivity.this,
                                     "an unknown Error occurred : " , Toast.LENGTH_LONG).show();
@@ -253,6 +234,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
                         String errorMessage = error.get(0).getMessage();
                         Log.e(TAG, "an Error in task query : " + errorMessage );
                         runOnUiThread(() -> {
+                            taskLoads.setVisibility(View.GONE);
                             errorText.setVisibility(View.VISIBLE);
                             Toast.makeText(RequestDetailsActivity.this,
                                     "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
@@ -262,6 +244,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
                 }else{
                     runOnUiThread(() -> {
                         Log.d(TAG, "task fetched: " + data.task());
+                        taskLoads.setVisibility(View.GONE);
                         if(data.task().sortedWaste() != null && (data.task().trashcollection() == null)){
                             errorText.setVisibility(View.GONE);
                             locationText.setText(data.task().sortedWaste().location());
@@ -294,6 +277,22 @@ public class RequestDetailsActivity extends AppCompatActivity {
                                 .target(new LatLng(latitude, longitude)).zoom(10).tilt(20)
                                 .build();
 
+                        mapView.getMapAsync(new OnMapReadyCallback() {
+                            @Override
+                            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+
+                                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                                    @Override
+                                    public void onStyleLoaded(@NonNull Style style) {
+                                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
+                                        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
+
+                                    }
+                                });
+
+                            }
+                        });
+
                     });
 
                     if(response.getErrors() != null){
@@ -301,6 +300,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
                         String errorMessage = error.get(0).getMessage();
                         Log.e(TAG, "an Error in task query : " + errorMessage );
                         runOnUiThread(() -> {
+
                             Toast.makeText(RequestDetailsActivity.this,
                                     "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
 
@@ -313,6 +313,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
             public void onFailure(@NotNull ApolloException e) {
                 Log.e(TAG, "Error", e);
                 runOnUiThread(() -> {
+                    taskLoads.setVisibility(View.GONE);
                     errorText.setVisibility(View.VISIBLE);
                     Toast.makeText(RequestDetailsActivity.this,
                             "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();

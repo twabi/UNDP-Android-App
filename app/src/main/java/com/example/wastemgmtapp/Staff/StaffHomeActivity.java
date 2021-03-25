@@ -28,6 +28,7 @@ import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.Common.GPSTracker;
+import com.example.wastemgmtapp.Common.LogInActivity;
 import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.GetStaffQuery;
 import com.example.wastemgmtapp.GetTasksQuery;
@@ -108,6 +109,12 @@ public class StaffHomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         HashMap<String, String> user = session.getUserDetails();
         userID = user.get(SessionManager.KEY_USERID);
+
+        if(userID == null || TextUtils.isEmpty(userID)){
+            Intent i = new Intent(StaffHomeActivity.this, LogInActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
 
         apolloClient.query(new GetStaffQuery(userID)).enqueue(staffCallback());
 

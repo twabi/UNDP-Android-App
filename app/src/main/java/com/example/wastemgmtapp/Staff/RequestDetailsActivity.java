@@ -1,26 +1,37 @@
 package com.example.wastemgmtapp.Staff;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
+import com.example.wastemgmtapp.Common.LogInActivity;
+import com.example.wastemgmtapp.Common.MainActivity;
+import com.example.wastemgmtapp.CreateTrashCollectionMutation;
+import com.example.wastemgmtapp.DeleteTaskMutation;
 import com.example.wastemgmtapp.GetTaskQuery;
 import com.example.wastemgmtapp.GetTasksQuery;
 import com.example.wastemgmtapp.R;
+import com.example.wastemgmtapp.UpdateTaskStatusMutation;
+import com.example.wastemgmtapp.normalUser.UserHomeActivity;
+import com.example.wastemgmtapp.type.UpdateTaskInput;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -45,6 +56,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
     Double longitude, latitude;
     ApolloClient apolloClient;
     CameraPosition position;
+    Button accept, delete;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +69,8 @@ public class RequestDetailsActivity extends AppCompatActivity {
         errorText = findViewById(R.id.errorText);
         qualifierText = findViewById(R.id.qualifierText);
         mapView = findViewById(R.id.request_map);
+        accept = findViewById(R.id.accept);
+        delete = findViewById(R.id.delete);
 
         //initialize the toolbar
         Toolbar toolbar = findViewById(R.id.detailsToolbar);
@@ -106,6 +120,115 @@ public class RequestDetailsActivity extends AppCompatActivity {
             Toast.makeText(RequestDetailsActivity.this, "Longitude and latitude null", Toast.LENGTH_SHORT).show();
         }*/
 
+        accept.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(RequestDetailsActivity.this);
+            builder.setTitle("Accept Task");
+            builder.setMessage("Are you sure?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            UpdateTaskInput taskInput = UpdateTaskInput.builder()
+                                    ._id(taskID)
+                                    .completed(true)
+                                    .build();
+                            Input<UpdateTaskInput> input = new Input<>(taskInput, true);
+                            apolloClient.mutate(new UpdateTaskStatusMutation(input)).enqueue(updateCallback());
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                            dialog.cancel();
+                        }
+                    });
+            builder.show();
+        });
+
+        delete.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(RequestDetailsActivity.this);
+            builder.setTitle("Delete Task");
+            builder.setMessage("Are you sure?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            apolloClient.mutate(new DeleteTaskMutation(taskID)).enqueue(new ApolloCall.Callback<DeleteTaskMutation.Data>() {
+                                @Override
+                                public void onResponse(@NotNull Response<DeleteTaskMutation.Data> response) {
+                                    DeleteTaskMutation.Data data = response.getData();
+                                    if(response.getErrors() == null){
+                                        runOnUiThread(() -> {
+                                            Log.d(TAG, "onResponse: " + data.deleteTask().toString());
+                                            Toast.makeText(RequestDetailsActivity.this,
+                                                    "Task deleted successfully", Toast.LENGTH_LONG).show();
+
+                                            Intent i = new Intent(RequestDetailsActivity.this, CollectionRequests.class);
+                                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(i);
+
+                                        });
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(@NotNull ApolloException e) {
+                                    Log.e("Apollo", "Error", e);
+                                    Toast.makeText(RequestDetailsActivity.this,
+                                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                            dialog.cancel();
+                        }
+                    });
+            builder.show();
+        });
+
+    }
+    
+    public ApolloCall.Callback<UpdateTaskStatusMutation.Data> updateCallback(){
+        return new ApolloCall.Callback<UpdateTaskStatusMutation.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<UpdateTaskStatusMutation.Data> response) {
+                UpdateTaskStatusMutation.Data data = response.getData();
+                if(response.getErrors() == null){
+
+                    if(data.updateTask() == null){
+                        Log.e("Apollo", "an Error occurred : " );
+                        runOnUiThread(() -> {
+                            // Stuff that updates the UI
+                            Toast.makeText(RequestDetailsActivity.this,
+                                    "an unknown Error occurred " , Toast.LENGTH_LONG).show();
+                        });
+                    }else{
+                        runOnUiThread(() -> {
+                            Log.d(TAG, "onResponse: " + data.updateTask()._id());
+                            Toast.makeText(RequestDetailsActivity.this,
+                                    "accepted task successfully", Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+
+                } else{
+                    List<Error> error = response.getErrors();
+                    String errorMessage = error.get(0).getMessage();
+                    Log.e("Apollo", "an Error occurred : " + errorMessage );
+                    runOnUiThread(() -> {
+                        Toast.makeText(RequestDetailsActivity.this,
+                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+                Toast.makeText(RequestDetailsActivity.this,
+                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        };
     }
 
     public ApolloCall.Callback<GetTaskQuery.Data> taskCallback(){

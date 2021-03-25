@@ -353,5 +353,16 @@ query GetZoneTrashcans{
     }
 }
 
+mutation UpdateTaskStatus($updateTaskInput : UpdateTaskInput){
+    updateTask(updateTaskInput: $updateTaskInput){
+        _id
+        completed
+    }
+}
+
+mutation DeleteTask($taskID : ID!){
+    deleteTask(taskId: $taskID)
+}
+
 
 

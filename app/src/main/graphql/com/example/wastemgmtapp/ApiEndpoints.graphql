@@ -222,30 +222,6 @@ mutation UpdateStaffPassword($updatePassword: ChangePasswordInput){
 query getTask($taskID : ID!){
     task(taskId: $taskID){
         _id
-        trashcollection{
-            _id
-            location
-            creator{
-                _id
-                fullName
-            }
-            amount
-            typeOfWaste
-            longitude
-            latitude
-        }
-        sortedWaste{
-            _id
-            creator{
-                _id
-                fullName
-            }
-            location
-            amount
-            typeOfWaste
-            longitude
-            latitude
-        }
         body
         createdAt
         staff{
@@ -259,19 +235,6 @@ query getTask($taskID : ID!){
 query getTasks{
     tasks{
         _id
-        trashcollection{
-            _id
-            creator{
-                _id
-            }
-        }
-
-        sortedWaste{
-            _id
-            creator{
-                _id
-            }
-        }
         body
         createdAt
         staff{
@@ -285,19 +248,6 @@ query getTasks{
 subscription TaskAdded{
     taskAdded{
         _id
-        trashcollection{
-            _id
-            creator{
-                _id
-            }
-        }
-
-        sortedWaste{
-            _id
-            creator{
-                _id
-            }
-        }
         body
         createdAt
         staff{

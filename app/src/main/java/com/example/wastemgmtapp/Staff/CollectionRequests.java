@@ -144,6 +144,8 @@ public class CollectionRequests extends AppCompatActivity {
                                         statusList.add(data.tasks().get(i).completed());
                                         createdAtList.add(data.tasks().get(i).createdAt());
 
+                                        /*
+
                                         Log.d(TAG, "requests: " + data.tasks().get(i).sortedWaste() + "-" + data.tasks().get(i).trashcollection());
 
                                         if(data.tasks().get(i).sortedWaste() != null && data.tasks().get(i).trashcollection() == null){
@@ -158,6 +160,8 @@ public class CollectionRequests extends AppCompatActivity {
                                                 taskType.add("Other");
                                             }
                                         }
+
+                                         */
                                     }
                                 }
 
@@ -212,30 +216,30 @@ public class CollectionRequests extends AppCompatActivity {
                 TaskAddedSubscription.Data data = (TaskAddedSubscription.Data) response.getData();
                 Log.d(TAG, "onResponse: " + data);
 
+                try{
+                    if(data.getClass() == null){
 
-                if(data.getClass() == null){
+                        if(response.getErrors() == null){
+                            Log.e(TAG, "an unknown Error in tasks query : " );
+                            runOnUiThread(() -> {
+                                loadTasks.setVisibility(View.GONE);
+                                Toast.makeText(CollectionRequests.this,
+                                        "an unknown Error occurred : " , Toast.LENGTH_LONG).show();
 
-                    if(response.getErrors() == null){
-                        Log.e(TAG, "an unknown Error in tasks query : " );
+                            });
+                        } else{
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e(TAG, "an Error in tasks query : " + errorMessage );
+                            runOnUiThread(() -> {
+                                loadTasks.setVisibility(View.GONE);
+                                Toast.makeText(CollectionRequests.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
+                    }else{
                         runOnUiThread(() -> {
-                            loadTasks.setVisibility(View.GONE);
-                            Toast.makeText(CollectionRequests.this,
-                                    "an unknown Error occurred : " , Toast.LENGTH_LONG).show();
-
-                        });
-                    } else{
-                        List<Error> error = response.getErrors();
-                        String errorMessage = error.get(0).getMessage();
-                        Log.e(TAG, "an Error in tasks query : " + errorMessage );
-                        runOnUiThread(() -> {
-                            loadTasks.setVisibility(View.GONE);
-                            Toast.makeText(CollectionRequests.this,
-                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-
-                        });
-                    }
-                }else{
-                    runOnUiThread(() -> {
                         /*
                         loadTasks.setVisibility(View.GONE);
                         noItems.setVisibility(View.GONE);
@@ -276,19 +280,25 @@ public class CollectionRequests extends AppCompatActivity {
                             }
                          */
 
-                    });
-
-                    if(response.getErrors() != null){
-                        List<Error> error = response.getErrors();
-                        String errorMessage = error.get(0).getMessage();
-                        Log.e(TAG, "an Error in tasks query : " + errorMessage );
-                        runOnUiThread(() -> {
-                            Toast.makeText(CollectionRequests.this,
-                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-
                         });
+
+                        if(response.getErrors() != null){
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e(TAG, "an Error in tasks query : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(CollectionRequests.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
                     }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
+
+
+
             }
 
             @Override

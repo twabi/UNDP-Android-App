@@ -110,6 +110,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         HashMap<String, String> user = session.getUserDetails();
         userID = user.get(SessionManager.KEY_USERID);
 
+        Log.d(TAG, "userID: " + userID);
         if(userID == null || TextUtils.isEmpty(userID)){
             Intent i = new Intent(StaffHomeActivity.this, LogInActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -245,57 +246,42 @@ public class StaffHomeActivity extends AppCompatActivity {
             public void onResponse(@NotNull Response<GetStaffQuery.Data> response) {
                 GetStaffQuery.Data data = response.getData();
 
-                    if(data.staff() == null){
+                try{
 
-                            if(response.getErrors() == null){
-                                Log.e(TAG, "an Error in staff query : " );
-                                runOnUiThread(() -> {
-                                    // Stuff that updates the UI
-                                    Toast.makeText(StaffHomeActivity.this,
-                                            "an Error occurred : " , Toast.LENGTH_LONG).show();
-                                    //errorText.setText();
-                                });
-                            } else{
-                                List<Error> error = response.getErrors();
-                                String errorMessage = error.get(0).getMessage();
-                                Log.e(TAG, "an Error in staff query : " + errorMessage );
-                                runOnUiThread(() -> {
-                                    Toast.makeText(StaffHomeActivity.this,
-                                            "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                    data.staff();
+                    runOnUiThread(() -> {
+                        Log.d(TAG, "staff fetched" + data.staff());
+                        textUserName.setText(data.staff().fullName());
+                        if(data.staff().zone() != null){
+                            text_support.setText("Zone: " + data.staff().zone().name());
+                            zoneID = data.staff().zone()._id();
+                        } else{
+                            text_support.setText("Zone: null");
+                        }
 
-                                });
-                            }
+                        locationText = data.staff().creator().location();
+                        emailText = data.staff().creator().email();
+                        createdAtText = data.staff().creator().createdAt();
+                        nameText = data.staff().creator().name();
+                        phoneNumberText = data.staff().creator().phoneNumber();
 
-                    }else{
+                    });
+
+                    if(response.getErrors() != null){
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e(TAG, "an Error in staff query : " + errorMessage );
                         runOnUiThread(() -> {
-                            Log.d(TAG, "staff fetched" + data.staff());
-                            textUserName.setText(data.staff().fullName());
-                            if(data.staff().zone() != null){
-                                text_support.setText("Zone: " + data.staff().zone().name());
-                                zoneID = data.staff().zone()._id();
-                            } else{
-                                text_support.setText("Zone: null");
-                            }
-
-                            locationText = data.staff().creator().location();
-                            emailText = data.staff().creator().email();
-                            createdAtText = data.staff().creator().createdAt();
-                            nameText = data.staff().creator().name();
-                            phoneNumberText = data.staff().creator().phoneNumber();
+                            Toast.makeText(StaffHomeActivity.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
 
                         });
-
-                        if(response.getErrors() != null){
-                            List<Error> error = response.getErrors();
-                            String errorMessage = error.get(0).getMessage();
-                            Log.e(TAG, "an Error in staff query : " + errorMessage );
-                            runOnUiThread(() -> {
-                                Toast.makeText(StaffHomeActivity.this,
-                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-
-                            });
-                        }
                     }
+
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
 
             @Override

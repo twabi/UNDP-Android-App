@@ -469,49 +469,54 @@ public class SettingsActivity extends AppCompatActivity {
             public void onResponse(@NotNull Response<GetStaffQuery.Data> response) {
                 GetStaffQuery.Data data = response.getData();
 
-                if(data.staff() == null){
-                    if(response.getErrors() == null){
-                        Log.e("Apollo", "an Error occurred : " );
+                try{
+                    if(data.staff() == null){
+                        if(response.getErrors() == null){
+                            Log.e("Apollo", "an Error occurred : " );
+                            runOnUiThread(() -> {
+                                // Stuff that updates the UI
+                                Toast.makeText(SettingsActivity.this,
+                                        "an Error occurred : " , Toast.LENGTH_LONG).show();
+                                loading.setVisibility(View.GONE);
+                            });
+
+                        } else{
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e("Apollo", "an Error occurred : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(SettingsActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                                loading.setVisibility(View.GONE);
+                            });
+                        }
+                    }else{
                         runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            Toast.makeText(SettingsActivity.this,
-                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
                             loading.setVisibility(View.GONE);
+                            Log.d(TAG, "staff fetched" + data.staff());
+                            fullname.setText("User Name:  " + data.staff().fullName());
+                            nationalID.setText("ID:  " + data.staff().employeeID());
+                            location.setText("Location:  " + data.staff().location());
+                            createdAt.setText("Date Created:  " + data.staff().createdAt());
+                            phoneNumber.setText("Phone Number:  " + data.staff().phoneNumber());
+
                         });
 
-                    } else{
-                        List<Error> error = response.getErrors();
-                        String errorMessage = error.get(0).getMessage();
-                        Log.e("Apollo", "an Error occurred : " + errorMessage );
-                        runOnUiThread(() -> {
-                            Toast.makeText(SettingsActivity.this,
-                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-                            loading.setVisibility(View.GONE);
-                        });
+                        if(response.getErrors() != null){
+                            List<Error> error = response.getErrors();
+                            String errorMessage = error.get(0).getMessage();
+                            Log.e("Apollo", "an Error occurred : " + errorMessage );
+                            runOnUiThread(() -> {
+                                Toast.makeText(SettingsActivity.this,
+                                        "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
                     }
-                }else{
-                    runOnUiThread(() -> {
-                        loading.setVisibility(View.GONE);
-                        Log.d(TAG, "staff fetched" + data.staff());
-                        fullname.setText("User Name:  " + data.staff().fullName());
-                        nationalID.setText("ID:  " + data.staff().employeeID());
-                        location.setText("Location:  " + data.staff().location());
-                        createdAt.setText("Date Created:  " + data.staff().createdAt());
-                        phoneNumber.setText("Phone Number:  " + data.staff().phoneNumber());
-
-                    });
-
-                    if(response.getErrors() != null){
-                        List<Error> error = response.getErrors();
-                        String errorMessage = error.get(0).getMessage();
-                        Log.e("Apollo", "an Error occurred : " + errorMessage );
-                        runOnUiThread(() -> {
-                            Toast.makeText(SettingsActivity.this,
-                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-
-                        });
-                    }
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
+
 
             }
 

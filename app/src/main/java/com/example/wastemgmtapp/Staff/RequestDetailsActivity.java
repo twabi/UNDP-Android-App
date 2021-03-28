@@ -245,6 +245,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         Log.d(TAG, "task fetched: " + data.task());
                         taskLoads.setVisibility(View.GONE);
+                        /*
                         if(data.task().sortedWaste() != null && (data.task().trashcollection() == null)){
                             errorText.setVisibility(View.GONE);
                             locationText.setText(data.task().sortedWaste().location());
@@ -292,6 +293,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
                             }
                         });
+                        */
 
                     });
 

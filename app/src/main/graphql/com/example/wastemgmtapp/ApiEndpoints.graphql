@@ -245,6 +245,94 @@ query getTasks{
     }
 }
 
+query getTaskSortedWastes {
+    taskSortedWastes{
+        _id
+        createdAt
+        sortedWaste{
+            _id
+            creator{
+                _id
+                fullName
+                location
+            }
+            amount
+            createdAt
+        }
+        staff{
+            _id
+            fullName
+        }
+        completed
+    }
+}
+
+query getTaskTrashCollections {
+    taskTrashCollections{
+        _id
+        createdAt
+        trashcollection{
+            _id
+            creator{
+                _id
+                fullName
+                location
+            }
+            amount
+            createdAt
+        }
+        staff{
+            _id
+            fullName
+        }
+        completed
+    }
+}
+
+query taskSortedWaste($taskID : ID!){
+    taskSortedWaste(taskSortedWastesId: $taskID){
+        _id
+        createdAt
+        sortedWaste{
+            _id
+            creator{
+                _id
+                fullName
+                location
+            }
+            amount
+            createdAt
+        }
+        staff{
+            _id
+            fullName
+        }
+        completed
+    }
+}
+
+query taskTrashCollection($taskID : ID!){
+    taskTrashCollection(taskTrashCollectionId: $taskID){
+        _id
+        createdAt
+        trashcollection{
+            _id
+            creator{
+                _id
+                fullName
+                location
+            }
+            amount
+            createdAt
+        }
+        staff{
+            _id
+            fullName
+        }
+        completed
+    }
+}
+
 subscription TaskAdded{
     taskAdded{
         _id
@@ -312,6 +400,28 @@ mutation UpdateTaskStatus($updateTaskInput : UpdateTaskInput){
 
 mutation DeleteTask($taskID : ID!){
     deleteTask(taskId: $taskID)
+}
+
+mutation UpdateTaskSortedWaste($updateTaskInput : UpdateTaskSortedWasteInput){
+    updateTaskSortedWaste(UpdateTaskSortedWasteInput: $updateTaskInput){
+        _id
+        completed
+    }
+}
+
+mutation DeleteTaskSortedWaste($taskID : ID!){
+    deleteTaskSortedWaste(taskSortedWasteId: $taskID)
+}
+
+mutation UpdateTaskTrashcollection($updateTaskInput : UpdateTaskTrashCollectionInput){
+    updateTaskTrashCollection(updateTaskTrashCollectionInput: $updateTaskInput){
+        _id
+        completed
+    }
+}
+
+mutation DeleteTrashcollection($taskID : ID!){
+    deleteTrashCollection(trashCollectionId: $taskID)
 }
 
 

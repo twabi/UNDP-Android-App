@@ -54,6 +54,7 @@ public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecycl
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, RequestDetailsActivity.class);
             intent.putExtra("key", keyList.get(position));
+            intent.putExtra("task type", taskType.get(position));
             context.startActivity(intent);
             Log.d(TAG, "onClick: i got clicked" + position);
         });

@@ -302,6 +302,10 @@ query taskSortedWaste($taskID : ID!){
             }
             amount
             createdAt
+            latitude
+            longitude
+            location
+            typeOfWaste
         }
         staff{
             _id
@@ -324,6 +328,10 @@ query taskTrashCollection($taskID : ID!){
             }
             amount
             createdAt
+            latitude
+            longitude
+            location
+            typeOfWaste
         }
         staff{
             _id
@@ -420,7 +428,7 @@ mutation UpdateTaskTrashcollection($updateTaskInput : UpdateTaskTrashCollectionI
     }
 }
 
-mutation DeleteTrashcollection($taskID : ID!){
+mutation DeleteTaskTrashcollection($taskID : ID!){
     deleteTrashCollection(trashCollectionId: $taskID)
 }
 

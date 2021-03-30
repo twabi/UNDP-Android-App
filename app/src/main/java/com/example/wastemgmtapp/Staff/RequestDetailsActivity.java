@@ -119,17 +119,16 @@ public class RequestDetailsActivity extends AppCompatActivity {
         mapView.onCreate(savedInstanceState);
         accept.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(RequestDetailsActivity.this);
-            builder.setTitle("Accept Task");
-            builder.setMessage("Are you sure?")
+            builder.setTitle("Mark Task As complete");
+            builder.setMessage("Are you sure you completed the task? The task will be deleted")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-
 
                             if(taskType.equals("TrashCollection")){
 
                                 UpdateTaskTrashCollectionInput taskInput = UpdateTaskTrashCollectionInput.builder()
                                         ._id(taskID)
-                                        .completed(true)
+                                        .pending(true)
                                         .build();
                                 Input<UpdateTaskTrashCollectionInput> input = new Input<>(taskInput, true);
                                 apolloClient.mutate(new UpdateTaskTrashcollectionMutation(input)).enqueue(updateTrashCallback());
@@ -301,7 +300,8 @@ public class RequestDetailsActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Log.d(TAG, "onResponse: " + data.updateTask()._id());
                             Toast.makeText(RequestDetailsActivity.this,
-                                    "accepted task successfully", Toast.LENGTH_LONG).show();
+                                    "Task completed successfully", Toast.LENGTH_LONG).show();
+                            apolloClient.mutate(new DeleteTaskMutation(taskID)).enqueue(deleteTaskCallback());
 
                         });
                     }
@@ -346,7 +346,8 @@ public class RequestDetailsActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Log.d(TAG, "onResponse: " + data.updateTaskTrashCollection()._id());
                             Toast.makeText(RequestDetailsActivity.this,
-                                    "accepted task successfully", Toast.LENGTH_LONG).show();
+                                    "completed task successfully", Toast.LENGTH_LONG).show();
+                            apolloClient.mutate(new DeleteTaskTrashcollectionMutation(taskID)).enqueue(deleteTrashTaskCallback());
 
                         });
                     }
@@ -392,7 +393,8 @@ public class RequestDetailsActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Log.d(TAG, "onResponse: " + data.updateTaskSortedWaste()._id());
                             Toast.makeText(RequestDetailsActivity.this,
-                                    "accepted task successfully", Toast.LENGTH_LONG).show();
+                                    "completed task successfully", Toast.LENGTH_LONG).show();
+                            apolloClient.mutate(new DeleteTaskSortedWasteMutation(taskID)).enqueue(deleteSortedTaskCallback());
 
                         });
                     }

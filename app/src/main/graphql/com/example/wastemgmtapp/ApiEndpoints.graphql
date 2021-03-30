@@ -411,7 +411,7 @@ mutation DeleteTask($taskID : ID!){
 }
 
 mutation UpdateTaskSortedWaste($updateTaskInput : UpdateTaskSortedWasteInput){
-    updateTaskSortedWaste(UpdateTaskSortedWasteInput: $updateTaskInput){
+    updateTaskSortedWaste(updateTaskSortedWasteInput: $updateTaskInput){
         _id
         completed
     }

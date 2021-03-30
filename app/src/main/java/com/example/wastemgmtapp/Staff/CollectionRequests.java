@@ -73,6 +73,7 @@ public class CollectionRequests extends AppCompatActivity {
         noItems = findViewById(R.id.noTasks);
 
         loadTasks.setVisibility(View.VISIBLE);
+        noItems.setVisibility(View.GONE);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC);

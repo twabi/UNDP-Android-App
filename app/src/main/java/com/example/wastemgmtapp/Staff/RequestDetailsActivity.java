@@ -213,8 +213,10 @@ public class RequestDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull ApolloException e) {
                 Log.e("Apollo", "Error", e);
-                Toast.makeText(RequestDetailsActivity.this,
-                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(RequestDetailsActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
             }
         };
     }
@@ -242,8 +244,10 @@ public class RequestDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull ApolloException e) {
                 Log.e("Apollo", "Error", e);
-                Toast.makeText(RequestDetailsActivity.this,
-                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(RequestDetailsActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
             }
         };
     }
@@ -271,8 +275,10 @@ public class RequestDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull ApolloException e) {
                 Log.e("Apollo", "Error", e);
-                Toast.makeText(RequestDetailsActivity.this,
-                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(RequestDetailsActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
             }
         };
     }
@@ -314,8 +320,10 @@ public class RequestDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull ApolloException e) {
                 Log.e("Apollo", "Error", e);
-                Toast.makeText(RequestDetailsActivity.this,
-                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(RequestDetailsActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
             }
         };
     }
@@ -357,8 +365,11 @@ public class RequestDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull ApolloException e) {
                 Log.e("Apollo", "Error", e);
-                Toast.makeText(RequestDetailsActivity.this,
-                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(RequestDetailsActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+
             }
         };
     }
@@ -400,8 +411,11 @@ public class RequestDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NotNull ApolloException e) {
                 Log.e("Apollo", "Error", e);
-                Toast.makeText(RequestDetailsActivity.this,
-                        "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(RequestDetailsActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+
             }
         };
     }

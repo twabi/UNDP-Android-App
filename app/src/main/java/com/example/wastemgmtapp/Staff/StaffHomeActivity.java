@@ -339,7 +339,8 @@ public class StaffHomeActivity extends AppCompatActivity {
                                 }
 
                                 sumTasks = sumTasks + tasks.size();
-                                taskNumber.setText(String.valueOf(sumTasks));
+                                Log.d(TAG, "sumTasks general: " + sumTasks+ "-" +tasks.size());
+                                taskNumber.setText(String.valueOf(tasks.size()));
                             } catch (Exception e){
                                 e.printStackTrace();
                                 Toast.makeText(StaffHomeActivity.this,
@@ -411,9 +412,8 @@ public class StaffHomeActivity extends AppCompatActivity {
                         }
 
                         sumTasks = sumTasks + tasks.size();
-                        Log.d(TAG, "sumTasks: " + sumTasks);
-                        taskNumber.setText(String.valueOf(sumTasks));
-
+                        Log.d(TAG, "sumTasks trash collect: " + sumTasks+ "-" +tasks.size());
+                        taskNumber.setText(String.valueOf(tasks.size()));
 
                     });
 
@@ -480,8 +480,8 @@ public class StaffHomeActivity extends AppCompatActivity {
                             }
 
                             sumTasks = sumTasks + tasks.size();
-                            Log.d(TAG, "sumTasks: " + sumTasks);
-                            taskNumber.setText(String.valueOf(sumTasks));
+                            Log.d(TAG, "sumTasks sorted: " + sumTasks+ "-" +tasks.size());
+                            taskNumber.setText(String.valueOf(tasks.size()));
                         } catch (Exception e){
                             Toast.makeText(StaffHomeActivity.this,
                                     "task sorted: error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();

@@ -1,58 +1,105 @@
 package com.example.wastemgmtapp.Staff;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.BounceInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mapbox.api.directions.v5.DirectionsCriteria;
+import com.mapbox.api.directions.v5.MapboxDirections;
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
+import com.mapbox.mapboxsdk.style.layers.Property;
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.example.wastemgmtapp.Common.GPSTracker;
 import com.example.wastemgmtapp.Common.MainActivity;
 import com.example.wastemgmtapp.GetTrashcanQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.TaskSortedWasteQuery;
+import com.mapbox.android.core.permissions.PermissionsListener;
+import com.mapbox.android.core.permissions.PermissionsManager;
+import com.mapbox.android.gestures.Constants;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.LineString;
+import com.mapbox.geojson.Point;
+import com.mapbox.geojson.utils.PolylineUtils;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.location.LocationComponentOptions;
+import com.mapbox.mapboxsdk.location.modes.CameraMode;
+import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.light.Position;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
 
 public class TrashDetailsActivity extends AppCompatActivity {
 
     private MapView mapView;
     String TAG = TrashDetailsActivity.class.getSimpleName();
     String canID;
+    double userLat, userLong;
     TextView zoneNameText, canNameText, canIDText, levelText, errorText;
     ProgressBar canLevel;
     ApolloClient apolloClient;
     ProgressBar canLoads;
     double longitude, latitude;
     CameraPosition position;
+    MapboxMap mapboxMap;
+    private NavigationMapRoute navigationMapRoute;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +115,10 @@ public class TrashDetailsActivity extends AppCompatActivity {
         canIDText = findViewById(R.id.canID);
         canLoads = findViewById(R.id.canLoads);
         errorText = findViewById(R.id.errorText);
+
+        GPSTracker gpsTracker = new GPSTracker(TrashDetailsActivity.this, TrashDetailsActivity.this);
+        userLat = gpsTracker.getLatitude();
+        userLong = gpsTracker.getLongitude();
 
         //initialize the toolbar
         Toolbar toolbar = findViewById(R.id.detailsToolbar);
@@ -94,6 +145,7 @@ public class TrashDetailsActivity extends AppCompatActivity {
         apolloClient.query(new GetTrashcanQuery(canID)).enqueue(trashCallBack());
 
     }
+
 
     public ApolloCall.Callback<GetTrashcanQuery.Data> trashCallBack(){
         return new ApolloCall.Callback<GetTrashcanQuery.Data>() {
@@ -149,38 +201,44 @@ public class TrashDetailsActivity extends AppCompatActivity {
                         canLevel.setProgress(value);
 
                         position = new CameraPosition.Builder()
-                                .target(new LatLng(latitude, longitude)).zoom(15).tilt(20)
+                                .target(new LatLng(latitude, longitude)).zoom(14).tilt(20)
                                 .build();
                         mapView.getMapAsync(new OnMapReadyCallback() {
                             @Override
                             public void onMapReady(@NonNull MapboxMap mapboxMap) {
 
+                                TrashDetailsActivity.this.mapboxMap = mapboxMap;
                                 mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
                                     @Override
                                     public void onStyleLoaded(@NonNull Style style) {
                                         // Map is set up and the style has loaded. Now you can add data or make other map adjustments
                                         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
-                                       // mapboxMap.addMarker(new MarkerOptions()
-                                                //.position(new LatLng(latitude, longitude));
-
 
                                         // Create an Icon object for the marker to use
                                         IconFactory iconFactory = IconFactory.getInstance(TrashDetailsActivity.this);
                                         Icon icon = iconFactory.fromResource(R.drawable.bin);
+                                        Icon userIcon = iconFactory.fromResource(R.drawable.location);
+
+                                        mapboxMap.addMarker(new MarkerOptions()
+                                                .position(new LatLng(userLat, userLong)).title("You")
+                                                .icon(userIcon));
 
                                         mapboxMap.addMarker(new MarkerOptions()
                                                 .position(new LatLng(latitude, longitude))
                                                 .title(canNameText.getText().toString())
                                                 .icon(icon));
 
+                                        Point originPosition = Point.fromLngLat(userLong, userLat);
+                                        Point  dstPosition = Point.fromLngLat(longitude, latitude);
+
+                                        navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationMapRoute);
+                                        getRoute(originPosition, dstPosition);
+
 
                                     }
                                 });
-
                             }
                         });
-
-
 
                     });
 
@@ -189,7 +247,6 @@ public class TrashDetailsActivity extends AppCompatActivity {
                         String errorMessage = error.get(0).getMessage();
                         Log.e(TAG, "an Error in task query : " + errorMessage );
                         runOnUiThread(() -> {
-
                             Toast.makeText(TrashDetailsActivity.this,
                                     "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
 
@@ -210,6 +267,45 @@ public class TrashDetailsActivity extends AppCompatActivity {
                 });
             }
         };
+    }
+
+
+    private void getRoute(Point origin, Point destination) {
+        NavigationRoute.builder(TrashDetailsActivity.this)
+                .accessToken(Mapbox.getAccessToken())
+                .origin(origin)
+                .destination(destination)
+                .build()
+                .getRoute(new Callback<DirectionsResponse>() {
+
+                    @Override
+                    public void onResponse(Call<DirectionsResponse> call, retrofit2.Response<DirectionsResponse> response) {
+                        if (response.body() == null)
+                        {
+                            //Usable.logMessage(TAG, "No routes found, Check User and Access Token..");
+                            return;
+                        } else if (response.body().routes().size() == 0)
+                        {
+                            //Usable.logMessage(TAG, "No routes found..");
+                            return;
+                        }
+
+
+                        DirectionsRoute currentRoute = response.body().routes().get(0);
+                        navigationMapRoute.addRoute(currentRoute);
+                    }
+
+                    @Override
+                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+                        Log.e(TAG, "Error: "+ t.getMessage());
+                    }
+                });
+
+    }
+
+
+    private void showToastMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

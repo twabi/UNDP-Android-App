@@ -23,6 +23,7 @@ import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
+import com.example.wastemgmtapp.Common.GPSTracker;
 import com.example.wastemgmtapp.Common.LogInActivity;
 import com.example.wastemgmtapp.Common.MainActivity;
 import com.example.wastemgmtapp.CreateTrashCollectionMutation;
@@ -43,6 +44,13 @@ import com.example.wastemgmtapp.normalUser.UserHomeActivity;
 import com.example.wastemgmtapp.type.UpdateTaskInput;
 import com.example.wastemgmtapp.type.UpdateTaskSortedWasteInput;
 import com.example.wastemgmtapp.type.UpdateTaskTrashCollectionInput;
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -50,6 +58,8 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -57,6 +67,8 @@ import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class RequestDetailsActivity extends AppCompatActivity {
 
@@ -69,10 +81,17 @@ public class RequestDetailsActivity extends AppCompatActivity {
     CameraPosition position;
     Button accept, delete;
     ProgressBar taskLoads;
+    double userLat, userLong;
+    MapboxMap mapboxMap;
+    private NavigationMapRoute navigationMapRoute;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_details);
+
+        GPSTracker gpsTracker = new GPSTracker(RequestDetailsActivity.this, RequestDetailsActivity.this);
+        userLat = gpsTracker.getLatitude();
+        userLong = gpsTracker.getLongitude();
         
         locationText = findViewById(R.id.locationTask);
         amountText = findViewById(R.id.amount);
@@ -472,9 +491,25 @@ public class RequestDetailsActivity extends AppCompatActivity {
                                 mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
                                     @Override
                                     public void onStyleLoaded(@NonNull Style style) {
+                                        RequestDetailsActivity.this.mapboxMap = mapboxMap;
                                         // Map is set up and the style has loaded. Now you can add data or make other map adjustments
                                         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
 
+                                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).
+                                                title(nameText.getText().toString()));
+
+                                        IconFactory iconFactory = IconFactory.getInstance(RequestDetailsActivity.this);
+                                        Icon userIcon = iconFactory.fromResource(R.drawable.location);
+
+                                        mapboxMap.addMarker(new MarkerOptions()
+                                                .position(new LatLng(userLat, userLong)).title("You")
+                                                .icon(userIcon));
+
+                                        Point originPosition = Point.fromLngLat(userLong, userLat);
+                                        Point  dstPosition = Point.fromLngLat(longitude, latitude);
+
+                                        navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationMapRoute);
+                                        getRoute(originPosition, dstPosition);
                                     }
                                 });
 
@@ -509,6 +544,40 @@ public class RequestDetailsActivity extends AppCompatActivity {
             }
         };
     }
+
+    private void getRoute(Point origin, Point destination) {
+        NavigationRoute.builder(RequestDetailsActivity.this)
+                .accessToken(Mapbox.getAccessToken())
+                .origin(origin)
+                .destination(destination)
+                .build()
+                .getRoute(new Callback<DirectionsResponse>() {
+
+                    @Override
+                    public void onResponse(Call<DirectionsResponse> call, retrofit2.Response<DirectionsResponse> response) {
+                        if (response.body() == null)
+                        {
+                            //Usable.logMessage(TAG, "No routes found, Check User and Access Token..");
+                            return;
+                        } else if (response.body().routes().size() == 0)
+                        {
+                            //Usable.logMessage(TAG, "No routes found..");
+                            return;
+                        }
+
+
+                        DirectionsRoute currentRoute = response.body().routes().get(0);
+                        navigationMapRoute.addRoute(currentRoute);
+                    }
+
+                    @Override
+                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+                        Log.e(TAG, "Error: "+ t.getMessage());
+                    }
+                });
+
+    }
+
 
     public ApolloCall.Callback<TaskTrashCollectionQuery.Data> taskCollectCallback(){
         return new ApolloCall.Callback<TaskTrashCollectionQuery.Data>() {
@@ -564,8 +633,24 @@ public class RequestDetailsActivity extends AppCompatActivity {
                                 mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
                                     @Override
                                     public void onStyleLoaded(@NonNull Style style) {
+                                        RequestDetailsActivity.this.mapboxMap = mapboxMap;
                                         // Map is set up and the style has loaded. Now you can add data or make other map adjustments
                                         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
+                                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).
+                                                        title(nameText.getText().toString()));
+
+                                        IconFactory iconFactory = IconFactory.getInstance(RequestDetailsActivity.this);
+                                        Icon userIcon = iconFactory.fromResource(R.drawable.location);
+
+                                        mapboxMap.addMarker(new MarkerOptions()
+                                                .position(new LatLng(userLat, userLong)).title("You")
+                                                .icon(userIcon));
+
+                                        Point originPosition = Point.fromLngLat(userLong, userLat);
+                                        Point  dstPosition = Point.fromLngLat(longitude, latitude);
+
+                                        navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationMapRoute);
+                                        getRoute(originPosition, dstPosition);
 
                                     }
                                 });
@@ -657,9 +742,24 @@ public class RequestDetailsActivity extends AppCompatActivity {
                                 mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
                                     @Override
                                     public void onStyleLoaded(@NonNull Style style) {
+                                        RequestDetailsActivity.this.mapboxMap = mapboxMap;
                                         // Map is set up and the style has loaded. Now you can add data or make other map adjustments
                                         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
+                                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).
+                                                title(nameText.getText().toString()));
 
+                                        IconFactory iconFactory = IconFactory.getInstance(RequestDetailsActivity.this);
+                                        Icon userIcon = iconFactory.fromResource(R.drawable.location);
+
+                                        mapboxMap.addMarker(new MarkerOptions()
+                                                .position(new LatLng(userLat, userLong)).title("You")
+                                                .icon(userIcon));
+
+                                        Point originPosition = Point.fromLngLat(userLong, userLat);
+                                        Point  dstPosition = Point.fromLngLat(longitude, latitude);
+
+                                        navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationMapRoute);
+                                        getRoute(originPosition, dstPosition);
                                     }
                                 });
 

@@ -81,7 +81,7 @@
                         <com.mapbox.mapboxsdk.maps.MapView
                             android:id="@+id/trash_map"
                             android:layout_width="match_parent"
-                            android:layout_height="400dp"
+                            android:layout_height="420dp"
                             mapbox:mapbox_cameraTargetLat="-32.557013"
                             mapbox:mapbox_cameraTargetLng="-56.149056"
                             mapbox:mapbox_cameraZoom="5.526846"

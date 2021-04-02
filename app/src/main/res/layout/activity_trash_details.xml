@@ -59,7 +59,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Trash-can Location"
+                        android:id="@+id/zoneName"
+                        android:text="Zone Name"
                         android:textColor="@color/purple_700"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -80,7 +81,7 @@
                         <com.mapbox.mapboxsdk.maps.MapView
                             android:id="@+id/trash_map"
                             android:layout_width="match_parent"
-                            android:layout_height="500dp"
+                            android:layout_height="400dp"
                             mapbox:mapbox_cameraTargetLat="-32.557013"
                             mapbox:mapbox_cameraTargetLng="-56.149056"
                             mapbox:mapbox_cameraZoom="5.526846"
@@ -94,12 +95,61 @@
                             android:layout_below="@+id/trash_map"
                             android:layout_margin="5dp"
                             android:background="@color/black"/>
-                        <RelativeLayout
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/rel_top"
+                            android:id="@+id/linen"
+                            android:layout_marginLeft="10dp"
                             android:layout_below="@id/map_view"
                             android:orientation="horizontal">
+                            <ProgressBar
+                                android:id="@+id/canLoads"
+                                android:layout_width="40dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:visibility="visible"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:id="@+id/errorText"
+                                android:text="Error: Unknown Task. Nothing fetched"
+                                android:textColor="@android:color/holo_red_dark"
+                                android:textSize="13sp"
+                                android:visibility="gone"
+                                android:textStyle="italic"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/quien"
+                            android:layout_below="@id/linen"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:text="Trashcan Details"
+                                android:textColor="@color/purple_700"
+                                android:textSize="22sp"
+                                android:textStyle="normal" />
+                        </LinearLayout>
+
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/quien"
+                            android:id="@+id/rel_top"
+                            android:orientation="vertical">
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -108,62 +158,112 @@
                                 android:layout_marginLeft="7dp"
                                 android:gravity="center"
                                 android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Trashcan 5"
-                                    android:textColor="@color/purple_700"
-                                    android:textSize="17sp"
-                                    android:textStyle="bold"
-                                    android:layout_margin="5dp"
-                                    android:layout_marginTop="5dp"
-                                    android:layout_marginBottom="5dp"
-                                    android:gravity="center_horizontal" />
 
-                                <TextView
-                                    android:layout_width="wrap_content"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="ID : TR28236"
-                                    android:textColor="@color/purple_700"
-                                    android:textSize="15sp"
-                                    android:layout_centerVertical="true"
-                                    android:textStyle="italic"
-                                    android:layout_margin="5dp"
-                                    android:layout_marginTop="5dp"
-                                    android:layout_marginBottom="5dp"
-                                    android:gravity="center_horizontal" />
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:text="Can Name: "
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="17sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/canName"
+                                        android:text=""
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="17sp"
+                                        android:textStyle="bold"
+                                        android:layout_margin="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:gravity="center_horizontal" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:text="Can ID: "
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="17sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text=""
+                                        android:id="@+id/canID"
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="15sp"
+                                        android:layout_centerVertical="true"
+                                        android:textStyle="italic"
+                                        android:layout_margin="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:gravity="center_horizontal" />
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:text="Can Status: "
+                                        android:textColor="@color/purple_700"
+                                        android:textSize="17sp"
+                                        android:textStyle="bold" />
+
+                                    <ProgressBar
+                                        android:id="@+id/progress"
+                                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                        android:layout_width="150dp"
+                                        android:layout_height="wrap_content"
+                                        android:max="100"
+                                        android:progress="0" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text=""
+                                        android:id="@+id/percentage"
+                                        android:textColor="@color/purple_700"
+                                        android:layout_marginLeft="10dp"
+                                        android:textSize="17sp"
+                                        android:textStyle="bold"
+                                        android:layout_marginBottom="5dp"
+                                        android:gravity="center" />
+                                </LinearLayout>
+
                             </LinearLayout>
 
 
-                            <ProgressBar
-                                android:id="@+id/simpleProgressBar"
-                                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                                android:layout_width="120dp"
-                                android:layout_height="30dp"
-                                android:layout_centerInParent="true"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="2dp"
-                                android:layout_marginLeft="2dp"
-                                android:max="100"
-                                android:progress="80"
-                                android:progressDrawable="@drawable/custom_progress" />
-
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/collect"
-                                android:layout_width="wrap_content"
-                                android:layout_height="45dp"
-                                android:layout_alignParentRight="true"
-                                android:background="@drawable/arrow_btn"                        android:layout_centerInParent="true"
-                                android:text="Collect"
-                                android:textSize="12sp"
-                                android:textColor="#fff"
-                                android:layout_marginRight="2dp"
-                                android:layout_marginLeft="2dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginEnd="10dp" />
-
-                        </RelativeLayout>
+                        </LinearLayout>
 
                     </RelativeLayout>
                 </LinearLayout>

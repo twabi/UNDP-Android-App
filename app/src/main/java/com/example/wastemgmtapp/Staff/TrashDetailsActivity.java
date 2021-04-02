@@ -19,10 +19,14 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.example.wastemgmtapp.Common.MainActivity;
 import com.example.wastemgmtapp.GetTrashcanQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.TaskSortedWasteQuery;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -156,12 +160,27 @@ public class TrashDetailsActivity extends AppCompatActivity {
                                     public void onStyleLoaded(@NonNull Style style) {
                                         // Map is set up and the style has loaded. Now you can add data or make other map adjustments
                                         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
+                                       // mapboxMap.addMarker(new MarkerOptions()
+                                                //.position(new LatLng(latitude, longitude));
+
+
+                                        // Create an Icon object for the marker to use
+                                        IconFactory iconFactory = IconFactory.getInstance(TrashDetailsActivity.this);
+                                        Icon icon = iconFactory.fromResource(R.drawable.bin);
+
+                                        mapboxMap.addMarker(new MarkerOptions()
+                                                .position(new LatLng(latitude, longitude))
+                                                .title(canNameText.getText().toString())
+                                                .icon(icon));
+
 
                                     }
                                 });
 
                             }
                         });
+
+
 
                     });
 

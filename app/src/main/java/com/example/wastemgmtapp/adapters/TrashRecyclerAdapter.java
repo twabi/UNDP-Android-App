@@ -3,13 +3,19 @@ package com.example.wastemgmtapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wastemgmtapp.R;
+import com.example.wastemgmtapp.Staff.RequestDetailsActivity;
 import com.example.wastemgmtapp.Staff.TrashDetailsActivity;
 
 import java.util.ArrayList;
@@ -17,11 +23,20 @@ import java.util.ArrayList;
 public class TrashRecyclerAdapter extends RecyclerView.Adapter<TrashRecyclerAdapter.MyViewHolder> {
 
     private final Context context;
-    private ArrayList<String> nameList = new ArrayList<>();
+    private ArrayList<String> nameList;
+    private ArrayList<Double> statusList;
+    private ArrayList<String> keyList;
+    private ArrayList<String> zoneNameList;
 
-    public TrashRecyclerAdapter(Context context, ArrayList<String> nameList) {
+    String TAG = TrashRecyclerAdapter.class.getSimpleName();
+
+    public TrashRecyclerAdapter(Context context, ArrayList<String> nameList, ArrayList<Double> statusList, ArrayList<String> zoneNameList,
+                                ArrayList<String> keyList) {
         this.context = context;
         this.nameList = nameList;
+        this.statusList = statusList;
+        this.keyList = keyList;
+        this.zoneNameList = zoneNameList;
     }
 
     @Override
@@ -36,8 +51,24 @@ public class TrashRecyclerAdapter extends RecyclerView.Adapter<TrashRecyclerAdap
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
+        holder.canName.setText(nameList.get(position));
+        holder.zoneName.setText(zoneNameList.get(position));
+        holder.percentage.setText("" + statusList.get(position));
+
+        Double d = Double.valueOf(statusList.get(position));
+        int value = d.intValue();
+        if(value > 90){
+            Drawable progressDrawable = holder.canLevel.getProgressDrawable().mutate();
+            progressDrawable.setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+            holder.canLevel.setProgressDrawable(progressDrawable);
+        }
+
+        holder.canLevel.setProgress(value);
+
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, TrashDetailsActivity.class);
+            intent.putExtra("key", keyList.get(position));
             context.startActivity(intent);
         });
 
@@ -51,15 +82,16 @@ public class TrashRecyclerAdapter extends RecyclerView.Adapter<TrashRecyclerAdap
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // init the item view's
-
+        TextView canName, zoneName, percentage;
+        ProgressBar canLevel;
         public MyViewHolder(View itemView) {
             super(itemView);
 
             // get the reference of item view's
-            //TextView canName = itemView.findViewById(R.id.can_number);
-            //TextView zoneName = itemView.findViewById(R.id.zone_name);
-            //TextView percentage = itemView.findViewById(R.id.can_level);
-            //ProgressBar canLevel = itemView.findViewById(R.id.can_level_bar);
+            canName = itemView.findViewById(R.id.can_number);
+            zoneName = itemView.findViewById(R.id.zone_name);
+            percentage = itemView.findViewById(R.id.can_level);
+            canLevel = itemView.findViewById(R.id.can_level_bar);
 
         }
     }

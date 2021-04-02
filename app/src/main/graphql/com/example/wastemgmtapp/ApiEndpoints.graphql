@@ -432,5 +432,33 @@ mutation DeleteTaskTrashcollection($taskID : ID!){
     deleteTrashCollection(trashCollectionId: $taskID)
 }
 
+query GetTrashcans{
+    trashcans{
+        _id
+        trashcanId
+        zone{
+            _id
+            name
+        }
+        status
+        longitude
+        latitude
+    }
+}
+
+query GetTrashcan($canID : ID!){
+    trashcan(trashcanId: $canID){
+        _id
+        trashcanId
+        zone{
+            _id
+            name
+        }
+        status
+        longitude
+        latitude
+    }
+}
+
 
 

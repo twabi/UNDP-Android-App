@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_gravity="center_horizontal"
-        android:visibility="invisible"/>
+        android:visibility="gone"/>
 
 
     <LinearLayout
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_centerInParent="true"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:id="@+id/Retry2"
         android:orientation="horizontal">
 
@@ -58,7 +58,7 @@
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Poor Network...\n Click to Retry"
+            android:text="Poor Network...\n try again later"
             android:padding="5dp"
             android:textSize="20sp"/>
     </LinearLayout>
@@ -68,9 +68,11 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:id="@+id/noitems2"
+        android:padding="10dp"
+        android:background="@drawable/edit_text_border"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <TextView
@@ -78,11 +80,19 @@
             android:text="No Trash-cans"
             android:textAlignment="center"
             android:textSize="24sp"
-            android:textColor="#000000"
+            android:textColor="@color/purple_700"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_centerHorizontal="true"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:id="@+id/view"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:background="@color/black"/>
         <TextView
             android:id="@+id/text13"
             android:layout_width="wrap_content"

@@ -22,10 +22,14 @@ import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.example.wastemgmtapp.CreateCollectionNotifMutation;
+import com.example.wastemgmtapp.CreateSortedNotifMutation;
 import com.example.wastemgmtapp.CreateSortedWasteMutation;
 import com.example.wastemgmtapp.CreateTrashCollectionMutation;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.WasteInstitutionsQuery;
+import com.example.wastemgmtapp.type.NotificationSortedWasteInput;
+import com.example.wastemgmtapp.type.NotificationTrashCollectionInput;
 import com.example.wastemgmtapp.type.SortedWasteInput;
 import com.example.wastemgmtapp.type.TrashCollectionInput;
 
@@ -53,7 +57,7 @@ public class RecordWaste extends AppCompatActivity {
     EditText inputTrashAmount, inputOther, inputLocation, inputPrice;
     boolean other = false;
     Button recordWaste;
-
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +83,7 @@ public class RecordWaste extends AppCompatActivity {
 
         companyNames.add("Select Trash Collection Company");
         Intent intent = getIntent();
-        String userID = intent.getStringExtra("id"); //get the productID from the intent
+        userID = intent.getStringExtra("id"); //get the productID from the intent
         double latitude = intent.getDoubleExtra("lat", -1);
         double longitude  = intent.getDoubleExtra("long", -1);
 
@@ -267,6 +271,19 @@ public class RecordWaste extends AppCompatActivity {
                             Toast.makeText(RecordWaste.this,
                                     "Record sent successfully", Toast.LENGTH_LONG).show();
                             sendLoading.setVisibility(View.GONE);
+
+
+                            String requestID = data.createSortedWaste()._id();
+
+                            NotificationSortedWasteInput notifInput =  NotificationSortedWasteInput.builder()
+                                    .completed(false)
+                                    .creator(userID)
+                                    .institution(selectedID)
+                                    .status("Pending")
+                                    .sortedWaste(requestID)
+                                    .build();
+                            Input<NotificationSortedWasteInput> input = new Input<>(notifInput, true);
+                            apolloClient.mutate(new CreateSortedNotifMutation(input)).enqueue(sortedCallback());
                         });
                     }
 
@@ -287,6 +304,64 @@ public class RecordWaste extends AppCompatActivity {
                 Log.e("Apollo", "Error", e);
                 Toast.makeText(RecordWaste.this,
                         "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        };
+    }
+
+
+    public ApolloCall.Callback<CreateSortedNotifMutation.Data> sortedCallback(){
+        return new ApolloCall.Callback<CreateSortedNotifMutation.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<CreateSortedNotifMutation.Data> response) {
+                CreateSortedNotifMutation.Data data = response.getData();
+
+
+                if(data.createSortedWasteNotication() == null){
+
+                    if(response.getErrors() == null){
+                        Log.e("Apollo", "an Error occurred : " );
+                        runOnUiThread(() -> {
+                            // Stuff that updates the UI
+                            Toast.makeText(RecordWaste.this,
+                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
+                        });
+                    } else{
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(RecordWaste.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }else{
+                    runOnUiThread(() -> {
+                        Log.d(TAG, "notif created" + data.createSortedWasteNotication()._id());
+
+                    });
+
+                    if(response.getErrors() != null){
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(RecordWaste.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(RecordWaste.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                });
             }
         };
     }

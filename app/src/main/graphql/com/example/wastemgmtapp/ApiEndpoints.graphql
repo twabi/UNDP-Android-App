@@ -108,10 +108,6 @@ query GetStaff($staffId: ID!){
         location
         phoneNumber
         role
-        zone {
-            _id
-            name
-        }
     }
 }
 
@@ -157,6 +153,7 @@ query GetSortedWasteNotifs{
     sortedWasteNotications{
         _id
         status
+        completed
         institution{
             _id
             name
@@ -172,6 +169,7 @@ query GetCollectionNotifs{
     trashCollectionNotications{
         _id
         status
+        completed
         institution{
             _id
             name
@@ -180,6 +178,18 @@ query GetCollectionNotifs{
             _id
         }
         createdAt
+    }
+}
+
+mutation CreateSortedNotif($notifInput : NotificationSortedWasteInput){
+    createSortedWasteNotication(notificationSortedWasteInput: $notifInput ){
+        _id
+    }
+}
+
+mutation CreateCollectionNotif($notifInput : NotificationTrashCollectionInput){
+    createTrashCollectionNotication(notificationTrashCollectionInput: $notifInput ){
+        _id
     }
 }
 

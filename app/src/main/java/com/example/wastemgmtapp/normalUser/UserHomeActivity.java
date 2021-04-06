@@ -234,6 +234,15 @@ public class UserHomeActivity extends AppCompatActivity{
     }
 
     @Override
+    public void onRestart() {
+        super.onRestart();
+        //When BACK BUTTON is pressed, the activity on the stack is restarted
+        //Do what you want on the refresh procedure here
+        apolloClient.query(new GetCollectionNotifsQuery()).enqueue(collectCallback());
+        apolloClient.query(new GetSortedWasteNotifsQuery()).enqueue(sortedCallback());
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mToggle.onOptionsItemSelected(item)){
 
@@ -383,7 +392,6 @@ public class UserHomeActivity extends AppCompatActivity{
             @Override
             public void onResponse(@NotNull Response<GetCollectionNotifsQuery.Data> response) {
                 GetCollectionNotifsQuery.Data data = response.getData();
-
 
 
                     if(data.trashCollectionNotications() == null){

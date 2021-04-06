@@ -40,7 +40,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class ZoneTrashcans extends AppCompatActivity {
 
     String userID;
-    private final ArrayList<String> sample = new ArrayList<>(Arrays.asList("one", "two", "three", "four", "five"));
     ApolloClient apolloClient;
     LinearLayout errorLayout, noItems;
     ProgressBar loadCans;

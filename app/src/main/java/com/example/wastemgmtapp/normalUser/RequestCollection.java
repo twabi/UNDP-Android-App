@@ -22,9 +22,12 @@ import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.example.wastemgmtapp.CreateCollectionNotifMutation;
 import com.example.wastemgmtapp.CreateTrashCollectionMutation;
+import com.example.wastemgmtapp.GetCollectionNotifsQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.WasteInstitutionsQuery;
+import com.example.wastemgmtapp.type.NotificationTrashCollectionInput;
 import com.example.wastemgmtapp.type.TrashCollectionInput;
 
 import org.jetbrains.annotations.NotNull;
@@ -54,6 +57,7 @@ public class RequestCollection extends AppCompatActivity {
     ProgressBar loading, fetchLoading;
     Spinner companySpinner, wasteSpinner;
     boolean other = false;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +79,7 @@ public class RequestCollection extends AppCompatActivity {
 
         companyNames.add("Select Trash Collection Company");
         Intent intent = getIntent();
-        String userID = intent.getStringExtra("id"); //get the productID from the intent
+        userID = intent.getStringExtra("id"); //get the productID from the intent
         double latitude = intent.getDoubleExtra("lat", -1);
         double longitude  = intent.getDoubleExtra("long", -1);
 
@@ -166,6 +170,8 @@ public class RequestCollection extends AppCompatActivity {
 
                 apolloClient.mutate(new CreateTrashCollectionMutation(input))
                         .enqueue(requestCallBack());
+
+
             }
         });
     }
@@ -270,6 +276,18 @@ public class RequestCollection extends AppCompatActivity {
                             Toast.makeText(RequestCollection.this,
                                     "Request sent successfully", Toast.LENGTH_LONG).show();
                             loading.setVisibility(View.GONE);
+
+                            String requestID = data.createTrashCollection()._id();
+
+                            NotificationTrashCollectionInput notifInput =  NotificationTrashCollectionInput.builder()
+                                    .completed(false)
+                                    .creator(userID)
+                                    .institution(selectedID)
+                                    .status("Pending")
+                                    .trashcollection(requestID)
+                                    .build();
+                            Input<NotificationTrashCollectionInput> input = new Input<>(notifInput, true);
+                            apolloClient.mutate(new CreateCollectionNotifMutation(input)).enqueue(collectCallback());
                         });
                     }
 
@@ -290,6 +308,67 @@ public class RequestCollection extends AppCompatActivity {
                 Log.e("Apollo", "Error", e);
                 Toast.makeText(RequestCollection.this,
                         "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        };
+    }
+
+
+    public ApolloCall.Callback<CreateCollectionNotifMutation.Data> collectCallback(){
+        return new ApolloCall.Callback<CreateCollectionNotifMutation.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<CreateCollectionNotifMutation.Data> response) {
+                CreateCollectionNotifMutation.Data data = response.getData();
+
+
+                if(data.createTrashCollectionNotication() == null){
+
+                    if(response.getErrors() == null){
+                        Log.e("Apollo", "an Error occurred : " );
+                        runOnUiThread(() -> {
+                            // Stuff that updates the UI
+                            Toast.makeText(RequestCollection.this,
+                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
+                        });
+                    } else{
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(RequestCollection.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }else{
+                    runOnUiThread(() -> {
+                        Log.d(TAG, "notif created" + data.createTrashCollectionNotication()._id());
+
+                    });
+
+                    if(response.getErrors() != null){
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(RequestCollection.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }
+
+
+
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(RequestCollection.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                });
             }
         };
     }

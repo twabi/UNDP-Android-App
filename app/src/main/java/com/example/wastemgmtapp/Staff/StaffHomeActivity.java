@@ -145,6 +145,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         zoneTrashcans.setOnClickListener(view ->{
             Intent intent = new Intent(StaffHomeActivity.this, ZoneTrashcans.class);
             intent.putExtra("id", userID);intent.putExtra("lat", userLat);intent.putExtra("long", userLong);
+            intent.putExtra("zoneID", zoneID);
             startActivity(intent);
         });
 
@@ -261,12 +262,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         Log.d(TAG, "staff fetched" + data.staff());
                         textUserName.setText(data.staff().fullName());
-                        if(data.staff().zone() != null){
-                            text_support.setText("Zone: " + data.staff().zone().name());
-                            zoneID = data.staff().zone()._id();
-                        } else{
-                            text_support.setText("Zone: null");
-                        }
+                        text_support.setText("Staff Member");
 
                         locationText = data.staff().creator().location();
                         emailText = data.staff().creator().email();

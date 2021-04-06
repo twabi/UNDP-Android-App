@@ -52,7 +52,27 @@
             android:textSize="15sp" />
 
         <TextView
+            android:id="@+id/completedText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="complete"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="3dp"
+            android:textColor="#000"
+            android:textSize="15sp" />
+
+        <TextView
             android:id="@+id/otherText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="other text"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="3dp"
+            android:textColor="#000"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/createdText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="other text"

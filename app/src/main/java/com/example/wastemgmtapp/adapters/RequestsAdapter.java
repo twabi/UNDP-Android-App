@@ -18,24 +18,28 @@ public class RequestsAdapter extends BaseAdapter {
 
     Context context;
     String TAG = RequestsAdapter.class.getSimpleName();
-    ArrayList settingList = new ArrayList();
-    ArrayList descriptionList = new ArrayList();
-    ArrayList statusList = new ArrayList<>();
+    ArrayList amountList;
+    ArrayList institutionList;
+    ArrayList locationList;
+    ArrayList createdList;
+    ArrayList completedList;
     LayoutInflater inflter;
 
-    public RequestsAdapter(Context applicationContext, ArrayList headerList,
-                           ArrayList descriptionList, ArrayList statusList) {
+    public RequestsAdapter(Context applicationContext, ArrayList amountList,
+                           ArrayList institutionList, ArrayList locationList, ArrayList completedList, ArrayList createdList) {
         this.context = applicationContext;
-        this.settingList = headerList;
-        this.descriptionList = descriptionList;
-        this.statusList = statusList;
+        this.amountList = amountList;
+        this.institutionList = institutionList;
+        this.locationList = locationList;
+        this.completedList = completedList;
+        this.createdList = createdList;
 
         inflter = (LayoutInflater.from(applicationContext));
     }
 
     @Override
     public int getCount() {
-        return settingList.size();
+        return amountList.size();
     }
 
     @Override
@@ -57,10 +61,14 @@ public class RequestsAdapter extends BaseAdapter {
         TextView settingHead = view.findViewById(R.id.settingHead);
         TextView subText = view.findViewById(R.id.subText);
         TextView statusText = view.findViewById(R.id.statusText);
+        TextView completeText = view.findViewById(R.id.completedText);
+        TextView createdAtText = view.findViewById(R.id.createdText);
 
-        settingHead.setText("Amount:  " + settingList.get(position).toString());
-        subText.setText("Institution:  " + descriptionList.get(position).toString());
-        statusText.setText("location:  " + statusList.get(position).toString());
+        settingHead.setText("Trash Amount:  " + amountList.get(position).toString());
+        subText.setText("institution :  " + institutionList.get(position).toString());
+        statusText.setText("location :  " + locationList.get(position).toString());
+        completeText.setText("Status:  " + completedList.get(position).toString());
+        createdAtText.setText("Date Created:  " + createdList.get(position).toString());
 
 
         listItem.setOnClickListener(view1 -> {

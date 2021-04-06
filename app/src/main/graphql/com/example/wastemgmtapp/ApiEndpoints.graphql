@@ -154,6 +154,14 @@ query GetSortedWasteNotifs{
         _id
         status
         completed
+        sortedWaste{
+            _id
+            amount
+            location
+            createdAt
+            typeOfWaste
+            price
+        }
         institution{
             _id
             name
@@ -170,6 +178,13 @@ query GetCollectionNotifs{
         _id
         status
         completed
+        trashcollection{
+            _id
+            amount
+            location
+            createdAt
+            typeOfWaste
+        }
         institution{
             _id
             name

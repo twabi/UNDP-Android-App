@@ -20,6 +20,7 @@ import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.Common.SessionManager;
+import com.example.wastemgmtapp.GetCollectionNotifsQuery;
 import com.example.wastemgmtapp.GetCollectionRequestsQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.Staff.StaffHomeActivity;
@@ -39,9 +40,11 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class CollectionFragment extends Fragment {
 
     String TAG  = CollectionFragment.class.getSimpleName();
-    ArrayList<String> headerList = new ArrayList<>();
-    ArrayList<String> statusList = new ArrayList<>();
-    ArrayList<String> subTextList = new ArrayList<>();
+    ArrayList<String> amountList = new ArrayList<>();
+    ArrayList<String> locationList = new ArrayList<>();
+    ArrayList<String> institutionList = new ArrayList<>();
+    ArrayList<String> completedList =  new ArrayList<>();
+    ArrayList<String> createdAtList =  new ArrayList<>();
     ListView requestsView;
     ProgressBar fetchLoading;
     LinearLayout noItems, retryNetwork;
@@ -83,7 +86,7 @@ public class CollectionFragment extends Fragment {
                 .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
                 .build();
 
-        apolloClient.query(new GetCollectionRequestsQuery()).enqueue(requestCallback());
+        apolloClient.query(new GetCollectionNotifsQuery()).enqueue(requestCallback());
 
 
 
@@ -91,15 +94,15 @@ public class CollectionFragment extends Fragment {
 
     }
 
-    public ApolloCall.Callback<GetCollectionRequestsQuery.Data> requestCallback(){
-        return new ApolloCall.Callback<GetCollectionRequestsQuery.Data>() {
+    public ApolloCall.Callback<GetCollectionNotifsQuery.Data> requestCallback(){
+        return new ApolloCall.Callback<GetCollectionNotifsQuery.Data>() {
             @Override
-            public void onResponse(@NotNull Response<GetCollectionRequestsQuery.Data> response) {
-                GetCollectionRequestsQuery.Data data = response.getData();
+            public void onResponse(@NotNull Response<GetCollectionNotifsQuery.Data> response) {
+                GetCollectionNotifsQuery.Data data = response.getData();
 
 
 
-                    if(data.trashCollections() == null){
+                    if(data.trashCollectionNotications() == null){
 
                         if(response.getErrors() == null){
                             Log.e("Apollo", "an Error occurred : " );
@@ -124,23 +127,31 @@ public class CollectionFragment extends Fragment {
                         }
 
                     }else{
-                        Log.d(TAG, "requests fetched" + data.trashCollections().get(0).amount());
+                        Log.d(TAG, "requests fetched" + data.trashCollectionNotications());
                         getActivity().runOnUiThread(() -> {
 
                             fetchLoading.setVisibility(View.GONE);
-                            if(data.trashCollections().size() == 0) {
+                            if(data.trashCollectionNotications().size() == 0) {
                                 noItems.setVisibility(View.VISIBLE);
                             } else {
-                                Log.d(TAG, "onResponse: " + data.trashCollections());
-                                for(int i = 0; i < data.trashCollections().size(); i++){
-                                    if(userID.equals(data.trashCollections().get(i).creator()._id())){
-                                        headerList.add(data.trashCollections().get(i).amount());
-                                        statusList.add(data.trashCollections().get(i).location());
-                                        subTextList.add(data.trashCollections().get(i).institution().name());
+                                Log.d(TAG, "onResponse: " + data.trashCollectionNotications());
+                                for(int i = 0; i < data.trashCollectionNotications().size(); i++){
+                                    if(userID.equals(data.trashCollectionNotications().get(i).creator()._id())){
+                                        try{
+                                            amountList.add(data.trashCollectionNotications().get(i).trashcollection().amount());
+                                            institutionList.add(data.trashCollectionNotications().get(i).institution().name());
+                                            locationList.add(data.trashCollectionNotications().get(i).trashcollection().location());
+                                            completedList.add(data.trashCollectionNotications().get(i).status());
+                                            createdAtList.add(data.trashCollectionNotications().get(i).trashcollection().createdAt());
+                                        } catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+
                                     }
                                 }
 
-                                RequestsAdapter adapter = new RequestsAdapter(getActivity(), headerList, subTextList, statusList);
+                                RequestsAdapter adapter = new RequestsAdapter(getActivity(),amountList,
+                                        institutionList, locationList, completedList, createdAtList);
                                 requestsView.setAdapter(adapter);
                             }
 

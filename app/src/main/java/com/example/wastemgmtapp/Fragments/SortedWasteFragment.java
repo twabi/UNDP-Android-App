@@ -20,6 +20,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.GetCollectionRequestsQuery;
+import com.example.wastemgmtapp.GetSortedWasteNotifsQuery;
 import com.example.wastemgmtapp.GetSortedWasteRequestsQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.adapters.RequestsAdapter;
@@ -37,10 +38,13 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class SortedWasteFragment extends Fragment {
 
     String TAG  = CollectionFragment.class.getSimpleName();
-    ArrayList<String> headerList = new ArrayList<>();
-    ArrayList<String> statusList = new ArrayList<>();
-    ArrayList<String> subTextList = new ArrayList<>();
+    ArrayList<String> amountList = new ArrayList<>();
+    ArrayList<String> locationList = new ArrayList<>();
+    ArrayList<String> institutionList = new ArrayList<>();
     ArrayList<String> priceList =  new ArrayList<>();
+    ArrayList<String> completedList =  new ArrayList<>();
+    ArrayList<String> createdAtList =  new ArrayList<>();
+
     ListView requestsView;
     ProgressBar fetchLoading;
     LinearLayout noItems, retryNetwork;
@@ -86,19 +90,19 @@ public class SortedWasteFragment extends Fragment {
                 .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
                 .build();
 
-        apolloClient.query(new GetSortedWasteRequestsQuery()).enqueue(requestCallback());
+        apolloClient.query(new GetSortedWasteNotifsQuery()).enqueue(requestCallback());
 
 
         return view;
     }
 
-    public ApolloCall.Callback<GetSortedWasteRequestsQuery.Data> requestCallback(){
-        return new ApolloCall.Callback<GetSortedWasteRequestsQuery.Data>() {
+    public ApolloCall.Callback<GetSortedWasteNotifsQuery.Data> requestCallback(){
+        return new ApolloCall.Callback<GetSortedWasteNotifsQuery.Data>() {
             @Override
-            public void onResponse(@NotNull Response<GetSortedWasteRequestsQuery.Data> response) {
-                GetSortedWasteRequestsQuery.Data data = response.getData();
+            public void onResponse(@NotNull Response<GetSortedWasteNotifsQuery.Data> response) {
+                GetSortedWasteNotifsQuery.Data data = response.getData();
 
-                    if(data.sortedWastes() == null){
+                    if(data.sortedWasteNotications() == null){
 
                         if(response.getErrors() == null){
                             Log.e("Apollo", "an Error occurred : " );
@@ -136,21 +140,25 @@ public class SortedWasteFragment extends Fragment {
                 }else{
                         try {
                             getActivity().runOnUiThread(() -> {
-                                Log.d(TAG, "requests fetched" + data.sortedWastes());
+                                Log.d(TAG, "requests fetched" + data.sortedWasteNotications());
                                 fetchLoading.setVisibility(View.GONE);
-                                if(data.sortedWastes().size() == 0) {
+                                if(data.sortedWasteNotications().size() == 0) {
                                     noItems.setVisibility(View.VISIBLE);
                                     retryNetwork.setVisibility(View.GONE);
                                 } else {
-                                    for(int i = 0; i < data.sortedWastes().size(); i++){
-                                        if(userID.equals(data.sortedWastes().get(i).creator()._id())){
-                                            headerList.add(data.sortedWastes().get(i).amount());
-                                            priceList.add(data.sortedWastes().get(i).price().toString());
-                                            statusList.add(data.sortedWastes().get(i).institution().name());
-                                            subTextList.add(data.sortedWastes().get(i).location());
-                                        }
+                                    for(int i = 0; i < data.sortedWasteNotications().size(); i++){
+                                        try{
+                                            amountList.add(data.sortedWasteNotications().get(i).sortedWaste().amount());
+                                            priceList.add(data.sortedWasteNotications().get(i).sortedWaste().price().toString());
+                                            institutionList.add(data.sortedWasteNotications().get(i).institution().name());
+                                            locationList.add(data.sortedWasteNotications().get(i).sortedWaste().location());
+                                            completedList.add(data.sortedWasteNotications().get(i).status());
+                                            createdAtList.add(data.sortedWasteNotications().get(i).sortedWaste().createdAt());
+                                        }catch (Exception e){e.printStackTrace();}
+
                                     }
-                                    SortedWasteAdapter adapter = new SortedWasteAdapter(getActivity(), headerList, priceList, statusList, subTextList);
+                                    SortedWasteAdapter adapter = new SortedWasteAdapter(getActivity(), amountList, priceList,
+                                            institutionList, locationList, completedList, createdAtList);
                                     requestsView.setAdapter(adapter);
 
                                 }

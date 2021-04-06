@@ -18,26 +18,30 @@ public class SortedWasteAdapter extends BaseAdapter {
 
     Context context;
     String TAG = RequestsAdapter.class.getSimpleName();
-    ArrayList headerList = new ArrayList();
-    ArrayList descriptionList = new ArrayList();
-    ArrayList statusList = new ArrayList<>();
+    ArrayList amountList = new ArrayList();
+    ArrayList institutionList = new ArrayList();
+    ArrayList locationList = new ArrayList<>();
+    ArrayList createdList;
+    ArrayList completedList;
     ArrayList priceList;
     LayoutInflater inflter;
 
-    public SortedWasteAdapter(Context applicationContext, ArrayList headerList, ArrayList priceList,
-                           ArrayList descriptionList, ArrayList statusList) {
+    public SortedWasteAdapter(Context applicationContext, ArrayList amountList, ArrayList priceList,
+                           ArrayList institutionList, ArrayList locationList, ArrayList completedList, ArrayList createdList) {
         this.context = applicationContext;
-        this.headerList = headerList;
+        this.amountList = amountList;
         this.priceList = priceList;
-        this.descriptionList = descriptionList;
-        this.statusList = statusList;
+        this.institutionList = institutionList;
+        this.locationList = locationList;
+        this.completedList = completedList;
+        this.createdList = createdList;
 
         inflter = (LayoutInflater.from(applicationContext));
     }
 
     @Override
     public int getCount() {
-        return headerList.size();
+        return amountList.size();
     }
 
     @Override
@@ -60,11 +64,15 @@ public class SortedWasteAdapter extends BaseAdapter {
         TextView subText = view.findViewById(R.id.subText);
         TextView statusText = view.findViewById(R.id.statusText);
         TextView otherText = view.findViewById(R.id.otherText);
+        TextView completeText = view.findViewById(R.id.completedText);
+        TextView createdAtText = view.findViewById(R.id.createdText);
 
-        settingHead.setText("Trash Amount:  " + headerList.get(position).toString());
-        subText.setText("institution :  " + descriptionList.get(position).toString());
-        statusText.setText("location :  " + statusList.get(position).toString());
+        settingHead.setText("Trash Amount:  " + amountList.get(position).toString());
+        subText.setText("institution :  " + institutionList.get(position).toString());
+        statusText.setText("location :  " + locationList.get(position).toString());
         otherText.setText("Price:  K" + priceList.get(position).toString());
+        completeText.setText("Status:  " + completedList.get(position).toString());
+        createdAtText.setText("Date Created:  " + createdList.get(position).toString());
 
         listItem.setOnClickListener(view1 -> {
             if(position == 0) {

@@ -339,7 +339,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Log.d(TAG, "tasks fetched: " + data.tasks());
                             try{
-                                if(!TextUtils.isEmpty(userID) && data.tasks().get(0) != null){
+                                if(!TextUtils.isEmpty(userID) && data.tasks().size() != 0){
                                     for(int i=0; i < data.tasks().size(); i++){
                                         if(userID.equals(data.tasks().get(i).staff()._id()) && (data.tasks().get(i).completed() == false)){
                                             tasks.add(data.tasks().get(i));

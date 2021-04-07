@@ -21,6 +21,8 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.Common.SessionManager;
 import com.example.wastemgmtapp.GetStaffQuery;
 import com.example.wastemgmtapp.GetTaskSortedWastesQuery;
+import com.example.wastemgmtapp.GetTaskTrashCollectionsQuery;
+import com.example.wastemgmtapp.GetTasksQuery;
 import com.example.wastemgmtapp.GetTrashcansQuery;
 import com.example.wastemgmtapp.GetZoneTrashcansQuery;
 import com.example.wastemgmtapp.R;
@@ -86,7 +88,22 @@ public class ZoneTrashcans extends AppCompatActivity {
                 .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
                 .build();
 
+        keyList.clear();
+        statusList.clear();
+        zoneNameList.clear();
+        nameList.clear();
+        apolloClient.query(new GetTrashcansQuery()).enqueue(trashCallback());
 
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        keyList.clear();
+        statusList.clear();
+        zoneNameList.clear();
+        nameList.clear();
         apolloClient.query(new GetTrashcansQuery()).enqueue(trashCallback());
 
     }

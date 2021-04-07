@@ -30,6 +30,8 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.example.wastemgmtapp.Common.GPSTracker;
 import com.example.wastemgmtapp.Common.LogInActivity;
 import com.example.wastemgmtapp.Common.SessionManager;
+import com.example.wastemgmtapp.GetCollectionNotifsQuery;
+import com.example.wastemgmtapp.GetSortedWasteNotifsQuery;
 import com.example.wastemgmtapp.GetStaffQuery;
 import com.example.wastemgmtapp.GetTaskSortedWastesQuery;
 import com.example.wastemgmtapp.GetTaskTrashCollectionsQuery;
@@ -37,17 +39,8 @@ import com.example.wastemgmtapp.GetTasksQuery;
 import com.example.wastemgmtapp.GetZoneTrashcansQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.Common.SettingsActivity;
-import com.example.wastemgmtapp.UserQuery;
 import com.google.android.material.navigation.NavigationView;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.maps.Style;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -248,6 +241,20 @@ public class StaffHomeActivity extends AppCompatActivity {
             dialog = builder.create();
             dialog.show();
         });
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        //trashNumber.setText(String.valueOf(0));
+        //taskNumber.setText(String.valueOf(0));
+        tasks.clear();
+        //When BACK BUTTON is pressed, the activity on the stack is restarted
+        //Do what you want on the refresh procedure here
+        apolloClient.query(new GetTasksQuery()).enqueue(taskCallback());
+        apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
+        apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());
+        apolloClient.query(new GetZoneTrashcansQuery()).enqueue(trashCallback());
     }
 
     public ApolloCall.Callback<GetStaffQuery.Data> staffCallback(){

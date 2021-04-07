@@ -346,7 +346,7 @@ public class UserHomeActivity extends AppCompatActivity{
                             ArrayList incomplete = new ArrayList<>();
 
                             for(int i =0; i < data.sortedWasteNotications().size(); i++){
-                                if(data.sortedWasteNotications().get(i).status().equals("accepted") &&
+                                if(!data.sortedWasteNotications().get(i).completed() &&
                                 userID.equals(data.sortedWasteNotications().get(i).creator()._id())){
                                     complete.add(data.sortedWasteNotications().get(i));
                                 } else {
@@ -420,7 +420,7 @@ public class UserHomeActivity extends AppCompatActivity{
                             ArrayList incomplete = new ArrayList<>();
 
                             for(int i =0; i < data.trashCollectionNotications().size(); i++){
-                                if(data.trashCollectionNotications().get(i).status().equals("accepted")&&
+                                if(!data.trashCollectionNotications().get(i).completed() &&
                                         userID.equals(data.trashCollectionNotications().get(i).creator()._id())){
                                     complete.add(data.trashCollectionNotications().get(i));
                                 } else {

@@ -87,6 +87,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         setContentView(R.layout.activity_request_details);
 
         GPSTracker gpsTracker = new GPSTracker(RequestDetailsActivity.this, RequestDetailsActivity.this);
@@ -723,48 +724,54 @@ public class RequestDetailsActivity extends AppCompatActivity {
                         Log.d(TAG, "task fetched: " + data.taskSortedWaste());
                         taskLoads.setVisibility(View.GONE);
                         errorText.setVisibility(View.GONE);
-                        locationText.setText(data.taskSortedWaste().sortedWaste().location());
-                        amountText.setText(data.taskSortedWaste().sortedWaste().amount());
-                        nameText.setText(data.taskSortedWaste().sortedWaste().creator().fullName());
-                        typeText.setText(data.taskSortedWaste().sortedWaste().typeOfWaste());
-                        qualifierText.setText("Sorted Waste Collection");
-                        longitude = data.taskSortedWaste().sortedWaste().longitude();
-                        latitude = data.taskSortedWaste().sortedWaste().latitude();
+                        try{
+                            locationText.setText(data.taskSortedWaste().sortedWaste().location());
+                            amountText.setText(data.taskSortedWaste().sortedWaste().amount());
+                            nameText.setText(data.taskSortedWaste().sortedWaste().creator().fullName());
+                            typeText.setText(data.taskSortedWaste().sortedWaste().typeOfWaste());
+                            qualifierText.setText("Sorted Waste Collection");
+                            longitude = data.taskSortedWaste().sortedWaste().longitude();
+                            latitude = data.taskSortedWaste().sortedWaste().latitude();
 
-                        position = new CameraPosition.Builder()
-                                .target(new LatLng(latitude, longitude)).zoom(10).tilt(20)
-                                .build();
+                            position = new CameraPosition.Builder()
+                                    .target(new LatLng(latitude, longitude)).zoom(10).tilt(20)
+                                    .build();
 
-                        mapView.getMapAsync(new OnMapReadyCallback() {
-                            @Override
-                            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+                            mapView.getMapAsync(new OnMapReadyCallback() {
+                                @Override
+                                public void onMapReady(@NonNull MapboxMap mapboxMap) {
 
-                                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                                    @Override
-                                    public void onStyleLoaded(@NonNull Style style) {
-                                        RequestDetailsActivity.this.mapboxMap = mapboxMap;
-                                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-                                        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
-                                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).
-                                                title(nameText.getText().toString()));
+                                    mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                                        @Override
+                                        public void onStyleLoaded(@NonNull Style style) {
+                                            RequestDetailsActivity.this.mapboxMap = mapboxMap;
+                                            // Map is set up and the style has loaded. Now you can add data or make other map adjustments
+                                            mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
+                                            mapboxMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).
+                                                    title(nameText.getText().toString()));
 
-                                        IconFactory iconFactory = IconFactory.getInstance(RequestDetailsActivity.this);
-                                        Icon userIcon = iconFactory.fromResource(R.drawable.location);
+                                            IconFactory iconFactory = IconFactory.getInstance(RequestDetailsActivity.this);
+                                            Icon userIcon = iconFactory.fromResource(R.drawable.location);
 
-                                        mapboxMap.addMarker(new MarkerOptions()
-                                                .position(new LatLng(userLat, userLong)).title("You")
-                                                .icon(userIcon));
+                                            mapboxMap.addMarker(new MarkerOptions()
+                                                    .position(new LatLng(userLat, userLong)).title("You")
+                                                    .icon(userIcon));
 
-                                        Point originPosition = Point.fromLngLat(userLong, userLat);
-                                        Point  dstPosition = Point.fromLngLat(longitude, latitude);
+                                            Point originPosition = Point.fromLngLat(userLong, userLat);
+                                            Point  dstPosition = Point.fromLngLat(longitude, latitude);
 
-                                        navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationMapRoute);
-                                        getRoute(originPosition, dstPosition);
-                                    }
-                                });
+                                            navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationMapRoute);
+                                            getRoute(originPosition, dstPosition);
+                                        }
+                                    });
 
-                            }
-                        });
+                                }
+                            });
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+
                     });
 
                     if(response.getErrors() != null){

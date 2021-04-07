@@ -45,7 +45,7 @@ public class ZoneTrashcans extends AppCompatActivity {
     ProgressBar loadCans;
     RecyclerView trashRecyclerview;
     TrashRecyclerAdapter recyclerAdapter;
-    String zoneID;
+    String companyID;
     ArrayList<String> keyList = new ArrayList<>();
     ArrayList<String> nameList = new ArrayList<>();
     ArrayList<Double> statusList = new ArrayList<>();
@@ -70,9 +70,9 @@ public class ZoneTrashcans extends AppCompatActivity {
 
         Intent intent  = getIntent();
         userID = intent.getStringExtra("id");
-        zoneID = intent.getStringExtra("zoneID");
+        companyID = intent.getStringExtra("companyID");
 
-        Log.d(TAG, "IDs: " + userID + "-" + zoneID);
+        Log.d(TAG, "IDs: " + userID + "-" + companyID);
 
 
         loadCans.setVisibility(View.VISIBLE);
@@ -131,15 +131,20 @@ public class ZoneTrashcans extends AppCompatActivity {
                         noItems.setVisibility(View.GONE);
                         errorLayout.setVisibility(View.GONE);
                         Log.d(TAG, "trashcans fetched: " + data.trashcans());
-                        if(!TextUtils.isEmpty(zoneID)){
+                        if(!TextUtils.isEmpty(companyID)){
                             for(int i=0; i < data.trashcans().size(); i++){
-                                if(zoneID.equals(data.trashcans().get(i).zone()._id())){
+                                if(companyID.equals(data.trashcans().get(i).zone().creator()._id())){
                                     Log.d(TAG, "onResponse: " + data.trashcans().get(i));
                                     nameList.add(data.trashcans().get(i).trashcanId());
                                     statusList.add(data.trashcans().get(i).status());
                                     zoneNameList.add(data.trashcans().get(i).zone().name());
                                     keyList.add(data.trashcans().get(i)._id());
                                 }
+                            }
+
+                            Log.d(TAG, "tras: " + data.trashcans().size());
+                            if(data.trashcans().size() == 0){
+                                noItems.setVisibility(View.VISIBLE);
                             }
 
                             recyclerAdapter = new TrashRecyclerAdapter(ZoneTrashcans.this, nameList, statusList, zoneNameList, keyList);

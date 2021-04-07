@@ -84,6 +84,11 @@ public class CollectionRequests extends AppCompatActivity {
                 .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
                 .build();
 
+        tasks.clear();
+        taskType.clear();
+        keyList.clear();
+        createdAtList.clear();
+        statusList.clear();
         apolloClient.query(new GetTasksQuery()).enqueue(taskCallback());
         apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
         apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());
@@ -106,6 +111,21 @@ public class CollectionRequests extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        taskType.clear();
+        keyList.clear();
+        createdAtList.clear();
+        statusList.clear();
+        tasks.clear();
+        apolloClient.query(new GetTasksQuery()).enqueue(taskCallback());
+        apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
+        apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());
+
     }
 
     public ApolloCall.Callback<GetTasksQuery.Data> taskCallback(){

@@ -420,6 +420,9 @@ query GetZoneTrashcans{
         trashcanId
         zone{
             _id
+            creator{
+                _id
+            }
         }
     }
 }
@@ -439,6 +442,12 @@ mutation UpdateTaskSortedWaste($updateTaskInput : UpdateTaskSortedWasteInput){
     updateTaskSortedWaste(updateTaskSortedWasteInput: $updateTaskInput){
         _id
         completed
+        sortedWaste{
+            _id
+            institution{
+                _id
+            }
+        }
     }
 }
 
@@ -450,6 +459,12 @@ mutation UpdateTaskTrashcollection($updateTaskInput : UpdateTaskTrashCollectionI
     updateTaskTrashCollection(updateTaskTrashCollectionInput: $updateTaskInput){
         _id
         completed
+        trashcollection{
+            _id
+            institution{
+                _id
+            }
+        }
     }
 }
 
@@ -464,6 +479,9 @@ query GetTrashcans{
         zone{
             _id
             name
+            creator{
+                _id
+            }
         }
         status
         longitude
@@ -478,6 +496,9 @@ query GetTrashcan($canID : ID!){
         zone{
             _id
             name
+            creator{
+                _id
+            }
         }
         status
         longitude

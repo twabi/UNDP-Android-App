@@ -59,7 +59,7 @@ public class StaffHomeActivity extends AppCompatActivity {
     TextView textUserName, text_support, trashNumber, taskNumber;
     String TAG = StaffHomeActivity.class.getSimpleName();
     LinearLayout zoneTrashcans, assignedTasks;
-    String zoneID, userID;
+    String companyID, userID;
     CardView cardSettings, cardWaste, cardTrashcans, cardTasks;
     TextView name, location, phoneNumber, createdAt, emailID;
     ProgressBar loading;
@@ -138,7 +138,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         zoneTrashcans.setOnClickListener(view ->{
             Intent intent = new Intent(StaffHomeActivity.this, ZoneTrashcans.class);
             intent.putExtra("id", userID);intent.putExtra("lat", userLat);intent.putExtra("long", userLong);
-            intent.putExtra("zoneID", zoneID);
+            intent.putExtra("companyID", companyID);
             startActivity(intent);
         });
 
@@ -203,7 +203,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         cardTrashcans.setOnClickListener(view -> {
             Intent intent = new Intent(StaffHomeActivity.this, ZoneTrashcans.class);
             intent.putExtra("id", userID);intent.putExtra("lat", userLat);intent.putExtra("long", userLong);
-            intent.putExtra("zoneID", zoneID);
+            intent.putExtra("companyID", companyID);
             startActivity(intent);
         });
 
@@ -276,6 +276,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                         createdAtText = data.staff().creator().createdAt();
                         nameText = data.staff().creator().name();
                         phoneNumberText = data.staff().creator().phoneNumber();
+                        companyID = data.staff().creator()._id();
 
                     });
 
@@ -551,9 +552,9 @@ public class StaffHomeActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         Log.d(TAG, "trashcans fetched: " + data.trashcans());
                         ArrayList<Object> cans = new ArrayList<>();
-                        if(!TextUtils.isEmpty(zoneID)){
+                        if(!TextUtils.isEmpty(companyID)){
                             for(int i=0; i < data.trashcans().size(); i++){
-                                if(zoneID.equals(data.trashcans().get(i).zone()._id())){
+                                if(companyID.equals(data.trashcans().get(i).zone().creator()._id())){
                                     Log.d(TAG, "onResponse: " + data.trashcans().get(i));
                                     cans.add(data.trashcans().get(i));
                                 }

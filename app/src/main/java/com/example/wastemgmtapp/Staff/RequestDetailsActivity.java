@@ -26,6 +26,7 @@ import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
 import com.example.wastemgmtapp.Common.GPSTracker;
 import com.example.wastemgmtapp.Common.LogInActivity;
 import com.example.wastemgmtapp.Common.MainActivity;
+import com.example.wastemgmtapp.CreateSortedNotifMutation;
 import com.example.wastemgmtapp.CreateTrashCollectionMutation;
 import com.example.wastemgmtapp.DeleteTaskMutation;
 import com.example.wastemgmtapp.DeleteTaskSortedWasteMutation;
@@ -40,7 +41,9 @@ import com.example.wastemgmtapp.TaskTrashCollectionQuery;
 import com.example.wastemgmtapp.UpdateTaskSortedWasteMutation;
 import com.example.wastemgmtapp.UpdateTaskStatusMutation;
 import com.example.wastemgmtapp.UpdateTaskTrashcollectionMutation;
+import com.example.wastemgmtapp.normalUser.RecordWaste;
 import com.example.wastemgmtapp.normalUser.UserHomeActivity;
+import com.example.wastemgmtapp.type.NotificationSortedWasteInput;
 import com.example.wastemgmtapp.type.UpdateTaskInput;
 import com.example.wastemgmtapp.type.UpdateTaskSortedWasteInput;
 import com.example.wastemgmtapp.type.UpdateTaskTrashCollectionInput;
@@ -366,8 +369,10 @@ public class RequestDetailsActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Log.d(TAG, "onResponse: " + data.updateTaskTrashCollection()._id());
                             Toast.makeText(RequestDetailsActivity.this,
-                                    "completed task successfully", Toast.LENGTH_LONG).show();
-                            apolloClient.mutate(new DeleteTaskTrashcollectionMutation(taskID)).enqueue(deleteTrashTaskCallback());
+                                    "Task Marked as Complete successfully", Toast.LENGTH_LONG).show();
+                            //apolloClient.mutate(new DeleteTaskTrashcollectionMutation(taskID)).enqueue(deleteTrashTaskCallback());
+
+
 
                         });
                     }
@@ -413,8 +418,23 @@ public class RequestDetailsActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Log.d(TAG, "onResponse: " + data.updateTaskSortedWaste()._id());
                             Toast.makeText(RequestDetailsActivity.this,
-                                    "completed task successfully", Toast.LENGTH_LONG).show();
-                            apolloClient.mutate(new DeleteTaskSortedWasteMutation(taskID)).enqueue(deleteSortedTaskCallback());
+                                    "Task Marked as Complete successfully", Toast.LENGTH_LONG).show();
+                            //apolloClient.mutate(new DeleteTaskSortedWasteMutation(taskID)).enqueue(deleteSortedTaskCallback());
+
+                            /*
+                            //String requestID = data.createSortedWaste()._id();
+
+                            NotificationSortedWasteInput notifInput =  NotificationSortedWasteInput.builder()
+                                    .completed(false)
+                                    .creator(userID)
+                                    .institution(selectedID)
+                                    .status("Pending")
+                                    .sortedWaste(requestID)
+                                    .build();
+                            Input<NotificationSortedWasteInput> input = new Input<>(notifInput, true);
+                            apolloClient.mutate(new CreateSortedNotifMutation(input)).enqueue(sortedCallback());
+
+                             */
 
                         });
                     }
@@ -438,6 +458,63 @@ public class RequestDetailsActivity extends AppCompatActivity {
                             "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
 
+            }
+        };
+    }
+
+    public ApolloCall.Callback<CreateSortedNotifMutation.Data> sortedCallback(){
+        return new ApolloCall.Callback<CreateSortedNotifMutation.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<CreateSortedNotifMutation.Data> response) {
+                CreateSortedNotifMutation.Data data = response.getData();
+
+
+                if(data.createSortedWasteNotication() == null){
+
+                    if(response.getErrors() == null){
+                        Log.e("Apollo", "an Error occurred : " );
+                        runOnUiThread(() -> {
+                            // Stuff that updates the UI
+                            Toast.makeText(RequestDetailsActivity.this,
+                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
+                        });
+                    } else{
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(RequestDetailsActivity.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }else{
+                    runOnUiThread(() -> {
+                        Log.d(TAG, "notif created" + data.createSortedWasteNotication()._id());
+
+                    });
+
+                    if(response.getErrors() != null){
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(RequestDetailsActivity.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(RequestDetailsActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                });
             }
         };
     }

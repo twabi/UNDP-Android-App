@@ -208,6 +208,18 @@ mutation CreateCollectionNotif($notifInput : NotificationTrashCollectionInput){
     }
 }
 
+mutation UpdateCollectionNotif($collectionID : UpdateTrashCollectionNoticationInput){
+    updateTrashCollectionNotication(updateTrashCollectionNoticationInput: $collectionID){
+        _id
+    }
+}
+
+mutation UpdateSortedWasteNotif($sortedID : UpdateSortedWasteNotificationInput){
+    updateSortedWasteNotification(updateSortedWasteNotificationInput: $sortedID){
+        _id
+    }
+}
+
 mutation CreateReview($reviewInput : ReviewInput){
     createReview(reviewInput: $reviewInput){
         _id

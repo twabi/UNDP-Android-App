@@ -38,15 +38,19 @@ import com.example.wastemgmtapp.GetTasksQuery;
 import com.example.wastemgmtapp.R;
 import com.example.wastemgmtapp.TaskSortedWasteQuery;
 import com.example.wastemgmtapp.TaskTrashCollectionQuery;
+import com.example.wastemgmtapp.UpdateCollectionNotifMutation;
+import com.example.wastemgmtapp.UpdateSortedWasteNotifMutation;
 import com.example.wastemgmtapp.UpdateTaskSortedWasteMutation;
 import com.example.wastemgmtapp.UpdateTaskStatusMutation;
 import com.example.wastemgmtapp.UpdateTaskTrashcollectionMutation;
 import com.example.wastemgmtapp.normalUser.RecordWaste;
 import com.example.wastemgmtapp.normalUser.UserHomeActivity;
 import com.example.wastemgmtapp.type.NotificationSortedWasteInput;
+import com.example.wastemgmtapp.type.UpdateSortedWasteNotificationInput;
 import com.example.wastemgmtapp.type.UpdateTaskInput;
 import com.example.wastemgmtapp.type.UpdateTaskSortedWasteInput;
 import com.example.wastemgmtapp.type.UpdateTaskTrashCollectionInput;
+import com.example.wastemgmtapp.type.UpdateTrashCollectionNoticationInput;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.geojson.Point;
@@ -86,6 +90,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
     ProgressBar taskLoads;
     double userLat, userLong;
     MapboxMap mapboxMap;
+    String requestID;
     private NavigationMapRoute navigationMapRoute;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -370,7 +375,14 @@ public class RequestDetailsActivity extends AppCompatActivity {
                             Log.d(TAG, "onResponse: " + data.updateTaskTrashCollection()._id());
                             Toast.makeText(RequestDetailsActivity.this,
                                     "Task Marked as Complete successfully", Toast.LENGTH_LONG).show();
-                            //apolloClient.mutate(new DeleteTaskTrashcollectionMutation(taskID)).enqueue(deleteTrashTaskCallback());
+
+                            UpdateTrashCollectionNoticationInput notifInput =  UpdateTrashCollectionNoticationInput.builder()
+                                    .completed(true)
+                                    .status("Completed")
+                                    ._id(requestID)
+                                    .build();
+                            Input<UpdateTrashCollectionNoticationInput> input = new Input<>(notifInput, true);
+                            apolloClient.mutate(new UpdateCollectionNotifMutation(input)).enqueue(collectionNotifCallback());
 
 
 
@@ -419,22 +431,16 @@ public class RequestDetailsActivity extends AppCompatActivity {
                             Log.d(TAG, "onResponse: " + data.updateTaskSortedWaste()._id());
                             Toast.makeText(RequestDetailsActivity.this,
                                     "Task Marked as Complete successfully", Toast.LENGTH_LONG).show();
-                            //apolloClient.mutate(new DeleteTaskSortedWasteMutation(taskID)).enqueue(deleteSortedTaskCallback());
 
-                            /*
-                            //String requestID = data.createSortedWaste()._id();
-
-                            NotificationSortedWasteInput notifInput =  NotificationSortedWasteInput.builder()
-                                    .completed(false)
-                                    .creator(userID)
-                                    .institution(selectedID)
-                                    .status("Pending")
-                                    .sortedWaste(requestID)
+                            UpdateSortedWasteNotificationInput notifInput =  UpdateSortedWasteNotificationInput.builder()
+                                    .completed(true)
+                                    .status("Completed")
+                                    ._id(requestID)
                                     .build();
-                            Input<NotificationSortedWasteInput> input = new Input<>(notifInput, true);
-                            apolloClient.mutate(new CreateSortedNotifMutation(input)).enqueue(sortedCallback());
+                            Input<UpdateSortedWasteNotificationInput> input = new Input<>(notifInput, true);
+                            apolloClient.mutate(new UpdateSortedWasteNotifMutation(input)).enqueue(sortedNotifCallback());
 
-                             */
+
 
                         });
                     }
@@ -462,14 +468,14 @@ public class RequestDetailsActivity extends AppCompatActivity {
         };
     }
 
-    public ApolloCall.Callback<CreateSortedNotifMutation.Data> sortedCallback(){
-        return new ApolloCall.Callback<CreateSortedNotifMutation.Data>() {
+    public ApolloCall.Callback<UpdateCollectionNotifMutation.Data> collectionNotifCallback(){
+        return new ApolloCall.Callback<UpdateCollectionNotifMutation.Data>() {
             @Override
-            public void onResponse(@NotNull Response<CreateSortedNotifMutation.Data> response) {
-                CreateSortedNotifMutation.Data data = response.getData();
+            public void onResponse(@NotNull Response<UpdateCollectionNotifMutation.Data> response) {
+                UpdateCollectionNotifMutation.Data data = response.getData();
 
 
-                if(data.createSortedWasteNotication() == null){
+                if(data.updateTrashCollectionNotication() == null){
 
                     if(response.getErrors() == null){
                         Log.e("Apollo", "an Error occurred : " );
@@ -490,7 +496,64 @@ public class RequestDetailsActivity extends AppCompatActivity {
                     }
                 }else{
                     runOnUiThread(() -> {
-                        Log.d(TAG, "notif created" + data.createSortedWasteNotication()._id());
+                        Log.d(TAG, "notif created" + data.updateTrashCollectionNotication()._id());
+
+                    });
+
+                    if(response.getErrors() != null){
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(RequestDetailsActivity.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e("Apollo", "Error", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(RequestDetailsActivity.this,
+                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                });
+            }
+        };
+    }
+
+    public ApolloCall.Callback<UpdateSortedWasteNotifMutation.Data> sortedNotifCallback(){
+        return new ApolloCall.Callback<UpdateSortedWasteNotifMutation.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<UpdateSortedWasteNotifMutation.Data> response) {
+                UpdateSortedWasteNotifMutation.Data data = response.getData();
+
+
+                if(data.updateSortedWasteNotification() == null){
+
+                    if(response.getErrors() == null){
+                        Log.e("Apollo", "an Error occurred : " );
+                        runOnUiThread(() -> {
+                            // Stuff that updates the UI
+                            Toast.makeText(RequestDetailsActivity.this,
+                                    "an Error occurred : " , Toast.LENGTH_LONG).show();
+                        });
+                    } else{
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e("Apollo", "an Error occurred : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(RequestDetailsActivity.this,
+                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }else{
+                    runOnUiThread(() -> {
+                        Log.d(TAG, "notif created" + data.updateSortedWasteNotification()._id());
 
                     });
 
@@ -699,6 +762,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
                         qualifierText.setText("Trash Collection");
                         longitude = data.taskTrashCollection().trashcollection().longitude();
                         latitude = data.taskTrashCollection().trashcollection().latitude();
+                        requestID = data.taskTrashCollection().trashcollection()._id();
 
                         position = new CameraPosition.Builder()
                                 .target(new LatLng(latitude, longitude)).zoom(10).tilt(20)
@@ -809,6 +873,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
                             qualifierText.setText("Sorted Waste Collection");
                             longitude = data.taskSortedWaste().sortedWaste().longitude();
                             latitude = data.taskSortedWaste().sortedWaste().latitude();
+                            requestID = data.taskSortedWaste().sortedWaste()._id();
 
                             position = new CameraPosition.Builder()
                                     .target(new LatLng(latitude, longitude)).zoom(10).tilt(20)

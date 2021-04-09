@@ -252,6 +252,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         tasks.clear();
         //When BACK BUTTON is pressed, the activity on the stack is restarted
         //Do what you want on the refresh procedure here
+        apolloClient.query(new GetStaffQuery(userID)).enqueue(staffCallback());
         apolloClient.query(new GetTasksQuery()).enqueue(taskCallback());
         apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
         apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());

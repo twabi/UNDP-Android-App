@@ -750,7 +750,7 @@
                                 android:layout_margin="5dp"
                                 android:layout_marginTop="5dp"
                                 android:layout_marginBottom="5dp"
-                                android:text="Review Area"
+                                android:text="Review Institution"
                                 android:textColor="@color/purple_700"
                                 android:textSize="15sp"
                                 android:textStyle="normal" />

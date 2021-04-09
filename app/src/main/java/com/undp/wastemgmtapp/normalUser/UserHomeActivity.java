@@ -239,6 +239,7 @@ public class UserHomeActivity extends AppCompatActivity{
         super.onRestart();
         //When BACK BUTTON is pressed, the activity on the stack is restarted
         //Do what you want on the refresh procedure here
+        apolloClient.query(new UserQuery(userID)).enqueue(usersCallBack());
         apolloClient.query(new GetCollectionNotifsQuery()).enqueue(collectCallback());
         apolloClient.query(new GetSortedWasteNotifsQuery()).enqueue(sortedCallback());
     }

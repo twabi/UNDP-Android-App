@@ -64,6 +64,7 @@ public class StaffHomeActivity extends AppCompatActivity {
     String nameText, locationText, phoneNumberText, createdAtText, emailText;
     int sumTasks = 0;
     ArrayList<Object> tasks = new ArrayList<>();
+    ProgressBar fetchLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +81,10 @@ public class StaffHomeActivity extends AppCompatActivity {
         cardSettings = findViewById(R.id.cardSettings);
         cardTasks = findViewById(R.id.cardTask);
         cardWaste = findViewById(R.id.cardWaste);
+        fetchLoading = findViewById(R.id.fetchLoading);
         cardTrashcans = findViewById(R.id.cardZone);
+
+        fetchLoading.setVisibility(View.VISIBLE);
 
         NavigationView navView = findViewById(R.id.staff_navDrawer); // initiate a Navigation View
 
@@ -264,6 +268,7 @@ public class StaffHomeActivity extends AppCompatActivity {
 
                     data.staff();
                     runOnUiThread(() -> {
+                        fetchLoading.setVisibility(View.GONE);
                         Log.d(TAG, "staff fetched" + data.staff());
                         textUserName.setText(data.staff().fullName());
                         text_support.setText("Staff Member");
@@ -300,6 +305,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     Toast.makeText(StaffHomeActivity.this,
                             "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    fetchLoading.setVisibility(View.GONE);
 
                 });
             }

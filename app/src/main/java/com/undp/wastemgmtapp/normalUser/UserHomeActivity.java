@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +59,7 @@ public class UserHomeActivity extends AppCompatActivity{
     FusedLocationProviderClient mFusedLocationClient;
     TextView sortNumber1, collNumber1;
     String userID;
+    ProgressBar fetchLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,8 @@ public class UserHomeActivity extends AppCompatActivity{
         gotoRequests = findViewById(R.id.gotoRequests);
         sortNumber1 = findViewById(R.id.sortNumber1);
         collNumber1 = findViewById(R.id.collNumber1);
+        fetchLoading = findViewById(R.id.fetchLoading);
+        fetchLoading.setVisibility(View.VISIBLE);
 
         session = new SessionManager(getApplicationContext());
 
@@ -264,6 +268,7 @@ public class UserHomeActivity extends AppCompatActivity{
                             Toast.makeText(UserHomeActivity.this,
                                     "an Error occurred : " , Toast.LENGTH_LONG).show();
                             //errorText.setText();
+                            fetchLoading.setVisibility(View.GONE);
                         });
 
                     } else{
@@ -273,6 +278,7 @@ public class UserHomeActivity extends AppCompatActivity{
                         runOnUiThread(() -> {
                             Toast.makeText(UserHomeActivity.this,
                                     "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+                            fetchLoading.setVisibility(View.GONE);
 
                         });
                     }
@@ -280,6 +286,7 @@ public class UserHomeActivity extends AppCompatActivity{
                     runOnUiThread(() -> {
                         Log.d(TAG, "user fetched" + data.user());
                         textUserName.setText(data.user().fullName());
+                        fetchLoading.setVisibility(View.GONE);
 
                     });
 
@@ -303,6 +310,7 @@ public class UserHomeActivity extends AppCompatActivity{
                 runOnUiThread(() -> {
                     Toast.makeText(UserHomeActivity.this,
                             "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    fetchLoading.setVisibility(View.GONE);
 
                 });
             }

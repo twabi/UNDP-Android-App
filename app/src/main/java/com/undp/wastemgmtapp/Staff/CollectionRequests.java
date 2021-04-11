@@ -20,7 +20,6 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.undp.wastemgmtapp.Common.SessionManager;
 import com.undp.wastemgmtapp.GetTaskSortedWastesQuery;
 import com.undp.wastemgmtapp.GetTaskTrashCollectionsQuery;
-import com.undp.wastemgmtapp.GetTasksQuery;
 import com.undp.wastemgmtapp.R;
 import com.undp.wastemgmtapp.adapters.RequestsRecyclerAdapter;
 
@@ -84,13 +83,13 @@ public class CollectionRequests extends AppCompatActivity {
         keyList.clear();
         createdAtList.clear();
         statusList.clear();
-        apolloClient.query(new GetTasksQuery()).enqueue(taskCallback());
         apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
         apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());
 
         errorLayout.setOnClickListener(view -> {
             clearDS();
-            apolloClient.query(new GetTasksQuery()).enqueue(taskCallback());
+            apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
+            apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());
         });
 
         if(keyList.size() == 0){
@@ -117,103 +116,10 @@ public class CollectionRequests extends AppCompatActivity {
         createdAtList.clear();
         statusList.clear();
         tasks.clear();
-        apolloClient.query(new GetTasksQuery()).enqueue(taskCallback());
         apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
         apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());
 
     }
-
-    public ApolloCall.Callback<GetTasksQuery.Data> taskCallback(){
-        return new ApolloCall.Callback<GetTasksQuery.Data>() {
-            @Override
-            public void onResponse(@NotNull Response<GetTasksQuery.Data> response) {
-                GetTasksQuery.Data data = response.getData();
-
-
-                if(data.tasks() == null){
-
-                    if(response.getErrors() == null){
-                        Log.e(TAG, "an unknown Error in tasks query : " );
-                        runOnUiThread(() -> {
-                            loadTasks.setVisibility(View.GONE);
-                            errorLayout.setVisibility(View.VISIBLE);
-                            Toast.makeText(CollectionRequests.this,
-                                    "an unknown Error occurred : " , Toast.LENGTH_LONG).show();
-
-                        });
-                    } else{
-                        List<Error> error = response.getErrors();
-                        String errorMessage = error.get(0).getMessage();
-                        Log.e(TAG, "an Error in tasks query : " + errorMessage );
-                        runOnUiThread(() -> {
-                            loadTasks.setVisibility(View.GONE);
-                            errorLayout.setVisibility(View.VISIBLE);
-                            Toast.makeText(CollectionRequests.this,
-                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-
-                        });
-                    }
-                }else{
-                    runOnUiThread(() -> {
-                        loadTasks.setVisibility(View.GONE);
-                        noItems.setVisibility(View.GONE);
-                        errorLayout.setVisibility(View.GONE);
-                        Log.d(TAG, "tasks fetched: " + data.tasks());
-
-                        try{
-                            if(!TextUtils.isEmpty(userID)){
-                                for(int i=0; i < data.tasks().size(); i++){
-                                    if((userID.equals(data.tasks().get(i).staff()._id()) && (data.tasks().get(i).completed() == false))){
-                                        tasks.add(data.tasks().get(i));
-                                        keyList.add(data.tasks().get(i)._id());
-                                        statusList.add(data.tasks().get(i).completed());
-                                        createdAtList.add(data.tasks().get(i).createdAt());
-                                        taskType.add("General");
-                                    }
-                                }
-
-                                recyclerAdapter = new RequestsRecyclerAdapter(CollectionRequests.this, keyList, statusList, createdAtList, taskType);
-                                tasksView.setAdapter(recyclerAdapter);
-
-                                if(recyclerAdapter.getItemCount() == 0){
-                                    noItems.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        }catch (Exception e){
-                            errorLayout.setVisibility(View.VISIBLE);
-                            Toast.makeText(CollectionRequests.this,
-                                    "an Error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-
-                    });
-
-                    if(response.getErrors() != null){
-                        List<Error> error = response.getErrors();
-                        String errorMessage = error.get(0).getMessage();
-                        Log.e(TAG, "an Error in tasks query : " + errorMessage );
-                        runOnUiThread(() -> {
-                            Toast.makeText(CollectionRequests.this,
-                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-                Log.e(TAG, "Error", e);
-                runOnUiThread(() -> {
-                    errorLayout.setVisibility(View.VISIBLE);
-                    loadTasks.setVisibility(View.GONE);
-                    Toast.makeText(CollectionRequests.this,
-                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
-
-                });
-            }
-        };
-    }
-
 
     public ApolloCall.Callback<GetTaskSortedWastesQuery.Data> taskSortedCallback(){
         return new ApolloCall.Callback<GetTaskSortedWastesQuery.Data>() {

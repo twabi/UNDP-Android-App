@@ -32,7 +32,6 @@ import com.undp.wastemgmtapp.Common.SessionManager;
 import com.undp.wastemgmtapp.GetStaffQuery;
 import com.undp.wastemgmtapp.GetTaskSortedWastesQuery;
 import com.undp.wastemgmtapp.GetTaskTrashCollectionsQuery;
-import com.undp.wastemgmtapp.GetTasksQuery;
 import com.undp.wastemgmtapp.GetZoneTrashcansQuery;
 import com.undp.wastemgmtapp.R;
 import com.undp.wastemgmtapp.Common.SettingsActivity;
@@ -131,7 +130,6 @@ public class StaffHomeActivity extends AppCompatActivity {
         userLong = gpsTracker.getLongitude();
 
         sumTasks = 0;
-        apolloClient.query(new GetTasksQuery()).enqueue(taskCallback());
         apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
         apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());
         apolloClient.query(new GetZoneTrashcansQuery()).enqueue(trashCallback());
@@ -253,7 +251,6 @@ public class StaffHomeActivity extends AppCompatActivity {
         //When BACK BUTTON is pressed, the activity on the stack is restarted
         //Do what you want on the refresh procedure here
         apolloClient.query(new GetStaffQuery(userID)).enqueue(staffCallback());
-        apolloClient.query(new GetTasksQuery()).enqueue(taskCallback());
         apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
         apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());
         apolloClient.query(new GetZoneTrashcansQuery()).enqueue(trashCallback());
@@ -313,80 +310,6 @@ public class StaffHomeActivity extends AppCompatActivity {
         };
     }
 
-
-    public ApolloCall.Callback<GetTasksQuery.Data> taskCallback(){
-        return new ApolloCall.Callback<GetTasksQuery.Data>() {
-            @Override
-            public void onResponse(@NotNull Response<GetTasksQuery.Data> response) {
-                GetTasksQuery.Data data = response.getData();
-
-                    if(data.tasks() == null){
-
-                        if(response.getErrors() == null){
-                            Log.e(TAG, "an unknown Error in tasks query : " );
-                            runOnUiThread(() -> {
-                                Toast.makeText(StaffHomeActivity.this,
-                                        "an unknown Error occurred : " , Toast.LENGTH_LONG).show();
-
-                            });
-                        } else{
-                            List<Error> error = response.getErrors();
-                            String errorMessage = error.get(0).getMessage();
-                            Log.e(TAG, "an Error in tasks query : " + errorMessage );
-                            runOnUiThread(() -> {
-                                Toast.makeText(StaffHomeActivity.this,
-                                        "task2: error occurred : " + errorMessage, Toast.LENGTH_SHORT).show();
-
-                            });
-                        }
-                    }else{
-                        runOnUiThread(() -> {
-                            Log.d(TAG, "tasks fetched: " + data.tasks());
-                            try{
-                                if(!TextUtils.isEmpty(userID) && data.tasks().size() != 0){
-                                    for(int i=0; i < data.tasks().size(); i++){
-                                        if(userID.equals(data.tasks().get(i).staff()._id()) && (data.tasks().get(i).completed() == false)){
-                                            tasks.add(data.tasks().get(i));
-                                        }
-                                    }
-                                }
-
-                                sumTasks = sumTasks + tasks.size();
-                                Log.d(TAG, "sumTasks general: " + sumTasks+ "-" +tasks.size());
-                                taskNumber.setText(String.valueOf(tasks.size()));
-                            } catch (Exception e){
-                                e.printStackTrace();
-                                Toast.makeText(StaffHomeActivity.this,
-                                        "task1: error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-
-
-                        });
-
-                        if(response.getErrors() != null){
-                            List<Error> error = response.getErrors();
-                            String errorMessage = error.get(0).getMessage();
-                            Log.e(TAG, "an Error in tasks query : " + errorMessage );
-                            runOnUiThread(() -> {
-                                //Toast.makeText(StaffHomeActivity.this,
-                                        //"an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-
-                            });
-                        }
-                    }
-            }
-
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-                Log.e(TAG, "Error", e);
-                runOnUiThread(() -> {
-                    Toast.makeText(StaffHomeActivity.this,
-                            "tasks3: error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
-
-                });
-            }
-        };
-    }
 
     public ApolloCall.Callback<GetTaskTrashCollectionsQuery.Data> taskCollectCallback(){
         return new ApolloCall.Callback<GetTaskTrashCollectionsQuery.Data>() {

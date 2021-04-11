@@ -258,31 +258,7 @@ mutation UpdateStaffPassword($updatePassword: ChangePasswordInput){
     }
 }
 
-query getTask($taskID : ID!){
-    task(taskId: $taskID){
-        _id
-        body
-        createdAt
-        staff{
-            _id
-            fullName
-        }
-        completed
-    }
-}
 
-query getTasks{
-    tasks{
-        _id
-        body
-        createdAt
-        staff{
-            _id
-            fullName
-        }
-        completed
-    }
-}
 
 query getTaskSortedWastes {
     taskSortedWastes{
@@ -380,19 +356,6 @@ query taskTrashCollection($taskID : ID!){
     }
 }
 
-subscription TaskAdded{
-    taskAdded{
-        _id
-        body
-        createdAt
-        staff{
-            _id
-            fullName
-        }
-        completed
-
-    }
-}
 
 
 subscription CollectionNotifAdded{
@@ -441,16 +404,6 @@ query GetZoneTrashcans{
     }
 }
 
-mutation UpdateTaskStatus($updateTaskInput : UpdateTaskInput){
-    updateTask(updateTaskInput: $updateTaskInput){
-        _id
-        completed
-    }
-}
-
-mutation DeleteTask($taskID : ID!){
-    deleteTask(taskId: $taskID)
-}
 
 mutation UpdateTaskSortedWaste($updateTaskInput : UpdateTaskSortedWasteInput){
     updateTaskSortedWaste(updateTaskSortedWasteInput: $updateTaskInput){

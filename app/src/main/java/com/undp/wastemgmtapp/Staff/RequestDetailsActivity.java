@@ -22,20 +22,16 @@ import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.undp.wastemgmtapp.Common.GPSTracker;
-import com.undp.wastemgmtapp.DeleteTaskMutation;
 import com.undp.wastemgmtapp.DeleteTaskSortedWasteMutation;
 import com.undp.wastemgmtapp.DeleteTaskTrashcollectionMutation;
-import com.undp.wastemgmtapp.GetTaskQuery;
 import com.undp.wastemgmtapp.R;
 import com.undp.wastemgmtapp.TaskSortedWasteQuery;
 import com.undp.wastemgmtapp.TaskTrashCollectionQuery;
 import com.undp.wastemgmtapp.UpdateCollectionNotifMutation;
 import com.undp.wastemgmtapp.UpdateSortedWasteNotifMutation;
 import com.undp.wastemgmtapp.UpdateTaskSortedWasteMutation;
-import com.undp.wastemgmtapp.UpdateTaskStatusMutation;
 import com.undp.wastemgmtapp.UpdateTaskTrashcollectionMutation;
 import com.undp.wastemgmtapp.type.UpdateSortedWasteNotificationInput;
-import com.undp.wastemgmtapp.type.UpdateTaskInput;
 import com.undp.wastemgmtapp.type.UpdateTaskSortedWasteInput;
 import com.undp.wastemgmtapp.type.UpdateTaskTrashCollectionInput;
 import com.undp.wastemgmtapp.type.UpdateTrashCollectionNoticationInput;
@@ -127,8 +123,6 @@ public class RequestDetailsActivity extends AppCompatActivity {
             apolloClient.query(new TaskTrashCollectionQuery(taskID)).enqueue(taskCollectCallback());
         } else if(taskType.equals("SortedWaste")) {
             apolloClient.query(new TaskSortedWasteQuery(taskID)).enqueue(taskSortedCallback());
-        }else if(taskType.equals("General")){
-            apolloClient.query(new GetTaskQuery(taskID)).enqueue(taskCallback());
         }
 
 
@@ -158,13 +152,6 @@ public class RequestDetailsActivity extends AppCompatActivity {
                                 Input<UpdateTaskSortedWasteInput> input = new Input<>(taskInput, true);
                                 apolloClient.mutate(new UpdateTaskSortedWasteMutation(input)).enqueue(updateSortedCallback());
 
-                            }else if(taskType.equals("General")){
-                                UpdateTaskInput taskInput = UpdateTaskInput.builder()
-                                        ._id(taskID)
-                                        .completed(true)
-                                        .build();
-                                Input<UpdateTaskInput> input = new Input<>(taskInput, true);
-                                apolloClient.mutate(new UpdateTaskStatusMutation(input)).enqueue(updateCallback());
                             }
 
                         }
@@ -189,8 +176,6 @@ public class RequestDetailsActivity extends AppCompatActivity {
                                 apolloClient.mutate(new DeleteTaskTrashcollectionMutation(taskID)).enqueue(deleteTrashTaskCallback());
                             } else if(taskType.equals("SortedWaste")) {
                                 apolloClient.mutate(new DeleteTaskSortedWasteMutation(taskID)).enqueue(deleteSortedTaskCallback());
-                            }else if(taskType.equals("General")){
-                                apolloClient.mutate(new DeleteTaskMutation(taskID)).enqueue(deleteTaskCallback());
                             }
                         }
                     })
@@ -205,36 +190,6 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
     }
 
-    public ApolloCall.Callback<DeleteTaskMutation.Data> deleteTaskCallback(){
-        return new ApolloCall.Callback<DeleteTaskMutation.Data>() {
-            @Override
-            public void onResponse(@NotNull Response<DeleteTaskMutation.Data> response) {
-                DeleteTaskMutation.Data data = response.getData();
-                if(response.getErrors() == null){
-                    runOnUiThread(() -> {
-                        Log.d(TAG, "onResponse: " + data.deleteTask().toString());
-                        Toast.makeText(RequestDetailsActivity.this,
-                                "Task deleted successfully", Toast.LENGTH_LONG).show();
-
-                        Intent i = new Intent(RequestDetailsActivity.this, CollectionRequests.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(i);
-
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-                Log.e("Apollo", "Error", e);
-                runOnUiThread(() -> {
-                    Toast.makeText(RequestDetailsActivity.this,
-                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
-            }
-        };
-    }
 
     public ApolloCall.Callback<DeleteTaskSortedWasteMutation.Data> deleteSortedTaskCallback(){
         return new ApolloCall.Callback<DeleteTaskSortedWasteMutation.Data>() {
@@ -283,52 +238,6 @@ public class RequestDetailsActivity extends AppCompatActivity {
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(i);
 
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-                Log.e("Apollo", "Error", e);
-                runOnUiThread(() -> {
-                    Toast.makeText(RequestDetailsActivity.this,
-                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
-            }
-        };
-    }
-    
-    public ApolloCall.Callback<UpdateTaskStatusMutation.Data> updateCallback(){
-        return new ApolloCall.Callback<UpdateTaskStatusMutation.Data>() {
-            @Override
-            public void onResponse(@NotNull Response<UpdateTaskStatusMutation.Data> response) {
-                UpdateTaskStatusMutation.Data data = response.getData();
-                if(response.getErrors() == null){
-
-                    if(data.updateTask() == null){
-                        Log.e("Apollo", "an Error occurred : " );
-                        runOnUiThread(() -> {
-                            // Stuff that updates the UI
-                            Toast.makeText(RequestDetailsActivity.this,
-                                    "an unknown Error occurred " , Toast.LENGTH_LONG).show();
-                        });
-                    }else{
-                        runOnUiThread(() -> {
-                            Log.d(TAG, "onResponse: " + data.updateTask()._id());
-                            Toast.makeText(RequestDetailsActivity.this,
-                                    "Task completed successfully", Toast.LENGTH_LONG).show();
-                            apolloClient.mutate(new DeleteTaskMutation(taskID)).enqueue(deleteTaskCallback());
-
-                        });
-                    }
-
-                } else{
-                    List<Error> error = response.getErrors();
-                    String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
-                    runOnUiThread(() -> {
-                        Toast.makeText(RequestDetailsActivity.this,
-                                "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
                     });
                 }
             }
@@ -562,110 +471,6 @@ public class RequestDetailsActivity extends AppCompatActivity {
             public void onFailure(@NotNull ApolloException e) {
                 Log.e("Apollo", "Error", e);
                 runOnUiThread(() -> {
-                    Toast.makeText(RequestDetailsActivity.this,
-                            "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
-
-                });
-            }
-        };
-    }
-
-    public ApolloCall.Callback<GetTaskQuery.Data> taskCallback(){
-        return new ApolloCall.Callback<GetTaskQuery.Data>() {
-            @Override
-            public void onResponse(@NotNull Response<GetTaskQuery.Data> response) {
-                GetTaskQuery.Data data = response.getData();
-
-
-                if(data.task() == null){
-
-                    if(response.getErrors() == null){
-                        Log.e(TAG, "an unknown Error in task query : " );
-                        runOnUiThread(() -> {
-                            taskLoads.setVisibility(View.GONE);
-                            errorText.setVisibility(View.VISIBLE);
-                            Toast.makeText(RequestDetailsActivity.this,
-                                    "an unknown Error occurred : " , Toast.LENGTH_LONG).show();
-
-                        });
-                    } else{
-                        List<Error> error = response.getErrors();
-                        String errorMessage = error.get(0).getMessage();
-                        Log.e(TAG, "an Error in task query : " + errorMessage );
-                        runOnUiThread(() -> {
-                            taskLoads.setVisibility(View.GONE);
-                            errorText.setVisibility(View.VISIBLE);
-                            Toast.makeText(RequestDetailsActivity.this,
-                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-
-                        });
-                    }
-                }else{
-                    runOnUiThread(() -> {
-                        Log.d(TAG, "task fetched: " + data.task());
-                        taskLoads.setVisibility(View.GONE);
-                        errorText.setVisibility(View.VISIBLE);
-                        qualifierText.setText("Other");
-                        longitude = 0.0;
-                        latitude = 0.0;
-
-                        position = new CameraPosition.Builder()
-                                .target(new LatLng(latitude, longitude)).zoom(10).tilt(20)
-                                .build();
-
-                        mapView.getMapAsync(new OnMapReadyCallback() {
-                            @Override
-                            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-
-                                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                                    @Override
-                                    public void onStyleLoaded(@NonNull Style style) {
-                                        RequestDetailsActivity.this.mapboxMap = mapboxMap;
-                                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-                                        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 10);
-
-                                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).
-                                                title(nameText.getText().toString()));
-
-                                        IconFactory iconFactory = IconFactory.getInstance(RequestDetailsActivity.this);
-                                        Icon userIcon = iconFactory.fromResource(R.drawable.location);
-
-                                        mapboxMap.addMarker(new MarkerOptions()
-                                                .position(new LatLng(userLat, userLong)).title("You")
-                                                .icon(userIcon));
-
-                                        Point originPosition = Point.fromLngLat(userLong, userLat);
-                                        Point  dstPosition = Point.fromLngLat(longitude, latitude);
-
-                                        navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationMapRoute);
-                                        getRoute(originPosition, dstPosition);
-                                    }
-                                });
-
-                            }
-                        });
-                    });
-
-                    if(response.getErrors() != null){
-                        List<Error> error = response.getErrors();
-                        String errorMessage = error.get(0).getMessage();
-                        Log.e(TAG, "an Error in task query : " + errorMessage );
-                        runOnUiThread(() -> {
-
-                            Toast.makeText(RequestDetailsActivity.this,
-                                    "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
-
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-                Log.e(TAG, "Error", e);
-                runOnUiThread(() -> {
-                    taskLoads.setVisibility(View.GONE);
-                    errorText.setVisibility(View.VISIBLE);
                     Toast.makeText(RequestDetailsActivity.this,
                             "An error occurred : " + e.getMessage(), Toast.LENGTH_LONG).show();
 

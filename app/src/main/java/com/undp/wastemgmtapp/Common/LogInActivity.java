@@ -173,6 +173,7 @@ public class LogInActivity extends AppCompatActivity {
                     Log.d(TAG, "onResponse: " + data.loginAsStaff());
                     String token = data.loginAsStaff().token();
                     String userID = data.loginAsStaff()._id();
+                    boolean blocked = data.loginAsStaff().blocked();;
                     String otherID = numberInput.getText().toString();
                     int expiration = data.loginAsStaff().tokenExpiration();
 
@@ -189,15 +190,22 @@ public class LogInActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             // Stuff that updates the UI
                             loading.setVisibility(View.GONE);
-                            Toast.makeText(LogInActivity.this,
-                                    "Login successful!", Toast.LENGTH_LONG).show();
-                            session.createLoginSession(userID, otherID, "Staff");
+                            if(blocked){
+                                Toast.makeText(LogInActivity.this,
+                                        "Login Denied! User has been blocked or disabled from the App. Contact the admin for more.", Toast.LENGTH_LONG).show();
+                            } else {
 
-                            Intent intent = new Intent(LogInActivity.this, StaffHomeActivity.class);
-                            intent.putExtra("tokenExpiration", expiration);
-                            intent.putExtra("token", token);
-                            intent.putExtra("id", userID);
-                            startActivity(intent);
+                                Toast.makeText(LogInActivity.this,
+                                        "Login successful!", Toast.LENGTH_LONG).show();
+                                session.createLoginSession(userID, otherID, "Staff");
+
+                                Intent intent = new Intent(LogInActivity.this, StaffHomeActivity.class);
+                                intent.putExtra("tokenExpiration", expiration);
+                                intent.putExtra("token", token);
+                                intent.putExtra("id", userID);
+                                startActivity(intent);
+                            }
+
                         });
                     }
                 } else {
@@ -252,6 +260,7 @@ public class LogInActivity extends AppCompatActivity {
                     Log.d(TAG, "onResponse: " + data.login());
                     String token = data.login().token();
                     String userID = data.login()._id();
+                    boolean blocked = data.login().blocked();
                     int expiration = data.login().tokenExpiration();
 
                     if(data.login() == null){
@@ -266,16 +275,24 @@ public class LogInActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             // Stuff that updates the UI
                             loading.setVisibility(View.GONE);
-                            Toast.makeText(LogInActivity.this,
-                                    "Login successful!", Toast.LENGTH_LONG).show();
 
-                            session.createLoginSession(userID, userNumber, "User");
+                            if(blocked){
 
-                            Intent intent = new Intent(LogInActivity.this, UserHomeActivity.class);
-                            intent.putExtra("token", token);
-                            intent.putExtra("id", userID);
-                            intent.putExtra("tokenExpiraton", expiration);
-                            startActivity(intent);
+                                Toast.makeText(LogInActivity.this,
+                                        "Login Denied! User has been blocked or disabled from the App. Contact the admin for more.", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(LogInActivity.this,
+                                        "Login successful!", Toast.LENGTH_LONG).show();
+
+                                session.createLoginSession(userID, userNumber, "User");
+
+                                Intent intent = new Intent(LogInActivity.this, UserHomeActivity.class);
+                                intent.putExtra("token", token);
+                                intent.putExtra("id", userID);
+                                intent.putExtra("tokenExpiraton", expiration);
+                                startActivity(intent);
+                            }
+
                         });
                     }
                 } else {

@@ -12,6 +12,7 @@ mutation LogIn($loginInput : LoginInput!) {
     login(loginInput: $loginInput){
         _id
         token
+        blocked
         tokenExpiration
     }
 }
@@ -88,6 +89,7 @@ mutation LogInAsStaff($loginStaffInput : LoginStaffInput!){
     loginAsStaff(loginStaffInput : $loginStaffInput){
         _id
         token
+        blocked
         tokenExpiration
     }
 }

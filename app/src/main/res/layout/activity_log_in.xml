@@ -63,7 +63,7 @@
                     android:textColor="@color/purple_700"
                     android:textColorHint="@color/purple_700"
                     android:background="@drawable/edit_text_border"
-                    android:hint="enter number"
+                    android:hint="enter ID"
                     android:inputType="text" />
 
                 <androidx.appcompat.widget.AppCompatEditText

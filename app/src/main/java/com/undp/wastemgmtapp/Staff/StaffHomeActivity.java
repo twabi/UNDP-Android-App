@@ -478,17 +478,22 @@ public class StaffHomeActivity extends AppCompatActivity {
                 }else{
                     runOnUiThread(() -> {
                         Log.d(TAG, "trashcans fetched: " + data.trashcans());
-                        ArrayList<Object> cans = new ArrayList<>();
-                        if(!TextUtils.isEmpty(companyID)){
-                            for(int i=0; i < data.trashcans().size(); i++){
-                                if(companyID.equals(data.trashcans().get(i).zone().creator()._id())){
-                                    Log.d(TAG, "onResponse: " + data.trashcans().get(i));
-                                    cans.add(data.trashcans().get(i));
+                        try{
+                            ArrayList<Object> cans = new ArrayList<>();
+                            if(!TextUtils.isEmpty(companyID)){
+                                for(int i=0; i < data.trashcans().size(); i++){
+                                    if(companyID.equals(data.trashcans().get(i).zone().creator()._id())){
+                                        Log.d(TAG, "onResponse: " + data.trashcans().get(i));
+                                        cans.add(data.trashcans().get(i));
+                                    }
                                 }
                             }
+
+                            trashNumber.setText(String.valueOf(cans.size()));
+                        } catch (Exception e){
+                            e.printStackTrace();
                         }
 
-                        trashNumber.setText(String.valueOf(cans.size()));
 
                     });
 

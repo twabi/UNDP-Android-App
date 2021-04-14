@@ -314,6 +314,7 @@ query taskSortedWaste($taskID : ID!){
                 _id
                 fullName
                 location
+                phoneNumber
             }
             amount
             createdAt
@@ -340,6 +341,7 @@ query taskTrashCollection($taskID : ID!){
                 _id
                 fullName
                 location
+                phoneNumber
             }
             amount
             createdAt

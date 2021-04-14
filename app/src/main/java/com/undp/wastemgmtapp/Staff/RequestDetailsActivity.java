@@ -4,10 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -61,20 +66,23 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 
+import static android.Manifest.permission.CALL_PHONE;
+
 public class RequestDetailsActivity extends AppCompatActivity {
 
     private MapView mapView;
     String taskID, taskType;
-    TextView locationText, amountText, nameText, typeText, errorText, qualifierText;
+    TextView locationText, amountText, numberText, nameText, typeText, errorText, qualifierText;
     String TAG = RequestDetailsActivity.class.getSimpleName();
     Double longitude, latitude;
     ApolloClient apolloClient;
     CameraPosition position;
-    Button accept, delete;
+    Button accept, delete, call;
     ProgressBar taskLoads;
     double userLat, userLong;
     MapboxMap mapboxMap;
     String requestID;
+    String userNumber;
     private NavigationMapRoute navigationMapRoute;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +103,8 @@ public class RequestDetailsActivity extends AppCompatActivity {
         mapView = findViewById(R.id.request_map);
         accept = findViewById(R.id.accept);
         delete = findViewById(R.id.delete);
+        call = findViewById(R.id.call);
+        numberText = findViewById(R.id.reqNumber);
         taskLoads = findViewById(R.id.taskLoads);
         taskLoads.setVisibility(View.VISIBLE);
 
@@ -138,7 +148,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
                                 UpdateTaskTrashCollectionInput taskInput = UpdateTaskTrashCollectionInput.builder()
                                         ._id(taskID)
-                                        .pending(true)
+                                        .completed(true)
                                         .build();
                                 Input<UpdateTaskTrashCollectionInput> input = new Input<>(taskInput, true);
                                 apolloClient.mutate(new UpdateTaskTrashcollectionMutation(input)).enqueue(updateTrashCallback());
@@ -186,6 +196,17 @@ public class RequestDetailsActivity extends AppCompatActivity {
                         }
                     });
             builder.show();
+        });
+
+
+        call.setOnClickListener(view -> {
+            if(TextUtils.isEmpty(userNumber)){
+                Toast.makeText(RequestDetailsActivity.this, "Number is null, reload and try again", Toast.LENGTH_SHORT)
+                        .show();
+            } else {
+                Log.d(TAG, "number: " + userNumber);
+                CallUser(userNumber);
+            }
         });
 
     }
@@ -261,7 +282,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
                 if(response.getErrors() == null){
 
                     if(data.updateTaskTrashCollection() == null){
-                        Log.e("Apollo", "an Error occurred : " );
+                        Log.e("Apollo", "an update collection Error occurred : " );
                         runOnUiThread(() -> {
                             // Stuff that updates the UI
                             Toast.makeText(RequestDetailsActivity.this,
@@ -289,7 +310,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
                 } else{
                     List<Error> error = response.getErrors();
                     String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
+                    Log.e("Apollo", "an update collection Error occurred : " + errorMessage );
                     runOnUiThread(() -> {
                         Toast.makeText(RequestDetailsActivity.this,
                                 "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
@@ -551,6 +572,8 @@ public class RequestDetailsActivity extends AppCompatActivity {
                         locationText.setText(data.taskTrashCollection().trashcollection().location());
                         amountText.setText(data.taskTrashCollection().trashcollection().amount());
                         nameText.setText(data.taskTrashCollection().trashcollection().creator().fullName());
+                        numberText.setText(data.taskTrashCollection().trashcollection().creator().phoneNumber());
+                        userNumber = data.taskTrashCollection().trashcollection().creator().phoneNumber();
                         typeText.setText(data.taskTrashCollection().trashcollection().typeOfWaste());
                         qualifierText.setText("Trash Collection");
                         longitude = data.taskTrashCollection().trashcollection().longitude();
@@ -663,6 +686,8 @@ public class RequestDetailsActivity extends AppCompatActivity {
                             amountText.setText(data.taskSortedWaste().sortedWaste().amount());
                             nameText.setText(data.taskSortedWaste().sortedWaste().creator().fullName());
                             typeText.setText(data.taskSortedWaste().sortedWaste().typeOfWaste());
+                            numberText.setText(data.taskSortedWaste().sortedWaste().creator().phoneNumber());
+                            userNumber = data.taskSortedWaste().sortedWaste().creator().phoneNumber();
                             qualifierText.setText("Sorted Waste Collection");
                             longitude = data.taskSortedWaste().sortedWaste().longitude();
                             latitude = data.taskSortedWaste().sortedWaste().latitude();
@@ -736,7 +761,32 @@ public class RequestDetailsActivity extends AppCompatActivity {
             }
         };
     }
-    
+
+    public void CallUser(String number){
+
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + number));
+
+        //request call permissions from the user's android OS
+        if (ActivityCompat.checkSelfPermission(RequestDetailsActivity.this,
+                CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(RequestDetailsActivity.this, new String[]{CALL_PHONE}, 1);
+            if (ActivityCompat.checkSelfPermission(RequestDetailsActivity.this,
+                    CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                startActivity(callIntent);
+            }
+
+        }else{
+            try{
+                startActivity(callIntent);
+            }catch (ActivityNotFoundException e){
+                e.printStackTrace();
+                Toast.makeText(getApplicationContext(),
+                        "unable to call due to network error", Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();

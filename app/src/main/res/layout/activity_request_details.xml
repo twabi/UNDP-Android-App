@@ -195,6 +195,54 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center_vertical"
+                                    android:orientation="vertical">
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_margin="5dp"
+                                            android:layout_marginTop="5dp"
+                                            android:layout_marginBottom="5dp"
+                                            android:text="Requestor Number: "
+                                            android:textColor="@color/purple_700"
+                                            android:textSize="17sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:id="@+id/reqNumber"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_margin="5dp"
+                                            android:layout_marginTop="5dp"
+                                            android:layout_marginBottom="5dp"
+                                            android:text=""
+                                            android:textColor="@color/purple_700"
+                                            android:textSize="17sp"
+                                            android:textStyle="normal" />
+                                    </LinearLayout>
+
+
+
+                                    <com.google.android.material.button.MaterialButton
+                                        android:id="@+id/call"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="34dp"
+                                        android:background="@drawable/arrow_btn"
+                                        android:text="CALL"
+                                        android:textSize="10sp"
+                                        android:layout_gravity="end"
+                                        android:textColor="#fff"
+                                        android:layout_marginRight="2dp"
+                                        android:layout_marginLeft="5dp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
                                     android:orientation="horizontal">
 
                                     <TextView

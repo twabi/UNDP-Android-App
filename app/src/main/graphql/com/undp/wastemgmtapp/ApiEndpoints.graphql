@@ -225,10 +225,6 @@ mutation UpdateSortedWasteNotif($sortedID : UpdateSortedWasteNotificationInput){
 mutation CreateReview($reviewInput : ReviewInput){
     createReview(reviewInput: $reviewInput){
         _id
-        creator{
-            _id
-            fullName
-        }
     }
 }
 

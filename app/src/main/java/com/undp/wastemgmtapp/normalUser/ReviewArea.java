@@ -118,6 +118,7 @@ public class ReviewArea extends AppCompatActivity {
                 String comment  = inputComment.getText().toString();
                 float rating = ratingBar.getRating();
                 String location = inputLocation.getText().toString();
+                Log.d(TAG, "values: " + comment + "-" + rating + "-" + selectedID + "-" + location + "-" + userID);
 
 
                 ReviewInput reviewInput = ReviewInput.builder()
@@ -241,7 +242,7 @@ public class ReviewArea extends AppCompatActivity {
                 if(response.getErrors() == null){
 
                     if(data.createReview() == null){
-                        Log.e("Apollo", "an Error occurred : " );
+                        Log.e("Apollo", "a data Error occurred : " );
                         runOnUiThread(() -> {
                             // Stuff that updates the UI
                             Toast.makeText(ReviewArea.this,
@@ -265,7 +266,7 @@ public class ReviewArea extends AppCompatActivity {
                 } else{
                     List<Error> error = response.getErrors();
                     String errorMessage = error.get(0).getMessage();
-                    Log.e("Apollo", "an Error occurred : " + errorMessage );
+                    Log.e("Apollo", "a logic Error occurred : " + errorMessage );
                     runOnUiThread(() -> {
                         Toast.makeText(ReviewArea.this,
                                 "an Error occurred : " + errorMessage, Toast.LENGTH_LONG).show();

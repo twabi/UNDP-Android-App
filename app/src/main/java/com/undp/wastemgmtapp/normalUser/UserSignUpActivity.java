@@ -28,10 +28,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 public class UserSignUpActivity extends AppCompatActivity {
 
 
-    EditText inputName, inputPhone, inputID, inputPassword, inputPasswordRepeat;
+    EditText inputName, inputPhone, inputID, inputPassword, inputPasswordRepeat, inputLocation;
     ProgressBar loading;
     Button buttonCreateUser;
     ApolloClient apolloClient = ApolloClient.builder()
@@ -56,6 +58,7 @@ public class UserSignUpActivity extends AppCompatActivity {
         inputPhone = findViewById(R.id.phone);
         inputPassword = findViewById(R.id.passText);
         inputPasswordRepeat = findViewById(R.id.passText1);
+        inputLocation = findViewById(R.id.locale);
 
         buttonCreateUser = findViewById(R.id.btn_sign);
         loading = findViewById(R.id.loads);
@@ -94,9 +97,11 @@ public class UserSignUpActivity extends AppCompatActivity {
                 String name = inputName.getText().toString();
                 String phone = inputPhone.getText().toString();
                 String id = inputID.getText().toString();
+                String location =  inputLocation.getText().toString();
+                Timber.d("data: " + + userLat + "-" + userLong + "-" + location);
 
                 UserInput userInput = UserInput.builder()
-                        .fullName(name).nationalID(id).latitude(userLat).longitude(userLong)
+                        .fullName(name).nationalID(id).latitude(userLat).longitude(userLong).location(location)
                         .phoneNumber(phone).password(password1).confirmPassword(password2).build();
                 apolloClient.mutate(new CreateUserMutation(userInput)).enqueue(new ApolloCall.Callback<CreateUserMutation.Data>() {
                     @Override
@@ -181,6 +186,11 @@ public class UserSignUpActivity extends AppCompatActivity {
             valid = false;
         }
 
+        if(TextUtils.isEmpty(inputLocation.getText().toString())){
+            inputLocation.setError("Required.");
+            valid = false;
+        }
+
         if(!TextUtils.equals(password1, password2)){
             inputPasswordRepeat.setError("passwords don't match!");
             valid = false;
@@ -196,13 +206,18 @@ public class UserSignUpActivity extends AppCompatActivity {
             valid = false;
         }
 
-        if((userLat == Double.parseDouble(null)  || userLong ==  Double.parseDouble(null) ||
-                (userLat == 0.0  || userLong ==  0.0))){
-            Toast.makeText(UserSignUpActivity.this,
-                    "Location details empty! Enable location and network and try again!", Toast.LENGTH_LONG)
-                    .show();
-            valid = false;
+        try{
+            if((userLat == Double.parseDouble(null)  || userLong ==  Double.parseDouble(null) ||
+                    (userLat == 0.0  || userLong ==  0.0))){
+                Toast.makeText(UserSignUpActivity.this,
+                        "Location details empty! Enable location and network and try again!", Toast.LENGTH_LONG)
+                        .show();
+                valid = false;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
         }
+
 
         return valid;
     }

@@ -142,6 +142,8 @@ public class CollectionFragment extends Fragment {
                                             e.printStackTrace();
                                         }
 
+                                    } else {
+                                        noItems.setVisibility(View.VISIBLE);
                                     }
                                 }
 

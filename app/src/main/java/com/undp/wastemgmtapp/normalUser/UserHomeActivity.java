@@ -352,11 +352,10 @@ public class UserHomeActivity extends AppCompatActivity{
                             ArrayList incomplete = new ArrayList<>();
 
                             for(int i =0; i < data.sortedWasteNotications().size(); i++){
-                                if(!data.sortedWasteNotications().get(i).completed() &&
-                                userID.equals(data.sortedWasteNotications().get(i).creator()._id())){
-                                    complete.add(data.sortedWasteNotications().get(i));
-                                } else {
+                                if(!data.sortedWasteNotications().get(i).completed() && userID.equals(data.sortedWasteNotications().get(i).creator()._id())){
                                     incomplete.add(data.sortedWasteNotications().get(i));
+                                } else if (data.sortedWasteNotications().get(i).completed() && userID.equals(data.sortedWasteNotications().get(i).creator()._id())) {
+                                    complete.add(data.sortedWasteNotications().get(i));
                                 }
                             }
                             int completeSize = complete.size();
@@ -428,9 +427,12 @@ public class UserHomeActivity extends AppCompatActivity{
                             for(int i =0; i < data.trashCollectionNotications().size(); i++){
                                 if(!data.trashCollectionNotications().get(i).completed() &&
                                         userID.equals(data.trashCollectionNotications().get(i).creator()._id())){
-                                    complete.add(data.trashCollectionNotications().get(i));
-                                } else {
+                                    Log.d(TAG, "it's equal..." + "-" + data.trashCollectionNotications().get(i).creator()._id()
+                                    +"-"+userID);
                                     incomplete.add(data.trashCollectionNotications().get(i));
+                                } else if(data.trashCollectionNotications().get(i).completed() &&
+                                        userID.equals(data.trashCollectionNotications().get(i).creator()._id())) {
+                                    complete.add(data.trashCollectionNotications().get(i));
                                 }
                             }
                             int completeSize = complete.size();

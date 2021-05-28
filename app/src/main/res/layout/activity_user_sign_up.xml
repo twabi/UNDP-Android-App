@@ -105,6 +105,20 @@
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:ems="10"
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/locale"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:textColor="@color/purple_700"
+                    android:textColorHint="@color/purple_700"
+                    android:background="@drawable/edit_text_border"
+                    android:hint="enter location"
+                    android:inputType="text"
+                    android:maxLines="1"/>
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:ems="10"
                     android:layout_marginTop="15dp"
                     android:id="@+id/passText"
                     android:layout_width="match_parent"

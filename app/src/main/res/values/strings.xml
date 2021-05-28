@@ -19,7 +19,7 @@
     <string name="collection_requests">Collection Requests</string>
     <string name="settings">Settings</string>
     <string name="no_requests">Oops! No requests were found</string>
-    <string name="no_requests_available">No requests available</string>
+    <string name="no_requests_available">No Trash Requests available</string>
     <string name="poor_network">Something went wrong...\n Try again!</string>
     <string name="request_collection">Request Collection</string>
 </resources>

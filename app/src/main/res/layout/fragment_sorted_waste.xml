@@ -57,7 +57,7 @@
 
         <TextView
             android:id="@+id/text12"
-            android:text="@string/no_requests_available"
+            android:text="No Waste Requests Found"
             android:textAlignment="center"
             android:textSize="18sp"
             android:textColor="@color/purple_700"

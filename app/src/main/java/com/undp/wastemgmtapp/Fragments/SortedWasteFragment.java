@@ -144,15 +144,19 @@ public class SortedWasteFragment extends Fragment {
                                     retryNetwork.setVisibility(View.GONE);
                                 } else {
                                     for(int i = 0; i < data.sortedWasteNotications().size(); i++){
-                                        try{
-                                            amountList.add(data.sortedWasteNotications().get(i).sortedWaste().amount());
-                                            priceList.add(data.sortedWasteNotications().get(i).sortedWaste().price().toString());
-                                            institutionList.add(data.sortedWasteNotications().get(i).institution().name());
-                                            locationList.add(data.sortedWasteNotications().get(i).sortedWaste().location());
-                                            completedList.add(data.sortedWasteNotications().get(i).status());
-                                            createdAtList.add(data.sortedWasteNotications().get(i).sortedWaste().createdAt());
-                                        }catch (Exception e){e.printStackTrace();}
+                                        if(userID.equals(data.sortedWasteNotications().get(i).creator()._id())){
+                                            try{
+                                                amountList.add(data.sortedWasteNotications().get(i).sortedWaste().amount());
+                                                priceList.add(data.sortedWasteNotications().get(i).sortedWaste().price().toString());
+                                                institutionList.add(data.sortedWasteNotications().get(i).institution().name());
+                                                locationList.add(data.sortedWasteNotications().get(i).sortedWaste().location());
+                                                completedList.add(data.sortedWasteNotications().get(i).status());
+                                                createdAtList.add(data.sortedWasteNotications().get(i).sortedWaste().createdAt());
+                                            }catch (Exception e){e.printStackTrace();}
 
+                                        } else {
+                                            noItems.setVisibility(View.VISIBLE);
+                                        }
                                     }
                                     SortedWasteAdapter adapter = new SortedWasteAdapter(getActivity(), amountList, priceList,
                                             institutionList, locationList, completedList, createdAtList);

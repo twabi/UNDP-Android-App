@@ -94,9 +94,6 @@ public class CollectionFragment extends Fragment {
             @Override
             public void onResponse(@NotNull Response<GetCollectionNotifsQuery.Data> response) {
                 GetCollectionNotifsQuery.Data data = response.getData();
-
-
-
                     if(data.trashCollectionNotications() == null){
 
                         if(response.getErrors() == null){
@@ -143,7 +140,7 @@ public class CollectionFragment extends Fragment {
                                         }
 
                                     } else {
-                                        noItems.setVisibility(View.VISIBLE);
+                                        //noItems.setVisibility(View.VISIBLE);
                                     }
                                 }
 

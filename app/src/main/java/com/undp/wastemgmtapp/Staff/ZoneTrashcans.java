@@ -15,9 +15,12 @@ import android.widget.Toast;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
+import com.undp.wastemgmtapp.GetCanUpdateSubscription;
 import com.undp.wastemgmtapp.GetTrashcansQuery;
 import com.undp.wastemgmtapp.R;
 import com.undp.wastemgmtapp.adapters.TrashRecyclerAdapter;
@@ -33,7 +36,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class ZoneTrashcans extends AppCompatActivity {
 
     String userID;
-    ApolloClient apolloClient;
+    ApolloClient apolloClient, subscriptionClient;
     LinearLayout errorLayout, noItems;
     ProgressBar loadCans;
     RecyclerView trashRecyclerview;
@@ -78,23 +81,34 @@ public class ZoneTrashcans extends AppCompatActivity {
         apolloClient = ApolloClient.builder().okHttpClient(httpClient)
                 .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
                 .build();
+        subscriptionClient = ApolloClient.builder()
+                .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
+                .subscriptionTransportFactory(
+                        new WebSocketSubscriptionTransport.Factory("wss://waste-mgmt-api.herokuapp.com/subscriptions", httpClient))
+                .okHttpClient(httpClient)
+                .build();
 
         keyList.clear();
         statusList.clear();
         zoneNameList.clear();
         nameList.clear();
         apolloClient.query(new GetTrashcansQuery()).enqueue(trashCallback());
+        subscriptionClient.subscribe(new GetCanUpdateSubscription()).execute(canUpdateCallback());
 
+    }
+
+    public void clearData(){
+        keyList.clear();
+        statusList.clear();
+        zoneNameList.clear();
+        nameList.clear();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
 
-        keyList.clear();
-        statusList.clear();
-        zoneNameList.clear();
-        nameList.clear();
+        clearData();
         apolloClient.query(new GetTrashcansQuery()).enqueue(trashCallback());
 
     }
@@ -189,6 +203,37 @@ public class ZoneTrashcans extends AppCompatActivity {
                             "zone: error : " + e.getMessage(), Toast.LENGTH_LONG).show();
 
                 });
+            }
+        };
+    }
+
+    public ApolloSubscriptionCall.Callback<GetCanUpdateSubscription.Data> canUpdateCallback(){
+        return new ApolloSubscriptionCall.Callback<GetCanUpdateSubscription.Data>() {
+
+            @Override
+            public void onResponse(@NotNull Response<GetCanUpdateSubscription.Data> response) {
+                clearData();
+                apolloClient.query(new GetTrashcansQuery()).enqueue(trashCallback());
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onTerminated() {
+
+            }
+
+            @Override
+            public void onConnected() {
+
             }
         };
     }

@@ -508,5 +508,36 @@ subscription taskCollectionAdded {
     }
 }
 
+subscription NotifCollectionAdded {
+    noficationtTrashCollectionAdded{
+        _id
+        trashcollection{
+            _id
+        }
+        institution{
+            _id
+        }
+        creator{
+            _id
+        }
+        completed
+    }
+}
+
+subscription NotifSortedAdded {
+    noficationtSortedWasteAdded{
+        _id
+        sortedWaste{
+            _id
+        }
+        institution{
+            _id
+        }
+        creator{
+            _id
+        }
+        completed
+    }
+}
 
 

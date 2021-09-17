@@ -21,17 +21,23 @@ import android.widget.Toast;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
 import com.undp.wastemgmtapp.Common.GPSTracker;
 import com.undp.wastemgmtapp.Common.LogInActivity;
 import com.undp.wastemgmtapp.Common.SessionManager;
 import com.undp.wastemgmtapp.GetCollectionNotifsQuery;
 import com.undp.wastemgmtapp.GetSortedWasteNotifsQuery;
 import com.undp.wastemgmtapp.MonitorService;
+import com.undp.wastemgmtapp.NotifCollectionAddedSubscription;
+import com.undp.wastemgmtapp.NotifSortedAddedSubscription;
 import com.undp.wastemgmtapp.R;
 import com.undp.wastemgmtapp.Common.SettingsActivity;
+import com.undp.wastemgmtapp.TaskCollectionAddedSubscription;
+import com.undp.wastemgmtapp.TaskSortedAddedSubscription;
 import com.undp.wastemgmtapp.UserQuery;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -52,7 +58,7 @@ public class UserHomeActivity extends AppCompatActivity{
     private ActionBarDrawerToggle mToggle;
     private final String TAG = UserHomeActivity.class.getSimpleName();
     double userLat, userLong;
-    ApolloClient apolloClient;
+    ApolloClient apolloClient, subscriptionClient;
     TextView textUserName;
     LinearLayout linearCollect, linearSorted, gotoSettings, gotoRequests, gotoInstitutions;
     TextView collectNumber, sortedNumber;
@@ -61,6 +67,10 @@ public class UserHomeActivity extends AppCompatActivity{
     TextView sortNumber1, collNumber1;
     String userID;
     ProgressBar fetchLoading;
+    ArrayList collectComplete = new ArrayList<>();
+    ArrayList collectIncomplete = new ArrayList<>();
+    ArrayList sortedComplete = new ArrayList<>();
+    ArrayList sortedIncomplete = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +113,12 @@ public class UserHomeActivity extends AppCompatActivity{
                 .build();
         apolloClient = ApolloClient.builder().okHttpClient(httpClient)
                 .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
+                .build();
+        subscriptionClient = ApolloClient.builder()
+                .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
+                .subscriptionTransportFactory(
+                        new WebSocketSubscriptionTransport.Factory("wss://waste-mgmt-api.herokuapp.com/subscriptions", httpClient))
+                .okHttpClient(httpClient)
                 .build();
 
         HashMap<String, String> user = session.getUserDetails();
@@ -241,9 +257,17 @@ public class UserHomeActivity extends AppCompatActivity{
         super.onRestart();
         //When BACK BUTTON is pressed, the activity on the stack is restarted
         //Do what you want on the refresh procedure here
+        clearLists();
         apolloClient.query(new UserQuery(userID)).enqueue(usersCallBack());
         apolloClient.query(new GetCollectionNotifsQuery()).enqueue(collectCallback());
         apolloClient.query(new GetSortedWasteNotifsQuery()).enqueue(sortedCallback());
+    }
+
+    public void clearLists(){
+        collectComplete.clear();
+        collectIncomplete.clear();
+        sortedComplete.clear();
+        sortedIncomplete.clear();
     }
 
     @Override
@@ -348,20 +372,16 @@ public class UserHomeActivity extends AppCompatActivity{
                         }
                     }else{
                         runOnUiThread(() -> {
-                            Log.d(TAG, "notifs fetched" + data.sortedWasteNotications());
-                            Log.d(TAG, "notifs fetched" + data.sortedWasteNotications());
-                            ArrayList complete = new ArrayList<>();
-                            ArrayList incomplete = new ArrayList<>();
 
                             for(int i =0; i < data.sortedWasteNotications().size(); i++){
                                 if(!data.sortedWasteNotications().get(i).completed() && userID.equals(data.sortedWasteNotications().get(i).creator()._id())){
-                                    incomplete.add(data.sortedWasteNotications().get(i));
+                                    sortedIncomplete.add(data.sortedWasteNotications().get(i));
                                 } else if (data.sortedWasteNotications().get(i).completed() && userID.equals(data.sortedWasteNotications().get(i).creator()._id())) {
-                                    complete.add(data.sortedWasteNotications().get(i));
+                                    sortedComplete.add(data.sortedWasteNotications().get(i));
                                 }
                             }
-                            int completeSize = complete.size();
-                            int pendingSize = incomplete.size();
+                            int completeSize = sortedComplete.size();
+                            int pendingSize = sortedIncomplete.size();
                             Log.d(TAG, "onResponse: " + completeSize +"-"+ pendingSize);
                             sortedNumber.setText(String.valueOf(completeSize));
                             sortNumber1.setText(String.valueOf(pendingSize));
@@ -423,25 +443,24 @@ public class UserHomeActivity extends AppCompatActivity{
                     }else{
                         runOnUiThread(() -> {
                             Log.d(TAG, "notifs fetched" + data.trashCollectionNotications());
-                            ArrayList complete = new ArrayList<>();
-                            ArrayList incomplete = new ArrayList<>();
+
 
                             for(int i =0; i < data.trashCollectionNotications().size(); i++){
                                 if(!data.trashCollectionNotications().get(i).completed() &&
                                         userID.equals(data.trashCollectionNotications().get(i).creator()._id())){
                                     Log.d(TAG, "it's equal..." + "-" + data.trashCollectionNotications().get(i).creator()._id()
                                     +"-"+userID);
-                                    incomplete.add(data.trashCollectionNotications().get(i));
+                                    collectIncomplete.add(data.trashCollectionNotications().get(i));
                                 } else if(data.trashCollectionNotications().get(i).completed() &&
                                         userID.equals(data.trashCollectionNotications().get(i).creator()._id())) {
-                                    complete.add(data.trashCollectionNotications().get(i));
+                                    collectComplete.add(data.trashCollectionNotications().get(i));
                                 }
                             }
-                            int completeSize = complete.size();
-                            int pendingSize = incomplete.size();
+                            int completeSize = collectComplete.size();
+                            int pendingSize = collectIncomplete.size();
                             Log.d(TAG, "onResponse: " + completeSize +"-"+ pendingSize);
-                            collectNumber.setText(String.valueOf(completeSize));
-                            collNumber1.setText(String.valueOf(pendingSize));
+                            collNumber1.setText(String.valueOf(completeSize));
+                            collectNumber.setText(String.valueOf(pendingSize));
 
                         });
 
@@ -473,6 +492,89 @@ public class UserHomeActivity extends AppCompatActivity{
         };
 
 
+    }
+
+    public ApolloSubscriptionCall.Callback<NotifSortedAddedSubscription.Data> NotifSortedAdded(){
+        return new ApolloSubscriptionCall.Callback<NotifSortedAddedSubscription.Data>() {
+
+            @Override
+            public void onResponse(@NotNull Response<NotifSortedAddedSubscription.Data> response) {
+                NotifSortedAddedSubscription.Data data = response.getData();
+                if(!data.noficationtSortedWasteAdded().completed() && userID.equals(data.noficationtSortedWasteAdded().creator()._id())){
+                    sortedIncomplete.add(data.noficationtSortedWasteAdded());
+                } else if(data.noficationtSortedWasteAdded().completed() && userID.equals(data.noficationtSortedWasteAdded().creator()._id())) {
+                    sortedComplete.add(data.noficationtSortedWasteAdded());
+                }
+
+                int completeSize = sortedComplete.size();
+                int pendingSize = sortedIncomplete.size();
+                sortedNumber.setText(String.valueOf(completeSize));
+                sortNumber1.setText(String.valueOf(pendingSize));
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onTerminated() {
+
+            }
+
+            @Override
+            public void onConnected() {
+
+            }
+        };
+    }
+
+    public ApolloSubscriptionCall.Callback<NotifCollectionAddedSubscription.Data> NotifCollectionAdded(){
+        return new ApolloSubscriptionCall.Callback<NotifCollectionAddedSubscription.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<NotifCollectionAddedSubscription.Data> response) {
+
+                NotifCollectionAddedSubscription.Data data = response.getData();
+                if(!data.noficationtTrashCollectionAdded().completed() && userID.equals(data.noficationtTrashCollectionAdded().creator()._id())){
+                    collectIncomplete.add(data.noficationtTrashCollectionAdded());
+                } else if(data.noficationtTrashCollectionAdded().completed() && userID.equals(data.noficationtTrashCollectionAdded().creator()._id())) {
+                    collectComplete.add(data.noficationtTrashCollectionAdded());
+                }
+
+                int completeSize = collectComplete.size();
+                int pendingSize = collectIncomplete.size();
+                collNumber1.setText(String.valueOf(completeSize));
+                collectNumber.setText(String.valueOf(pendingSize));
+
+            }
+
+
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onTerminated() {
+
+            }
+
+            @Override
+            public void onConnected() {
+
+            }
+        };
     }
 
 }

@@ -480,4 +480,31 @@ subscription getCanUpdate {
 }
 
 
+subscription taskSortedAdded {
+    taskSortedWasteAdded{
+        _id
+        sortedWaste{
+            _id
+        }
+        staff{
+            _id
+        }
+        completed
+    }
+}
+
+subscription taskCollectionAdded {
+    taskTrashCollectionAdded{
+        _id
+        trashcollection{
+            _id
+        }
+        staff{
+            _id
+        }
+        completed
+    }
+}
+
+
 

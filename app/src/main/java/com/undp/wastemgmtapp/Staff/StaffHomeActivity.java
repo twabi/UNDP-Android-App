@@ -51,6 +51,9 @@ import com.undp.wastemgmtapp.R;
 import com.undp.wastemgmtapp.Common.SettingsActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.undp.wastemgmtapp.TaskCollectionAddedSubscription;
+import com.undp.wastemgmtapp.TaskSortedAddedSubscription;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -87,6 +90,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         createNotificationChannel();
 
+        startService(new Intent(this, MonitorService.class));
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         setContentView(R.layout.activity_staff_home);
 
@@ -145,6 +149,8 @@ public class StaffHomeActivity extends AppCompatActivity {
 
         apolloClient.query(new GetStaffQuery(userID)).enqueue(staffCallback());
         subscriptionClient.subscribe(new GetCanUpdateSubscription()).execute(canUpdateCallback());
+        subscriptionClient.subscribe(new TaskCollectionAddedSubscription()).execute(taskCollectionAdded());
+        subscriptionClient.subscribe(new TaskSortedAddedSubscription()).execute(taskSortedAdded());
 
         mToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
 
@@ -632,6 +638,82 @@ public class StaffHomeActivity extends AppCompatActivity {
                             "Subscription connected", Toast.LENGTH_LONG).show();
 
                 });
+            }
+        };
+    }
+
+    public ApolloSubscriptionCall.Callback<TaskSortedAddedSubscription.Data> taskSortedAdded(){
+        return new ApolloSubscriptionCall.Callback<TaskSortedAddedSubscription.Data>() {
+
+            @Override
+            public void onResponse(@NotNull Response<TaskSortedAddedSubscription.Data> response) {
+                TaskSortedAddedSubscription.Data data = response.getData();
+                if(!TextUtils.isEmpty(userID)){
+                    if(userID.equals(data.taskSortedWasteAdded().staff()._id()) && (!data.taskSortedWasteAdded().completed())) {
+                        tasks.add(data.taskSortedWasteAdded());
+                    }
+                    sumTasks = sumTasks + tasks.size();
+                    taskNumber.setText(String.valueOf(tasks.size()));
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onTerminated() {
+
+            }
+
+            @Override
+            public void onConnected() {
+
+            }
+        };
+    }
+
+    public ApolloSubscriptionCall.Callback<TaskCollectionAddedSubscription.Data> taskCollectionAdded(){
+        return new ApolloSubscriptionCall.Callback<TaskCollectionAddedSubscription.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<TaskCollectionAddedSubscription.Data> response) {
+
+                TaskCollectionAddedSubscription.Data data = response.getData();
+                if(!TextUtils.isEmpty(userID)){
+                    if(userID.equals(data.taskTrashCollectionAdded().staff()._id()) && (!data.taskTrashCollectionAdded().completed())) {
+                        tasks.add(data.taskTrashCollectionAdded());
+                    }
+                    sumTasks = sumTasks + tasks.size();
+                    taskNumber.setText(String.valueOf(tasks.size()));
+                }
+            }
+
+
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onTerminated() {
+
+            }
+
+            @Override
+            public void onConnected() {
+
             }
         };
     }

@@ -14,13 +14,17 @@ import android.widget.Toast;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
 import com.undp.wastemgmtapp.Common.SessionManager;
 import com.undp.wastemgmtapp.GetTaskSortedWastesQuery;
 import com.undp.wastemgmtapp.GetTaskTrashCollectionsQuery;
 import com.undp.wastemgmtapp.R;
+import com.undp.wastemgmtapp.TaskCollectionAddedSubscription;
+import com.undp.wastemgmtapp.TaskSortedAddedSubscription;
 import com.undp.wastemgmtapp.adapters.RequestsRecyclerAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +49,7 @@ public class CollectionRequests extends AppCompatActivity {
     LinearLayout errorLayout, noItems;
     ProgressBar loadTasks;
     ArrayList<Object> tasks = new ArrayList<>();
-    ApolloClient apolloClient;
+    ApolloClient apolloClient, subscriptionClient;
     RequestsRecyclerAdapter recyclerAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +81,18 @@ public class CollectionRequests extends AppCompatActivity {
         apolloClient = ApolloClient.builder().okHttpClient(httpClient)
                 .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
                 .build();
+        subscriptionClient = ApolloClient.builder()
+                .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
+                .subscriptionTransportFactory(
+                        new WebSocketSubscriptionTransport.Factory("wss://waste-mgmt-api.herokuapp.com/subscriptions", httpClient))
+                .okHttpClient(httpClient)
+                .build();
 
-        tasks.clear();
-        taskType.clear();
-        keyList.clear();
-        createdAtList.clear();
-        statusList.clear();
+        clearDS();
         apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
         apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());
+        subscriptionClient.subscribe(new TaskCollectionAddedSubscription()).execute(taskCollectionAdded());
+        subscriptionClient.subscribe(new TaskSortedAddedSubscription()).execute(taskSortedAdded());
 
         errorLayout.setOnClickListener(view -> {
             clearDS();
@@ -111,13 +119,11 @@ public class CollectionRequests extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
 
-        taskType.clear();
-        keyList.clear();
-        createdAtList.clear();
-        statusList.clear();
-        tasks.clear();
+        clearDS();
         apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
         apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());
+        subscriptionClient.subscribe(new TaskCollectionAddedSubscription()).execute(taskCollectionAdded());
+        subscriptionClient.subscribe(new TaskSortedAddedSubscription()).execute(taskSortedAdded());
 
     }
 
@@ -304,13 +310,82 @@ public class CollectionRequests extends AppCompatActivity {
         };
     }
 
+    public ApolloSubscriptionCall.Callback<TaskSortedAddedSubscription.Data> taskSortedAdded(){
+        return new ApolloSubscriptionCall.Callback<TaskSortedAddedSubscription.Data>() {
+
+            @Override
+            public void onResponse(@NotNull Response<TaskSortedAddedSubscription.Data> response) {
+                TaskSortedAddedSubscription.Data data = response.getData();
+                clearDS();
+                apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
+                apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onTerminated() {
+
+            }
+
+            @Override
+            public void onConnected() {
+
+            }
+        };
+    }
+
+    public ApolloSubscriptionCall.Callback<TaskCollectionAddedSubscription.Data> taskCollectionAdded(){
+        return new ApolloSubscriptionCall.Callback<TaskCollectionAddedSubscription.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<TaskCollectionAddedSubscription.Data> response) {
+
+                TaskCollectionAddedSubscription.Data data = response.getData();
+                clearDS();
+                apolloClient.query(new GetTaskSortedWastesQuery()).enqueue(taskSortedCallback());
+                apolloClient.query(new GetTaskTrashCollectionsQuery()).enqueue(taskCollectCallback());
+            }
+
+
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onTerminated() {
+
+            }
+
+            @Override
+            public void onConnected() {
+
+            }
+        };
+    }
+
 
     public void clearDS(){
         taskType.clear();
-        statusList.clear();
-        createdAtList.clear();
         keyList.clear();
+        createdAtList.clear();
+        statusList.clear();
+        tasks.clear();
 
-        recyclerAdapter.clear();
+        //recyclerAdapter.clear();
     }
 }

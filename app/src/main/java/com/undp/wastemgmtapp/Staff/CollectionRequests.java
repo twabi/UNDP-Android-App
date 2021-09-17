@@ -378,7 +378,6 @@ public class CollectionRequests extends AppCompatActivity {
         };
     }
 
-
     public void clearDS(){
         taskType.clear();
         keyList.clear();

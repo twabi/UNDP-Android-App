@@ -46,6 +46,7 @@ import com.undp.wastemgmtapp.GetStaffQuery;
 import com.undp.wastemgmtapp.GetTaskSortedWastesQuery;
 import com.undp.wastemgmtapp.GetTaskTrashCollectionsQuery;
 import com.undp.wastemgmtapp.GetZoneTrashcansQuery;
+import com.undp.wastemgmtapp.MonitorService;
 import com.undp.wastemgmtapp.R;
 import com.undp.wastemgmtapp.Common.SettingsActivity;
 import com.google.android.material.navigation.NavigationView;
@@ -85,6 +86,7 @@ public class StaffHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         createNotificationChannel();
+
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         setContentView(R.layout.activity_staff_home);
 

@@ -4,20 +4,26 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/waste_icon"
         android:label="@string/app_name"
+        android:name=".App"
         android:roundIcon="@mipmap/waste_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WasteMgmtApp">
-        <activity android:name=".Common.SettingsActivity"></activity>
+        <service
+            android:name=".MonitorService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity android:name=".Common.SettingsActivity" />
         <activity
             android:name=".normalUser.InstitutionsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />

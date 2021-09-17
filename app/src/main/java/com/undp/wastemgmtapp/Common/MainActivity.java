@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.undp.wastemgmtapp.MonitorService;
 import com.undp.wastemgmtapp.R;
 import com.undp.wastemgmtapp.Staff.StaffHomeActivity;
 import com.undp.wastemgmtapp.normalUser.UserHomeActivity;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         SessionManager sessionManager = new SessionManager(MainActivity.this);
         boolean valid = sessionManager.checkLogin();
@@ -39,9 +41,10 @@ public class MainActivity extends AppCompatActivity {
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startService(new Intent(this, MonitorService.class));
                 startActivity(i);
             }
         }
+    }
 
     }
-}

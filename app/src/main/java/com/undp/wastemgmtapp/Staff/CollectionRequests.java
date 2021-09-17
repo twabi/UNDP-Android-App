@@ -45,6 +45,7 @@ public class CollectionRequests extends AppCompatActivity {
     ArrayList<Boolean> statusList = new ArrayList<>();
     ArrayList<String> createdAtList = new ArrayList<>();
     ArrayList<String> taskType = new ArrayList<>();
+    ArrayList<String> locationList = new ArrayList<>();
     RecyclerView tasksView;
     LinearLayout errorLayout, noItems;
     ProgressBar loadTasks;
@@ -172,11 +173,12 @@ public class CollectionRequests extends AppCompatActivity {
                                         keyList.add(data.taskSortedWastes().get(i)._id());
                                         statusList.add(data.taskSortedWastes().get(i).completed());
                                         createdAtList.add(data.taskSortedWastes().get(i).createdAt());
+                                        locationList.add(data.taskSortedWastes().get(i).sortedWaste().location());
                                         taskType.add("SortedWaste");
                                     }
                                 }
 
-                                recyclerAdapter = new RequestsRecyclerAdapter(CollectionRequests.this, keyList, statusList, createdAtList, taskType);
+                                recyclerAdapter = new RequestsRecyclerAdapter(CollectionRequests.this, keyList, statusList, createdAtList, taskType, locationList);
                                 tasksView.setAdapter(recyclerAdapter);
 
                                 if(recyclerAdapter.getItemCount() == 0){
@@ -264,11 +266,12 @@ public class CollectionRequests extends AppCompatActivity {
                                         keyList.add(data.taskTrashCollections().get(i)._id());
                                         statusList.add(data.taskTrashCollections().get(i).completed());
                                         createdAtList.add(data.taskTrashCollections().get(i).createdAt());
+                                        locationList.add(data.taskTrashCollections().get(i).trashcollection().location());
                                         taskType.add("TrashCollection");
                                     }
                                 }
 
-                                recyclerAdapter = new RequestsRecyclerAdapter(CollectionRequests.this, keyList, statusList, createdAtList, taskType);
+                                recyclerAdapter = new RequestsRecyclerAdapter(CollectionRequests.this, keyList, statusList, createdAtList, taskType, locationList);
                                 tasksView.setAdapter(recyclerAdapter);
 
                                 if(recyclerAdapter.getItemCount() == 0){

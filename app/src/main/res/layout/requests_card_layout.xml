@@ -42,6 +42,15 @@
                 android:textStyle="bold"
                 android:textColor="@color/purple_700"
                 android:textSize="16sp" />
+            <TextView
+                android:id="@+id/taskLoc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location: "
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:textColor="#000"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/completed"

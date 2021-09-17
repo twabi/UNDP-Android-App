@@ -267,6 +267,7 @@ query getTaskSortedWastes {
                 fullName
                 location
             }
+            location
             amount
             createdAt
         }
@@ -289,6 +290,7 @@ query getTaskTrashCollections {
                 fullName
                 location
             }
+            location
             amount
             createdAt
         }

@@ -22,14 +22,16 @@ public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecycl
     ArrayList<Boolean> statusList = new ArrayList<>();
     ArrayList<String> createdAtList = new ArrayList<>();
     ArrayList<String> taskType = new ArrayList<>();
+    ArrayList<String> locationList = new ArrayList<>();
 
     public RequestsRecyclerAdapter(Context context, ArrayList<String> keyList,
-                                   ArrayList<Boolean> statusList, ArrayList<String> createdAtList, ArrayList<String> taskType) {
+                                   ArrayList<Boolean> statusList, ArrayList<String> createdAtList, ArrayList<String> taskType, ArrayList<String> locationList) {
         this.context = context;
         this.keyList = keyList;
         this.statusList = statusList;
         this.createdAtList = createdAtList;
         this.taskType = taskType;
+        this.locationList = locationList;
     }
 
     private final String TAG = RequestsRecyclerAdapter.class.getSimpleName();
@@ -50,6 +52,7 @@ public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecycl
         holder.date.setText("Date Added:  " + createdAtList.get(position));
         holder.taskID.setText("Task ID:  " + keyList.get(position));
         holder.type.setText("Task Type:  " + taskType.get(position));
+        holder.location.setText("Location:  " + locationList.get(position));
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, RequestDetailsActivity.class);
@@ -75,7 +78,7 @@ public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecycl
     public class RequestsViewHolder extends RecyclerView.ViewHolder {
 
         TextView type;
-        TextView completed;
+        TextView completed, location;
         TextView taskID;
         TextView date;
         public RequestsViewHolder(View itemView) {
@@ -88,6 +91,7 @@ public class RequestsRecyclerAdapter extends RecyclerView.Adapter<RequestsRecycl
              completed = itemView.findViewById(R.id.completed);
              taskID = itemView.findViewById(R.id.task_id);
              date = itemView.findViewById(R.id.createTime);
+             location = itemView.findViewById(R.id.taskLoc);
 
 
         }

@@ -471,5 +471,12 @@ query GetTrashcan($canID : ID!){
     }
 }
 
+subscription getCanUpdate {
+    updateTrashcan{
+        _id
+        status
+    }
+}
+
 
 

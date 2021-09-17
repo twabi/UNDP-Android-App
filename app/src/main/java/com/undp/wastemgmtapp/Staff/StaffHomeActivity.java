@@ -23,12 +23,16 @@ import android.widget.Toast;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.subscription.SubscriptionTransport;
+import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
 import com.undp.wastemgmtapp.Common.GPSTracker;
 import com.undp.wastemgmtapp.Common.LogInActivity;
 import com.undp.wastemgmtapp.Common.SessionManager;
+import com.undp.wastemgmtapp.GetCanUpdateSubscription;
 import com.undp.wastemgmtapp.GetStaffQuery;
 import com.undp.wastemgmtapp.GetTaskSortedWastesQuery;
 import com.undp.wastemgmtapp.GetTaskTrashCollectionsQuery;
@@ -45,11 +49,12 @@ import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import timber.log.Timber;
 
 public class StaffHomeActivity extends AppCompatActivity {
 
     private ActionBarDrawerToggle mToggle;
-    ApolloClient apolloClient;
+    ApolloClient apolloClient, subscriptionClient;
     SessionManager session;
     double userLat, userLong;
     TextView textUserName, text_support, trashNumber, taskNumber;
@@ -105,6 +110,11 @@ public class StaffHomeActivity extends AppCompatActivity {
         apolloClient = ApolloClient.builder().okHttpClient(httpClient)
                 .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
                 .build();
+        subscriptionClient = ApolloClient.builder()
+                .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
+                .subscriptionTransportFactory(new WebSocketSubscriptionTransport.Factory("wss://waste-mgmt-api.herokuapp.com/graphql", httpClient))
+                .okHttpClient(httpClient)
+                .build();
 
         setSupportActionBar(toolbar);
         HashMap<String, String> user = session.getUserDetails();
@@ -118,6 +128,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         }
 
         apolloClient.query(new GetStaffQuery(userID)).enqueue(staffCallback());
+        subscriptionClient.subscribe(new GetCanUpdateSubscription()).execute(canUpdateCallback());
 
         mToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
 
@@ -309,6 +320,7 @@ public class StaffHomeActivity extends AppCompatActivity {
             }
         };
     }
+
 
 
     public ApolloCall.Callback<GetTaskTrashCollectionsQuery.Data> taskCollectCallback(){
@@ -516,6 +528,92 @@ public class StaffHomeActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     Toast.makeText(StaffHomeActivity.this,
                             "zone: error : " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                });
+            }
+        };
+    }
+
+    public ApolloSubscriptionCall.Callback<GetCanUpdateSubscription.Data> canUpdateCallback(){
+        return new ApolloSubscriptionCall.Callback<GetCanUpdateSubscription.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<GetCanUpdateSubscription.Data> response) {
+                GetCanUpdateSubscription.Data data = response.getData();
+
+                if(data.updateTrashcan() == null){
+
+                    if(response.getErrors() == null){
+                        Log.e(TAG, "an Error in trashcans query : " );
+                        runOnUiThread(() -> {
+                            Toast.makeText(StaffHomeActivity.this,
+                                    "zone: Error occurred : " , Toast.LENGTH_LONG).show();
+                        });
+                    } else{
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Log.e(TAG, "an Error in trashcans query : " + errorMessage );
+                        runOnUiThread(() -> {
+                            Toast.makeText(StaffHomeActivity.this,
+                                    "zone: error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }else{
+                    runOnUiThread(() -> {
+                        Timber.d("trashcans fetched: %s", data.updateTrashcan());
+
+
+                    });
+
+                    if(response.getErrors() != null){
+                        List<Error> error = response.getErrors();
+                        String errorMessage = error.get(0).getMessage();
+                        Timber.e("an Error in staff query : %s", errorMessage);
+                        runOnUiThread(() -> {
+                            Toast.makeText(StaffHomeActivity.this,
+                                    "zone: error occurred : " + errorMessage, Toast.LENGTH_LONG).show();
+
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e(TAG, "Error", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(StaffHomeActivity.this,
+                            "zone: error : " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                });
+            }
+
+            @Override
+            public void onCompleted() {
+                Timber.e( "Subscription completed");
+                runOnUiThread(() -> {
+                    Toast.makeText(StaffHomeActivity.this,
+                            "Subscription completed", Toast.LENGTH_LONG).show();
+
+                });
+            }
+
+            @Override
+            public void onTerminated() {
+                Timber.e( "Subscription terminated");
+                runOnUiThread(() -> {
+                    Toast.makeText(StaffHomeActivity.this,
+                            "Subscription terminated", Toast.LENGTH_LONG).show();
+
+                });
+            }
+
+            @Override
+            public void onConnected() {
+                Timber.e( "Subscription connected");
+                runOnUiThread(() -> {
+                    Toast.makeText(StaffHomeActivity.this,
+                            "Subscription connected", Toast.LENGTH_LONG).show();
 
                 });
             }

@@ -29,6 +29,7 @@ import com.undp.wastemgmtapp.Common.LogInActivity;
 import com.undp.wastemgmtapp.Common.SessionManager;
 import com.undp.wastemgmtapp.GetCollectionNotifsQuery;
 import com.undp.wastemgmtapp.GetSortedWasteNotifsQuery;
+import com.undp.wastemgmtapp.MonitorService;
 import com.undp.wastemgmtapp.R;
 import com.undp.wastemgmtapp.Common.SettingsActivity;
 import com.undp.wastemgmtapp.UserQuery;
@@ -64,6 +65,7 @@ public class UserHomeActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        stopService(new Intent(this, MonitorService.class));
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         setContentView(R.layout.activity_user_home);
 

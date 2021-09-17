@@ -94,7 +94,7 @@ public class CollectionRequests extends AppCompatActivity {
 
         if(keyList.size() == 0){
             loadTasks.setVisibility(View.VISIBLE);
-            noItems.setVisibility(View.VISIBLE);
+            //noItems.setVisibility(View.VISIBLE);
         } else {
             errorLayout.setVisibility(View.GONE);
             noItems.setVisibility(View.GONE);

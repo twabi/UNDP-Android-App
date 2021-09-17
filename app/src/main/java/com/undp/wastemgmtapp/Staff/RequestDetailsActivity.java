@@ -10,6 +10,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -90,6 +91,8 @@ public class RequestDetailsActivity extends AppCompatActivity {
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         setContentView(R.layout.activity_request_details);
 
+
+
         GPSTracker gpsTracker = new GPSTracker(RequestDetailsActivity.this, RequestDetailsActivity.this);
         userLat = gpsTracker.getLatitude();
         userLong = gpsTracker.getLongitude();
@@ -107,6 +110,9 @@ public class RequestDetailsActivity extends AppCompatActivity {
         numberText = findViewById(R.id.reqNumber);
         taskLoads = findViewById(R.id.taskLoads);
         taskLoads.setVisibility(View.VISIBLE);
+
+        int viewHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+        mapView.getLayoutParams().height = viewHeight - 1100;
 
         //initialize the toolbar
         Toolbar toolbar = findViewById(R.id.detailsToolbar);

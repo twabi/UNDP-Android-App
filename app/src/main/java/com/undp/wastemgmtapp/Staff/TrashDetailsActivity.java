@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -79,6 +80,8 @@ public class TrashDetailsActivity extends AppCompatActivity {
         canLoads = findViewById(R.id.canLoads);
         errorText = findViewById(R.id.errorText);
 
+        int viewHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+        mapView.getLayoutParams().height = viewHeight - 800;
         GPSTracker gpsTracker = new GPSTracker(TrashDetailsActivity.this, TrashDetailsActivity.this);
         userLat = gpsTracker.getLatitude();
         userLong = gpsTracker.getLongitude();

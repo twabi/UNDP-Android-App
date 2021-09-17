@@ -358,36 +358,6 @@ query taskTrashCollection($taskID : ID!){
 
 
 
-subscription CollectionNotifAdded{
-    noficationtTrashCollectionAdded{
-        _id
-        status
-        institution{
-            _id
-            name
-        }
-        creator{
-            _id
-        }
-        createdAt
-    }
-}
-
-subscription SortedNotifAdded{
-    noficationtSortedWasteAdded{
-        _id
-        status
-        institution{
-            _id
-            name
-        }
-        creator{
-            _id
-        }
-        createdAt
-    }
-}
-
 query GetZoneTrashcans{
     trashcans{
         _id
@@ -511,32 +481,47 @@ subscription taskCollectionAdded {
 subscription NotifCollectionAdded {
     noficationtTrashCollectionAdded{
         _id
+        status
+        completed
         trashcollection{
             _id
+            amount
+            location
+            createdAt
+            typeOfWaste
         }
         institution{
             _id
+            name
         }
         creator{
             _id
         }
-        completed
+        createdAt
     }
 }
 
 subscription NotifSortedAdded {
     noficationtSortedWasteAdded{
         _id
+        status
+        completed
         sortedWaste{
             _id
+            amount
+            location
+            createdAt
+            typeOfWaste
         }
         institution{
             _id
+            name
         }
         creator{
             _id
         }
-        completed
+        createdAt
+
     }
 }
 

@@ -143,6 +143,9 @@ public class UserHomeActivity extends AppCompatActivity{
         //apolloClient.query(new ZonesQuery()).enqueue(zonesQuery());
         apolloClient.query(new GetCollectionNotifsQuery()).enqueue(collectCallback());
         apolloClient.query(new GetSortedWasteNotifsQuery()).enqueue(sortedCallback());
+        subscriptionClient.subscribe(new NotifCollectionAddedSubscription()).execute(NotifCollectionAdded());
+        subscriptionClient.subscribe(new NotifSortedAddedSubscription()).execute(NotifSortedAdded());
+
 
         GPSTracker gpsTracker = new GPSTracker(UserHomeActivity.this, UserHomeActivity.this);
         userLat = gpsTracker.getLatitude();

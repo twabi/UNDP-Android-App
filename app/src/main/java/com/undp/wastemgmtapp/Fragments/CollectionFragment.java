@@ -15,11 +15,15 @@ import android.widget.Toast;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
 import com.undp.wastemgmtapp.Common.SessionManager;
 import com.undp.wastemgmtapp.GetCollectionNotifsQuery;
+import com.undp.wastemgmtapp.NotifCollectionAddedSubscription;
+import com.undp.wastemgmtapp.NotifSortedAddedSubscription;
 import com.undp.wastemgmtapp.R;
 import com.undp.wastemgmtapp.adapters.RequestsAdapter;
 
@@ -44,7 +48,7 @@ public class CollectionFragment extends Fragment {
     ProgressBar fetchLoading;
     LinearLayout noItems, retryNetwork;
     View view;
-    ApolloClient apolloClient;
+    ApolloClient apolloClient, subscriptionClient;
     String userID;
     SessionManager session;
 
@@ -80,13 +84,28 @@ public class CollectionFragment extends Fragment {
         apolloClient = ApolloClient.builder().okHttpClient(httpClient)
                 .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
                 .build();
+        subscriptionClient = ApolloClient.builder()
+                .serverUrl("https://waste-mgmt-api.herokuapp.com/graphql")
+                .subscriptionTransportFactory(
+                        new WebSocketSubscriptionTransport.Factory("wss://waste-mgmt-api.herokuapp.com/subscriptions", httpClient))
+                .okHttpClient(httpClient)
+                .build();
 
         apolloClient.query(new GetCollectionNotifsQuery()).enqueue(requestCallback());
+        subscriptionClient.subscribe(new NotifCollectionAddedSubscription()).execute(NotifCollectionAdded());
 
 
 
         return view;
 
+    }
+
+    public void clearDS(){
+        amountList.clear();
+        completedList.clear();
+        createdAtList.clear();
+        institutionList.clear();
+        locationList.clear();
     }
 
     public ApolloCall.Callback<GetCollectionNotifsQuery.Data> requestCallback(){
@@ -174,6 +193,40 @@ public class CollectionFragment extends Fragment {
                     retryNetwork.setVisibility(View.VISIBLE);
                     fetchLoading.setVisibility(View.GONE);
                 });
+
+            }
+        };
+    }
+
+    public ApolloSubscriptionCall.Callback<NotifCollectionAddedSubscription.Data> NotifCollectionAdded(){
+        return new ApolloSubscriptionCall.Callback<NotifCollectionAddedSubscription.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<NotifCollectionAddedSubscription.Data> response) {
+
+                NotifCollectionAddedSubscription.Data data = response.getData();
+                clearDS();
+                subscriptionClient.subscribe(new NotifCollectionAddedSubscription()).execute(NotifCollectionAdded());
+            }
+
+
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onTerminated() {
+
+            }
+
+            @Override
+            public void onConnected() {
 
             }
         };

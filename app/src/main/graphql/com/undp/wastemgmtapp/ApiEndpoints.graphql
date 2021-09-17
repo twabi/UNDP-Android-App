@@ -474,6 +474,7 @@ query GetTrashcan($canID : ID!){
 subscription getCanUpdate {
     updateTrashcan{
         _id
+        trashcanId
         status
     }
 }

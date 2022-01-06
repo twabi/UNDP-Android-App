@@ -49,12 +49,12 @@ public class TrashRecyclerAdapter extends RecyclerView.Adapter<TrashRecyclerAdap
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
+        double state = 100 - Double.valueOf(statusList.get(position));
         holder.canName.setText(nameList.get(position));
         holder.zoneName.setText(zoneNameList.get(position));
-        holder.percentage.setText("" + statusList.get(position));
+        holder.percentage.setText("" + state);
 
-        Double d = Double.valueOf(statusList.get(position));
-        int value = d.intValue();
+        int value = (int) state;
         if(value > 90){
             Drawable progressDrawable = holder.canLevel.getProgressDrawable().mutate();
             progressDrawable.setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);

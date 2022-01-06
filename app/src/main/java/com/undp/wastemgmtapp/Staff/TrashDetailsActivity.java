@@ -158,15 +158,14 @@ public class TrashDetailsActivity extends AppCompatActivity {
 
                         Log.d(TAG, "latitude: " + latitude + "-" + "longitude: " + longitude);
 
-                        Double d = Double.valueOf(data.trashcan().status());
-                        int value = d.intValue();
-                        if(value > 90){
+                        double d = 100 - Double.valueOf(data.trashcan().status());
+                        if(d > 90){
                             Drawable progressDrawable = canLevel.getProgressDrawable().mutate();
                             progressDrawable.setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
                             canLevel.setProgressDrawable(progressDrawable);
                         }
 
-                        canLevel.setProgress(value);
+                        canLevel.setProgress((int)d);
 
                         position = new CameraPosition.Builder()
                                 .target(new LatLng(latitude, longitude)).zoom(14).tilt(20)
